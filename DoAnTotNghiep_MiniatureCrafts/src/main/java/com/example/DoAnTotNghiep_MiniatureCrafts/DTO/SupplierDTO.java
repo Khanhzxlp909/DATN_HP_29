@@ -1,22 +1,41 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Date;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class SupplierDTO {
-    private int id;
-    private String name;
-    private String phone;
-    private String address;
-    private String note;
-    private boolean status;
-    private Date creationDate;
-    private Date editDate;
+    private Integer ID;
+    private String Name;
+    private String Address;
+    private String Phone;
 
+    // Getters and Setters
+    public Integer getID() {
+        return ID;
+    }
+
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
+    }
+
+    public String getPhone() {
+        return Phone;
+    }
+
+    public void setPhone(String phone) {
+        Phone = phone;
+    }
 }

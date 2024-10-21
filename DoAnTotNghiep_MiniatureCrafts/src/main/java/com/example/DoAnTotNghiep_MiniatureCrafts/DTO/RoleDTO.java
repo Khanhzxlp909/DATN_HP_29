@@ -1,16 +1,41 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class RoleDTO {
-    private int id;
-    private boolean canCreate;
-    private boolean canUpdate;
-    private boolean canDelete;
+    private Integer ID;
+    private Boolean CanCreate;
+    private Boolean CanUpdate;
+    private Boolean CanDelete;
 
+    // Getters and Setters
+    public Integer getID() {
+        return ID;
+    }
+
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public Boolean getCanCreate() {
+        return CanCreate;
+    }
+
+    public void setCanCreate(Boolean canCreate) {
+        CanCreate = canCreate;
+    }
+
+    public Boolean getCanUpdate() {
+        return CanUpdate;
+    }
+
+    public void setCanUpdate(Boolean canUpdate) {
+        CanUpdate = canUpdate;
+    }
+
+    public Boolean getCanDelete() {
+        return CanDelete;
+    }
+
+    public void setCanDelete(Boolean canDelete) {
+        CanDelete = canDelete;
+    }
 }

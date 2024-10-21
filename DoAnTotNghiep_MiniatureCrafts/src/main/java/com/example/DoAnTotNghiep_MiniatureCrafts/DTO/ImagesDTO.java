@@ -1,21 +1,41 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
-import lombok.Data;
-
-@Data
 public class ImagesDTO {
-    private int id;
-    private ProductDTO product;
-    private String cdImages;
-    private boolean setDefault;
+    private Integer ID;
+    private Integer Product;
+    private String Cd_Images;
+    private Boolean Set_Default;
 
-    public ImagesDTO() {
+    // Getters and Setters
+    public Integer getID() {
+        return ID;
     }
 
-    public ImagesDTO(int id, ProductDTO product, String cdImages, boolean setDefault) {
-        this.id = id;
-        this.product = product;
-        this.cdImages = cdImages;
-        this.setDefault = setDefault;
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public Integer getProduct() {
+        return Product;
+    }
+
+    public void setProduct(Integer product) {
+        Product = product;
+    }
+
+    public String getCd_Images() {
+        return Cd_Images;
+    }
+
+    public void setCd_Images(String cd_Images) {
+        Cd_Images = cd_Images;
+    }
+
+    public Boolean getSet_Default() {
+        return Set_Default;
+    }
+
+    public void setSet_Default(Boolean set_Default) {
+        Set_Default = set_Default;
     }
 }

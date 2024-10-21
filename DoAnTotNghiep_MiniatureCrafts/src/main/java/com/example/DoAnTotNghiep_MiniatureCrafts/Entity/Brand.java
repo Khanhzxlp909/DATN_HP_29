@@ -1,25 +1,48 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "Brand")
-@AllArgsConstructor
-@NoArgsConstructor
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer ID;  // ID tự tăng
 
-    @Column(nullable = false)
-    private String name;
+    private String Name;
+    private String Note;
+    private Boolean Status;
 
-    private String note;
+    // Getters and Setters
+    public Integer getID() {
+        return ID;
+    }
 
-    private Boolean status;
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
 
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+    public String getNote() {
+        return Note;
+    }
+
+    public void setNote(String note) {
+        Note = note;
+    }
+
+    public Boolean getStatus() {
+        return Status;
+    }
+
+    public void setStatus(Boolean status) {
+        Status = status;
+    }
 }
