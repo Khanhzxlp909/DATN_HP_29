@@ -4,17 +4,19 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Users")
-public class Users {
+@Table(name = "POSOrder")
+public class POSOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
 
-    private String Name;
-    private String Email;  // Đảm bảo Email là duy nhất
-    private String Username;  // Đảm bảo Username là duy nhất
-    private String Password;
-    private String Phone;
+    @Column(name = "Code_Order", unique = true)
+    private String Code_Order;  // Đảm bảo Code_Order là duy nhất
+
+    @Column(name = "UserID")
+    private Integer UserID;
+
+    private Double TotalAmount;
     private Boolean Status;
 
     @Column(name = "Creation_date")
@@ -34,44 +36,28 @@ public class Users {
         this.ID = ID;
     }
 
-    public String getName() {
-        return Name;
+    public String getCode_Order() {
+        return Code_Order;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setCode_Order(String code_Order) {
+        Code_Order = code_Order;
     }
 
-    public String getEmail() {
-        return Email;
+    public Integer getUserID() {
+        return UserID;
     }
 
-    public void setEmail(String email) {
-        Email = email;
+    public void setUserID(Integer userID) {
+        UserID = userID;
     }
 
-    public String getUsername() {
-        return Username;
+    public Double getTotalAmount() {
+        return TotalAmount;
     }
 
-    public void setUsername(String username) {
-        Username = username;
-    }
-
-    public String getPassword() {
-        return Password;
-    }
-
-    public void setPassword(String password) {
-        Password = password;
-    }
-
-    public String getPhone() {
-        return Phone;
-    }
-
-    public void setPhone(String phone) {
-        Phone = phone;
+    public void setTotalAmount(Double totalAmount) {
+        TotalAmount = totalAmount;
     }
 
     public Boolean getStatus() {

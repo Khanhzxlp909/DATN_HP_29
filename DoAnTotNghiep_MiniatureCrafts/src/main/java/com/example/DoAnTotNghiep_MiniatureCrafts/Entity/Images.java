@@ -1,23 +1,50 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "Images")
 public class Images {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer ID;  // ID tự tăng
 
-    @ManyToOne
-    @JoinColumn(name = "FK_Product", referencedColumnName = "ID")
-    private Product product;
+    @Column(name = "Product")
+    private Integer Product;
 
-    private String cdImages;
-    private boolean setDefault;
+    private String Cd_Images;
+    private Boolean Set_Default;
+
+    // Getters and Setters
+    public Integer getID() {
+        return ID;
+    }
+
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public Integer getProduct() {
+        return Product;
+    }
+
+    public void setProduct(Integer product) {
+        Product = product;
+    }
+
+    public String getCd_Images() {
+        return Cd_Images;
+    }
+
+    public void setCd_Images(String cd_Images) {
+        Cd_Images = cd_Images;
+    }
+
+    public Boolean getSet_Default() {
+        return Set_Default;
+    }
+
+    public void setSet_Default(Boolean set_Default) {
+        Set_Default = set_Default;
+    }
 }

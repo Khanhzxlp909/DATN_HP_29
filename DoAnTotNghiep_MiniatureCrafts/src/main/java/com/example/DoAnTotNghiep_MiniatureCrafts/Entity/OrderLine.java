@@ -3,19 +3,17 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "WareHouseDetails")
-public class WareHouseDetails {
+@Table(name = "OrderLine")
+public class OrderLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
 
-    private Integer Import;
     private Integer Product;
+    private Integer OrderID;
     private Integer Quantity;
     private Double Price;
-    private Double Total_Amount;
-    private String Note;
-    private Boolean Status;
+    private Double TotalAmount;
 
     // Getters and Setters
     public Integer getID() {
@@ -26,20 +24,20 @@ public class WareHouseDetails {
         this.ID = ID;
     }
 
-    public Integer getImport() {
-        return Import;
-    }
-
-    public void setImport(Integer anImport) {
-        Import = anImport;
-    }
-
     public Integer getProduct() {
         return Product;
     }
 
     public void setProduct(Integer product) {
         Product = product;
+    }
+
+    public Integer getOrderID() {
+        return OrderID;
+    }
+
+    public void setOrderID(Integer orderID) {
+        OrderID = orderID;
     }
 
     public Integer getQuantity() {
@@ -58,27 +56,11 @@ public class WareHouseDetails {
         Price = price;
     }
 
-    public Double getTotal_Amount() {
-        return Total_Amount;
+    public Double getTotalAmount() {
+        return TotalAmount;
     }
 
-    public void setTotal_Amount(Double total_Amount) {
-        Total_Amount = total_Amount;
-    }
-
-    public String getNote() {
-        return Note;
-    }
-
-    public void setNote(String note) {
-        Note = note;
-    }
-
-    public Boolean getStatus() {
-        return Status;
-    }
-
-    public void setStatus(Boolean status) {
-        Status = status;
+    public void setTotalAmount(Double totalAmount) {
+        TotalAmount = totalAmount;
     }
 }

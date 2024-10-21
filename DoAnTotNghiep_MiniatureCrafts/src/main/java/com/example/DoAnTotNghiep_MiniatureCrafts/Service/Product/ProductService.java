@@ -21,14 +21,14 @@ public class ProductService {
         // Chuyển đổi từ Variation sang VariationDTO
         return variations.stream().map(variation -> {
             VariationDTO dto = new VariationDTO();
-            dto.setId(variation.getId());
-            dto.setSku(variation.getSku());
+            dto.setID(variation.getID());
+            dto.setSKU(variation.getSKU());
             dto.setPrice(variation.getPrice());
             dto.setQuantity(variation.getQuantity());
-            dto.setBrand(new BrandDTO(variation.getBrand().getId(), variation.getBrand().getName(), variation.getBrand().getNote(), variation.getBrand().getStatus()));
+            dto.setBrandID(new BrandDTO(variation.getBrandID().getID(), variation.getBrandID().getName(), variation.getBrandID().getNote(), variation.getBrandID().getStatus()));
             dto.setMaterial(variation.getMaterial());
             dto.setWeight(variation.getWeight());
-            dto.setStatus(variation.isStatus());
+            dto.setStatus(variation.getStatus());
             return dto;
         }).collect(Collectors.toList());
     }

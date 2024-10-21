@@ -1,19 +1,32 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
-import lombok.Data;
-
-@Data
 public class CategoryDTO {
-    private int id;
-    private String name;
-    private boolean status;
+    private Integer ID;
+    private String Name;
+    private Boolean Status;
 
-    public CategoryDTO(int id, String name, boolean status) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
+    // Getters and Setters
+    public Integer getID() {
+        return ID;
     }
 
-    public CategoryDTO() {
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+    public Boolean getStatus() {
+        return Status;
+    }
+
+    public void setStatus(Boolean status) {
+        Status = status;
     }
 }
