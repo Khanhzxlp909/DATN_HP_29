@@ -1,6 +1,8 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.UUID;
@@ -8,6 +10,8 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "POSOder")
+@NoArgsConstructor
+@AllArgsConstructor
 public class POSOder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
