@@ -9,23 +9,17 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
-
     private String Name;
     private String Email;  // Đảm bảo Email là duy nhất
     private String Username;  // Đảm bảo Username là duy nhất
     private String Password;
-    private String Phone;
-    private Boolean Status;
 
-    @Column(name = "Creation_date")
-    @Temporal(TemporalType.DATE)
-    private Date Creation_date;
+    @ManyToOne
+    @JoinColumn(name = "Role")
+    private Role Role;
 
-    @Column(name = "Edit_Date")
-    @Temporal(TemporalType.DATE)
-    private Date Edit_Date;
+    private Boolean IsActive;
 
-    // Getters and Setters
     public Integer getID() {
         return ID;
     }
@@ -66,20 +60,20 @@ public class Users {
         Password = password;
     }
 
-    public String getPhone() {
-        return Phone;
+    public com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role getRole() {
+        return Role;
     }
 
-    public void setPhone(String phone) {
-        Phone = phone;
+    public void setRole(com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role role) {
+        Role = role;
     }
 
-    public Boolean getStatus() {
-        return Status;
+    public Boolean getActive() {
+        return IsActive;
     }
 
-    public void setStatus(Boolean status) {
-        Status = status;
+    public void setActive(Boolean active) {
+        IsActive = active;
     }
 
     public Date getCreation_date() {
@@ -97,4 +91,28 @@ public class Users {
     public void setEdit_Date(Date edit_Date) {
         Edit_Date = edit_Date;
     }
+
+    public Users() {
+    }
+
+    public Users(Integer ID, String name, String email, String username, String password, com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role role, Boolean isActive, Date creation_date, Date edit_Date) {
+        this.ID = ID;
+        Name = name;
+        Email = email;
+        Username = username;
+        Password = password;
+        Role = role;
+        IsActive = isActive;
+        Creation_date = creation_date;
+        Edit_Date = edit_Date;
+    }
+
+    @Column(name = "Creation_date")
+    @Temporal(TemporalType.DATE)
+    private Date Creation_date;
+
+    @Column(name = "Edit_Date")
+    @Temporal(TemporalType.DATE)
+    private Date Edit_Date;
+
 }

@@ -3,22 +3,29 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 public class BrandDTO {
     private Integer ID;
     private String Name;
+    private String Note;
     private Boolean Status;
+
+    public BrandDTO(Integer ID, String name, String note, Boolean status) {
+        this.ID = ID;
+        Name = name;
+        Note = note;
+        Status = status;
+    }
 
     public BrandDTO() {
     }
 
-    public BrandDTO(Integer ID, String name, Boolean status) {
-        this.ID = ID;
-        Name = name;
-        Status = status;
+    public String getNote() {
+        return Note;
     }
 
-    public BrandDTO(Integer id, String name, String note, Boolean status) {
-        this.ID = ID;
-        Name = name;
-        Status = status;
+    public void setNote(String note) {
+        Note = note;
     }
+
+
+
 
     // Getters and Setters
     public Integer getID() {

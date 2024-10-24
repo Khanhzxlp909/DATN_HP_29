@@ -6,6 +6,16 @@ public class RoleDTO {
     private Boolean CanUpdate;
     private Boolean CanDelete;
 
+    public RoleDTO() {
+    }
+
+    public RoleDTO(Integer ID, Boolean canCreate, Boolean canUpdate, Boolean canDelete) {
+        this.ID = ID;
+        CanCreate = canCreate;
+        CanUpdate = canUpdate;
+        CanDelete = canDelete;
+    }
+
     // Getters and Setters
     public Integer getID() {
         return ID;

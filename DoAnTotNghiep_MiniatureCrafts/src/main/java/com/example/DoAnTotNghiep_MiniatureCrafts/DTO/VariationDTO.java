@@ -4,7 +4,7 @@ import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Brand;
 
 public class VariationDTO {
     private Integer ID;
-    private Integer ProductID;
+    private ProductDTO ProductID;
     private String SKU;
     private Double Price;
     private Integer Quantity;
@@ -12,6 +12,21 @@ public class VariationDTO {
     private String Material;
     private Double Weight;
     private Boolean Status;
+
+    public VariationDTO() {
+    }
+
+    public VariationDTO(Integer ID, ProductDTO productID, String SKU, Double price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status) {
+        this.ID = ID;
+        ProductID = productID;
+        this.SKU = SKU;
+        Price = price;
+        Quantity = quantity;
+        BrandID = brandID;
+        Material = material;
+        Weight = weight;
+        Status = status;
+    }
 
     // Getters and Setters
     public Integer getID() {
@@ -22,11 +37,11 @@ public class VariationDTO {
         this.ID = ID;
     }
 
-    public Integer getProductID() {
+    public ProductDTO getProductID() {
         return ProductID;
     }
 
-    public void setProductID(Integer productID) {
+    public void setProductID(ProductDTO productID) {
         ProductID = productID;
     }
 

@@ -1,61 +1,48 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Category;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class ProductDTO {
     private Integer ID;
     private String Name;
-    private String Code;
-    private Double Price;
-    private Boolean Status;
-    private List<String> ImageURLs;
+    private Category CategoryID;
 
-    // Getters and Setters
-    public Integer getID() {
+    public ProductDTO() {
+    }
+
+    public ProductDTO(Integer ID, String name, Category categoryID) {
+        this.ID = ID;
+        Name = name;
+        CategoryID = categoryID;
+    }
+
+    @JsonProperty("id")
+    public Integer getId() {
         return ID;
+    }
+
+    @JsonProperty("name")
+    public String getName() {
+        return Name;
+    }
+
+    @JsonProperty("categoryID")
+    public Category getCategoryID() {
+        return CategoryID;
     }
 
     public void setID(Integer ID) {
         this.ID = ID;
     }
 
-    public String getName() {
-        return Name;
-    }
-
     public void setName(String name) {
         Name = name;
     }
 
-    public String getCode() {
-        return Code;
-    }
-
-    public void setCode(String code) {
-        Code = code;
-    }
-
-    public Double getPrice() {
-        return Price;
-    }
-
-    public void setPrice(Double price) {
-        Price = price;
-    }
-
-    public Boolean getStatus() {
-        return Status;
-    }
-
-    public void setStatus(Boolean status) {
-        Status = status;
-    }
-
-    public List<String> getImageURLs() {
-        return ImageURLs;
-    }
-
-    public void setImageURLs(List<String> imageURLs) {
-        ImageURLs = imageURLs;
+    public void setCategoryID(Category categoryID) {
+        CategoryID = categoryID;
     }
 }

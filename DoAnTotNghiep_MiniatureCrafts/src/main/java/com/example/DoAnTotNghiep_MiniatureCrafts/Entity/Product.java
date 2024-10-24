@@ -11,8 +11,9 @@ public class Product {
 
     private String Name;
 
-    @Column(name = "CategoryID")
-    private Integer CategoryID;  // Liên kết với Category
+    @ManyToOne
+    @JoinColumn(name = "CategoryID")
+    private Category CategoryID;  // Liên kết với Category
 
     // Getters and Setters
     public Integer getID() {
@@ -31,11 +32,11 @@ public class Product {
         Name = name;
     }
 
-    public Integer getCategoryID() {
+    public Category getCategoryID() {
         return CategoryID;
     }
 
-    public void setCategoryID(Integer categoryID) {
+    public void setCategoryID(Category categoryID) {
         CategoryID = categoryID;
     }
 }

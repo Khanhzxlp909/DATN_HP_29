@@ -8,10 +8,25 @@ public class UsersDTO {
     private String Email;
     private String Username;
     private String Password;
-    private Integer Role;
+    private RoleDTO Role;
     private Boolean IsActive;
     private Date Creation_date;
     private Date Edit_Date;
+
+    public UsersDTO() {
+    }
+
+    public UsersDTO(Integer ID, String name, String email, String username, String password, RoleDTO role, Boolean isActive, Date creation_date, Date edit_Date) {
+        this.ID = ID;
+        Name = name;
+        Email = email;
+        Username = username;
+        Password = password;
+        Role = role;
+        IsActive = isActive;
+        Creation_date = creation_date;
+        Edit_Date = edit_Date;
+    }
 
     // Getters and Setters
     public Integer getID() {
@@ -54,11 +69,11 @@ public class UsersDTO {
         Password = password;
     }
 
-    public Integer getRole() {
+    public RoleDTO getRole() {
         return Role;
     }
 
-    public void setRole(Integer role) {
+    public void setRole(RoleDTO role) {
         Role = role;
     }
 
