@@ -52,6 +52,44 @@ public class VariationService {
 
         return prdRepo.save(variation);
     }
+    //update sarn pham
+    public Variation update(VariationDTO varDTO) {
+        Variation variation = new Variation();
+
+        // Chuyển từ ProductDTO sang Product entity
+        Product product = new Product();
+        product.setID(varDTO.getProductID().getId());
+        product.setName(varDTO.getProductID().getName());
+        product.setCategoryID(varDTO.getProductID().getCategoryID());
+
+
+        // Chuyển từ BrandDTO sang Brand entity
+        Brand brand = new Brand();
+        brand.setID(varDTO.getBrandID().getID());
+        brand.setName(varDTO.getBrandID().getName());
+        brand.setNote(varDTO.getBrandID().getNote());
+        brand.setStatus(varDTO.getBrandID().getStatus());
+
+
+        //tryền DTO vào entity
+        variation.setID(varDTO.getID());
+        variation.setProductID(product);
+        variation.setSKU(UUID.randomUUID().toString());
+        variation.setPrice(varDTO.getPrice());
+        variation.setBrandID(brand);
+        variation.setQuantity(varDTO.getQuantity());
+        variation.setMaterial(varDTO.getMaterial());
+        variation.setWeight(varDTO.getWeight());
+        variation.setStatus(varDTO.getStatus());
+
+        return prdRepo.save(variation);
+    }
+
+    public void delete(Long id) {
+        prdRepo.deleteById(id);
+    }
+
+
     // lấy sản phaarm và phân trang
     public Page<VariationDTO> getAll(Pageable pageable) {
         // Truy vấn các Variations theo Status và phân trang

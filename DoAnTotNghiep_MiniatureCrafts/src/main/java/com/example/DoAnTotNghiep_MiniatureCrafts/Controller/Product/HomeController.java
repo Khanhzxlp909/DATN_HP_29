@@ -21,11 +21,6 @@ public class HomeController {
     @Autowired
     private UserRepository userRepo;
 
-    //    @GetMapping("")
-//    public List<VariationDTO> home() {
-//        List<VariationDTO> list = productService.getAll();
-//        return list;
-//    }
     @GetMapping("home")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
@@ -34,6 +29,17 @@ public class HomeController {
     @PostMapping("add")
     public Variation add(@RequestBody VariationDTO varDTO) {
         return variationService.add(varDTO);
+    }
+
+    @PostMapping("update")
+    public Variation update(@RequestBody VariationDTO varDTO) {
+        return variationService.update(varDTO);
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable("id") Long id) {
+        variationService.delete(id);
+        return "done";
     }
 
 }

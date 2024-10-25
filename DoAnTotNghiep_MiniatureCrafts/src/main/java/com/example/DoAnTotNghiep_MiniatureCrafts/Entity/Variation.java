@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Variation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ID;  // ID tự tăng
+    private Long ID;  // ID tự tăng
 
     @ManyToOne
     @JoinColumn(name = "ProductID")
@@ -25,11 +25,11 @@ public class Variation {
     private Boolean Status;
 
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 
