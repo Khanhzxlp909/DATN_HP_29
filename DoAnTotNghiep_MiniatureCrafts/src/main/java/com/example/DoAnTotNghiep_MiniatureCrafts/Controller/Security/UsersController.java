@@ -20,8 +20,7 @@ public class UsersController {
     public List<UsersDTO> findAllByUsername(@RequestBody UsersDTO users) {
         String username = users.getUsername();
         String password = users.getPassword();
-
-        List<UsersDTO> lstUsers = userService.findAllByUsername(username, password);
+        List<UsersDTO> lstUsers =  userService.findAllByUsername(username, password);;
 
         for (UsersDTO user : lstUsers) {
             System.out.println("ID: " + user.getID());
@@ -31,8 +30,10 @@ public class UsersController {
             System.out.println("\n email: " + user.getEmail());
             System.out.println("\n Role: " + user.getRole());
         }
-        return userService.findAllByUsername(username, password);
 
+        return lstUsers;
     }
+
+
 
 }

@@ -1,18 +1,14 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Controller.Product;
 
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.ProductDTO;
 import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.VariationDTO;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Variation;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Product.ProductService;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("gunshop")
@@ -20,7 +16,7 @@ import java.util.List;
 public class HomeController {
 
     @Autowired
-    private ProductService productService;
+    private VariationService variationService;
 
     @Autowired
     private UserRepository userRepo;
@@ -32,13 +28,12 @@ public class HomeController {
 //    }
     @GetMapping("home")
     public Page<VariationDTO> home(Pageable pageable) {
-        List<Users> list = userRepo.findAll();
-        for (Users user : list) {
-            System.out.println(user.getName());
-        }
-
-        return productService.getAll(pageable);
+        return variationService.getAll(pageable);
     }
 
+    @PostMapping("add")
+    public Variation add(@RequestBody VariationDTO varDTO) {
+        return variationService.add(varDTO);
+    }
 
 }
