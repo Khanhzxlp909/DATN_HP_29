@@ -1,0 +1,45 @@
+package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
+
+import jakarta.persistence.*;
+import java.util.Set;
+
+@Entity
+@Table(name = "PaymentMethod")
+public class PaymentMethod {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "MethodName")
+    private String methodName;
+
+    @OneToMany(mappedBy = "paymentMethod", cascade = CascadeType.ALL)
+    private Set<POSOder> posOrders;
+
+    // Getters and Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public Set<POSOder> getPosOrders() {
+        return posOrders;
+    }
+
+    public void setPosOrders(Set<POSOder> posOrders) {
+        this.posOrders = posOrders;
+    }
+}

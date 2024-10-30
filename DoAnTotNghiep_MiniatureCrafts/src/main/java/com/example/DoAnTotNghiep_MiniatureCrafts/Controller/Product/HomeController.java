@@ -11,19 +11,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("gunshop")
+@RequestMapping("shop")
 @CrossOrigin(origins = "*")
 public class HomeController {
 
     @Autowired
     private VariationService variationService;
 
-    @Autowired
-    private UserRepository userRepo;
-
-    @GetMapping("home")
+    @GetMapping("all")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
+    }
+
+    @GetMapping("result/{name}")
+    public Page<VariationDTO> findByName(Pageable pageable,@PathVariable("name") String name) {
+        return variationService.findByName(pageable, name);
     }
 
     @PostMapping("add")

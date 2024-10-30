@@ -1,0 +1,41 @@
+package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
+
+public class VoucherDTO {
+    private Integer ID;
+    private String Code;
+    private Double DiscountValue;
+    private Double DiscountAmount;
+
+    // Getters and Setters
+    public Integer getID() {
+        return ID;
+    }
+
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public String getCode() {
+        return Code;
+    }
+
+    public void setCode(String code) {
+        Code = code;
+    }
+
+    public Double getDiscountValue() {
+        return DiscountValue;
+    }
+
+    public void setDiscountValue(Double discountValue) {
+        DiscountValue = discountValue;
+    }
+
+    public Double getDiscountAmount() {
+        return DiscountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        DiscountAmount = discountAmount;
+    }
+}

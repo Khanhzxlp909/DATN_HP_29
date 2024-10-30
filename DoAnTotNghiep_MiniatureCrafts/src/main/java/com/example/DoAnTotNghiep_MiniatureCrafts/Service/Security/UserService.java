@@ -5,10 +5,16 @@ import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.UsersDTO;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -16,10 +22,9 @@ public class UserService {
     @Autowired
     public UserRepository userRepository;
 
-    public List<UsersDTO> findAllByUsername(String username, String password) {
-        List<Users> lstUsers = userRepository.loginByUsername(username, password);
+    public UsersDTO findAllByUsername(String username, String password) {
+        Users user = userRepository.loginByUsername(username, password);
 
-        return lstUsers.stream().map(user -> {
             UsersDTO usersDTO = new UsersDTO();
             usersDTO.setID(user.getID());
             usersDTO.setName(user.getName());
@@ -37,7 +42,19 @@ public class UserService {
             usersDTO.setEdit_Date(user.getEdit_Date());
             return usersDTO;
 
-        }).collect(Collectors.toList());
 
     }
+//
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        Users user = userRepository.findByUsername(username);
+//
+//        return new org.springframework.security.core.userdetails.User(
+//                user.getUsername(),
+//                user.getPassword(),
+//                getAuthorities(user)
+//        );
+//    }
+
+
 }
