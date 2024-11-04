@@ -1,6 +1,16 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+// import TheWelcome from './components/TheWelcome.vue'
+// import _imports_0 from '/DoAnTotNghiep_VueJS/images/448146698_954136146506599_6855434188932882489_n.jpg'
+let fullname = "Nguyen Van A"
+let studentCode = "20210501"
+let info = {
+
+  key: "abc",
+  fullname: "nguyen van a",
+  car: "bmw x7"
+}
+
 </script>
 
 <template>
@@ -43,34 +53,23 @@ import TheWelcome from './components/TheWelcome.vue'
       </div>
     </div>
   </nav>
+  <div class="alert alert-primary" role="alert">
+    {{ info.key }}<br>
+    {{ info.fullname }}<br>
+    {{ info.car }}
+  </div>
+
+  <div class="card" style="width: 18rem;">
+    <img src="/public/448146698_954136146506599_6855434188932882489_n.jpg" class="card-img-top" alt="...">
+    <div class="card-body">
+      <p class="card-text">{{ info.fullname }}</p>
+      <h5 class="card-title">{{ info.key }}</h5>
+      <a href="#" class="btn btn-primary"> {{ info.car }}</a>
+    </div>
+
+  </div>
+
 
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+<style scoped></style>

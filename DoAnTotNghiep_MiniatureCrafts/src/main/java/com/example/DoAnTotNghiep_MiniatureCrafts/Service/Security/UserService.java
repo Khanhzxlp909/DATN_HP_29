@@ -12,9 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -25,22 +23,24 @@ public class UserService {
     public UsersDTO findAllByUsername(String username, String password) {
         Users user = userRepository.loginByUsername(username, password);
 
-            UsersDTO usersDTO = new UsersDTO();
-            usersDTO.setID(user.getID());
-            usersDTO.setName(user.getName());
-            usersDTO.setEmail(user.getEmail());
-            usersDTO.setUsername(user.getUsername());
-            usersDTO.setPassword(user.getPassword());
-            usersDTO.setRole( new RoleDTO(
-                    user.getRole().getID(),
-                    user.getRole().getCanCreate(),
-                    user.getRole().getCanUpdate(),
-                    user.getRole().getCanDelete()
-            ));
-            usersDTO.setIsActive(user.getActive());
-            usersDTO.setCreation_date(user.getCreation_date());
-            usersDTO.setEdit_Date(user.getEdit_Date());
-            return usersDTO;
+        UsersDTO usersDTO = new UsersDTO();
+        usersDTO.setID(user.getID());
+        usersDTO.setName(user.getName());
+        usersDTO.setEmail(user.getEmail());
+        usersDTO.setUsername(user.getUsername());
+        usersDTO.setPassword(user.getPassword());
+
+        // set role vào roleDTO
+        Set<RoleDTO> roles = new HashSet<>();
+        user.getRoles().forEach(role -> {
+            roles.add(new RoleDTO(role.getID(), role.getName()));
+        });
+        usersDTO.setRoles(roles);
+
+        usersDTO.setActive(user.getActive());
+        usersDTO.setCreation_date(user.getCreation_date());
+        usersDTO.setEdit_Date(user.getEdit_Date());
+        return usersDTO;
 
 
     }

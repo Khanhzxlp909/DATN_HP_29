@@ -2,6 +2,8 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Users")
@@ -14,11 +16,20 @@ public class Users {
     private String Username;  // Đảm bảo Username là duy nhất
     private String Password;
 
-    @ManyToOne
-    @JoinColumn(name = "Role")
-    private Role Role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     private Boolean IsActive;
+    @Column(name = "Creation_date")
+    @Temporal(TemporalType.DATE)
+    private Date Creation_date;
+
+    @Column(name = "Edit_Date")
+    @Temporal(TemporalType.DATE)
+    private Date Edit_Date;
 
     public Integer getID() {
         return ID;
@@ -60,12 +71,12 @@ public class Users {
         Password = password;
     }
 
-    public com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role getRole() {
-        return Role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role role) {
-        Role = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public Boolean getActive() {
@@ -95,24 +106,14 @@ public class Users {
     public Users() {
     }
 
-    public Users(Integer ID, String name, String email, String username, String password, com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role role, Boolean isActive, Date creation_date, Date edit_Date) {
+    public Users(Integer ID, String name, String email, String username, String password, Boolean isActive, Date creation_date, Date edit_Date) {
         this.ID = ID;
         Name = name;
         Email = email;
         Username = username;
         Password = password;
-        Role = role;
         IsActive = isActive;
         Creation_date = creation_date;
         Edit_Date = edit_Date;
     }
-
-    @Column(name = "Creation_date")
-    @Temporal(TemporalType.DATE)
-    private Date Creation_date;
-
-    @Column(name = "Edit_Date")
-    @Temporal(TemporalType.DATE)
-    private Date Edit_Date;
-
 }

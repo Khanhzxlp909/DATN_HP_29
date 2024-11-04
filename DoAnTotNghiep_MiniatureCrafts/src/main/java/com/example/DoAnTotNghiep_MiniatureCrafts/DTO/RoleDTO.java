@@ -1,22 +1,13 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.ERole;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
 public class RoleDTO {
     private Integer ID;
-    private Boolean CanCreate;
-    private Boolean CanUpdate;
-    private Boolean CanDelete;
 
-    public RoleDTO() {
-    }
-
-    public RoleDTO(Integer ID, Boolean canCreate, Boolean canUpdate, Boolean canDelete) {
-        this.ID = ID;
-        CanCreate = canCreate;
-        CanUpdate = canUpdate;
-        CanDelete = canDelete;
-    }
-
-    // Getters and Setters
     public Integer getID() {
         return ID;
     }
@@ -25,27 +16,21 @@ public class RoleDTO {
         this.ID = ID;
     }
 
-    public Boolean getCanCreate() {
-        return CanCreate;
+    public ERole getName() {
+        return name;
     }
 
-    public void setCanCreate(Boolean canCreate) {
-        CanCreate = canCreate;
+    public void setName(ERole name) {
+        this.name = name;
     }
 
-    public Boolean getCanUpdate() {
-        return CanUpdate;
+    public RoleDTO(Integer ID, ERole name) {
+        this.ID = ID;
+        this.name = name;
     }
 
-    public void setCanUpdate(Boolean canUpdate) {
-        CanUpdate = canUpdate;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole name;
 
-    public Boolean getCanDelete() {
-        return CanDelete;
-    }
-
-    public void setCanDelete(Boolean canDelete) {
-        CanDelete = canDelete;
-    }
 }
