@@ -7,50 +7,62 @@ import jakarta.validation.constraints.Size;
 import java.util.Set;
 
 public class SignupRequest {
-  @NotBlank
-  @Size(min = 3, max = 20)
-  private String username;
+    public String getName() {
+        return name;
+    }
 
-  @NotBlank
-  @Size(max = 50)
-  @Email
-  private String email;
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  private Set<String> role;
+    @NotBlank
+    @Size(min = 3, max = 20)
+    private String username;
 
-  @NotBlank
-  @Size(min = 6, max = 40)
-  private String password;
+    @NotBlank
+    @Size(min = 3, max = 20)
+    private String name;
 
-  public String getUsername() {
-    return username;
-  }
+    @NotBlank
+    @Size(max = 50)
+    @Email
+    private String email;
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+    private Set<String> role;
 
-  public String getEmail() {
-    return email;
-  }
+    @NotBlank
+    @Size(min = 6, max = 40)
+    private String password;
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public String getUsername() {
+        return username;
+    }
 
-  public String getPassword() {
-    return password;
-  }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public Set<String> getRole() {
-    return this.role;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  public void setRole(Set<String> role) {
-    this.role = role;
-  }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<String> getRole() {
+        return this.role;
+    }
+
+    public void setRole(Set<String> role) {
+        this.role = role;
+    }
 }

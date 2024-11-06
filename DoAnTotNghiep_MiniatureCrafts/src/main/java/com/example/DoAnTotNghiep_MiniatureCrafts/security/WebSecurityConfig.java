@@ -66,7 +66,9 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // Xử lý ngoại lệ khi không có quyền
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Không dùng session (stateless)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/users/login").permitAll()
+                        auth.requestMatchers("/users/signup").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
+
+                                .requestMatchers("/users/signin").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
                                 .requestMatchers("/shop/all**").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
                                 .requestMatchers("/shop/result/**").permitAll() // Cho phép truy cập không cần xác thực cho /api/test/**
                                 .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các URL khác

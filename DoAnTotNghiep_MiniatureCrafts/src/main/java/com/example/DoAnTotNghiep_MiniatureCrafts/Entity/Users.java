@@ -106,6 +106,14 @@ public class Users {
     public Users() {
     }
 
+
+    public Users(String name, String username, String email, String password) {
+        Name = name;
+        Username = username;
+        Email = email;
+        Password = password;
+    }
+
     public Users(Integer ID, String name, String email, String username, String password, Boolean isActive, Date creation_date, Date edit_Date) {
         this.ID = ID;
         Name = name;
