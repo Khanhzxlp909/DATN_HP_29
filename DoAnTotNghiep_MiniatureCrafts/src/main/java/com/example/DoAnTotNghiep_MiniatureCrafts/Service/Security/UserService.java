@@ -5,10 +5,14 @@ import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.UsersDTO;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -16,28 +20,41 @@ public class UserService {
     @Autowired
     public UserRepository userRepository;
 
-    public List<UsersDTO> findAllByUsername(String username, String password) {
-        List<Users> lstUsers = userRepository.loginByUsername(username, password);
+    public UsersDTO findAllByUsername(String username, String password) {
+        Users user = userRepository.loginByUsername(username, password);
 
-        return lstUsers.stream().map(user -> {
-            UsersDTO usersDTO = new UsersDTO();
-            usersDTO.setID(user.getID());
-            usersDTO.setName(user.getName());
-            usersDTO.setEmail(user.getEmail());
-            usersDTO.setUsername(user.getUsername());
-            usersDTO.setPassword(user.getPassword());
-            usersDTO.setRole( new RoleDTO(
-                    user.getRole().getID(),
-                    user.getRole().getCanCreate(),
-                    user.getRole().getCanUpdate(),
-                    user.getRole().getCanDelete()
-            ));
-            usersDTO.setIsActive(user.getActive());
-            usersDTO.setCreation_date(user.getCreation_date());
-            usersDTO.setEdit_Date(user.getEdit_Date());
-            return usersDTO;
+        UsersDTO usersDTO = new UsersDTO();
+        usersDTO.setID(user.getID());
+        usersDTO.setName(user.getName());
+        usersDTO.setEmail(user.getEmail());
+        usersDTO.setUsername(user.getUsername());
+        usersDTO.setPassword(user.getPassword());
 
-        }).collect(Collectors.toList());
+        // set role vào roleDTO
+        Set<RoleDTO> roles = new HashSet<>();
+        user.getRoles().forEach(role -> {
+            roles.add(new RoleDTO(role.getID(), role.getName()));
+        });
+        usersDTO.setRoles(roles);
+
+        usersDTO.setActive(user.getActive());
+        usersDTO.setCreation_date(user.getCreation_date());
+        usersDTO.setEdit_Date(user.getEdit_Date());
+        return usersDTO;
+
 
     }
+//
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        Users user = userRepository.findByUsername(username);
+//
+//        return new org.springframework.security.core.userdetails.User(
+//                user.getUsername(),
+//                user.getPassword(),
+//                getAuthorities(user)
+//        );
+//    }
+
+
 }

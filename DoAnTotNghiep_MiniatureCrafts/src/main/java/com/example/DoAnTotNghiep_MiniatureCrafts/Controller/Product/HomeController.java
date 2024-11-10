@@ -1,44 +1,49 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Controller.Product;
 
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.ProductDTO;
 import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.VariationDTO;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Variation;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Product.ProductService;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("gunshop")
+@RequestMapping("shop")
 @CrossOrigin(origins = "*")
 public class HomeController {
 
     @Autowired
-    private ProductService productService;
+    private VariationService variationService;
 
-    @Autowired
-    private UserRepository userRepo;
 
-    //    @GetMapping("")
-//    public List<VariationDTO> home() {
-//        List<VariationDTO> list = productService.getAll();
-//        return list;
-//    }
-    @GetMapping("home")
+    @GetMapping("all")
     public Page<VariationDTO> home(Pageable pageable) {
-        List<Users> list = userRepo.findAll();
-        for (Users user : list) {
-            System.out.println(user.getName());
-        }
-
-        return productService.getAll(pageable);
+        return variationService.getAll(pageable);
     }
 
+
+    @GetMapping("result/{name}")
+    public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {
+        return variationService.findByName(pageable, name);
+    }
+
+    @PostMapping("add")
+    public Variation add(@RequestBody VariationDTO varDTO) {
+        return variationService.add(varDTO);
+    }
+
+    @PostMapping("update")
+    public Variation update(@RequestBody VariationDTO varDTO) {
+        return variationService.update(varDTO);
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable("id") Long id) {
+        variationService.delete(id);
+        return "done";
+    }
 
 }

@@ -9,10 +9,10 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
 
-    private Boolean CanCreate;
-    private Boolean CanUpdate;
-    private Boolean CanDelete;
-    // Getters and Setters
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole name;
+
     public Integer getID() {
         return ID;
     }
@@ -21,28 +21,15 @@ public class Role {
         this.ID = ID;
     }
 
-    public Boolean getCanCreate() {
-        return CanCreate;
+    public void setName(ERole name) {
+        this.name = name;
     }
 
-    public void setCanCreate(Boolean canCreate) {
-        CanCreate = canCreate;
+    public ERole getName() {
+        return name;
     }
 
-    public Boolean getCanUpdate() {
-        return CanUpdate;
-    }
-
-    public void setCanUpdate(Boolean canUpdate) {
-        CanUpdate = canUpdate;
-    }
-
-    public Boolean getCanDelete() {
-        return CanDelete;
-    }
-
-    public void setCanDelete(Boolean canDelete) {
-        CanDelete = canDelete;
+    public Role() {
     }
 }
 

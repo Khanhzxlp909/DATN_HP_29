@@ -1,0 +1,58 @@
+package com.example.DoAnTotNghiep_MiniatureCrafts.Service.Product;
+
+import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.BrandDTO;
+import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.ProductDTO;
+import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.VariationDTO;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Variation;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Product.VariationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilderFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.data.web.PagedResourcesAssembler;
+
+@Service
+public class ProductService {
+
+    @Autowired
+    private VariationRepository prdRepo;
+
+    @Autowired
+    private PagedResourcesAssembler<VariationDTO> pagedResourcesAssembler;
+
+    public PagedModel<VariationDTO> getAll(Pageable pageable) {
+        // Query Variations by Status and paginate
+        Page<Variation> variations = prdRepo.findAll(pageable);
+
+        // Convert Variation entities to DTO and retain pagination
+        Page<VariationDTO> dtoPage = variations.map(variation -> {
+            VariationDTO dto = new VariationDTO();
+            dto.setID(variation.getID());
+            dto.setSKU(variation.getSKU());
+            dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
+                    variation.getProductID().getCategoryID()
+            ));
+            dto.setPrice(variation.getPrice());
+            dto.setQuantity(variation.getQuantity());
+            dto.setBrandID(new BrandDTO(
+                    variation.getBrandID().getID(),
+                    variation.getBrandID().getName(),
+                    variation.getBrandID().getNote(),
+                    variation.getBrandID().getStatus()
+            ));
+            dto.setMaterial(variation.getMaterial());
+            dto.setWeight(variation.getWeight());
+            dto.setStatus(variation.getStatus());
+            return dto;
+        });
+
+        // Convert Page<VariationDTO> into PagedModel
+        PagedModel<VariationDTO> pagedModel = pagedResourcesAssembler.toModel(dtoPage);
+        return pagedModel;
+    }
+}
