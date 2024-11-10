@@ -1,52 +1,22 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class POSOrderDTO {
-    private Integer ID;
-    private String Code_Order;
-    private Integer UserID;
-    private Double TotalAmount;
-    private List<OrderLineDTO> OrderLines;
+    private Long ID;
+    private Long InvoiceDetail;
+    private Integer CustomerID;
+    private String Code_Voucher;
+    private BigDecimal Total_Amount;
+    private BigDecimal Discount_Amount;
+    private BigDecimal Total_Payment;
+    private Integer PaymentMethod;
+    private LocalDate Creation_date;
+    private LocalDate Edit_Date;
+    private Integer Type_Oder;
+    private String Note;
+    private Boolean Status;
 
-    // Getters and Setters
-    public Integer getID() {
-        return ID;
-    }
-
-    public void setID(Integer ID) {
-        this.ID = ID;
-    }
-
-    public String getCode_Order() {
-        return Code_Order;
-    }
-
-    public void setCode_Order(String code_Order) {
-        Code_Order = code_Order;
-    }
-
-    public Integer getUserID() {
-        return UserID;
-    }
-
-    public void setUserID(Integer userID) {
-        UserID = userID;
-    }
-
-    public Double getTotalAmount() {
-        return TotalAmount;
-    }
-
-    public void setTotalAmount(Double totalAmount) {
-        TotalAmount = totalAmount;
-    }
-
-    public List<OrderLineDTO> getOrderLines() {
-        return OrderLines;
-    }
-
-    public void setOrderLines(List<OrderLineDTO> orderLines) {
-        OrderLines = orderLines;
-    }
 }

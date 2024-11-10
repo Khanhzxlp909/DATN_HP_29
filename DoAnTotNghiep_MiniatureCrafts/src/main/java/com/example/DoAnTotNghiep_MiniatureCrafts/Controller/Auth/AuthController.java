@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,6 +70,12 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
+
+        BigDecimal totalAmount = new BigDecimal(90000);
+        BigDecimal totalAmount2 = new BigDecimal(10000);
+        BigDecimal totalAmount3 =  totalAmount.add(totalAmount2);
+        System.out.println("tiền: "+totalAmount3);
+
 
         // Trả về thông tin JWT cùng với thông tin người dùng và các vai trò
         return ResponseEntity.ok(new JwtResponse(jwt,
