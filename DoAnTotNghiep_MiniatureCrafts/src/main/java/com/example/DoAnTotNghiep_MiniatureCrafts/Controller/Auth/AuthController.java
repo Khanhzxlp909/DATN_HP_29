@@ -13,17 +13,15 @@ import com.example.DoAnTotNghiep_MiniatureCrafts.security.jwt.JwtUtils;
 import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -117,13 +115,13 @@ public class AuthController {
             // Gán vai trò dựa trên yêu cầu
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin":
+                    case "1":
                         Role adminRole = roleRepository.findByName(ERole.ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
                         roles.add(adminRole);
                         break;
-                    case "mod":
-                        Role modRole = roleRepository.findByName(ERole.MODERATOR)
+                    case "2":
+                        Role modRole = roleRepository.findByName(ERole.MOD)
                                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
                         roles.add(modRole);
                         break;
@@ -137,11 +135,38 @@ public class AuthController {
 
         // Thiết lập vai trò cho người dùng
         user.setRoles(roles);
-
         // Lưu người dùng mới vào cơ sở dữ liệu
         userRepository.save(user);
 
         // Trả về thông báo đăng ký thành công
         return ResponseEntity.ok(new MessageResponse("Đăng ký người dùng thành công!"));
     }
+
+    @PostMapping("/verifyToken")
+    public ResponseEntity<?> verifyToken(@RequestBody String token) {
+        // Kiểm tra tính hợp lệ của token
+        if (jwtUtils.validateJwtToken(token)) {
+            // Token hợp lệ, trả về phản hồi thành công
+            return ResponseEntity.ok(new MessageResponse("done"));
+        } else {
+            // Token không hợp lệ, trả về phản hồi lỗi
+            return ResponseEntity.badRequest().body(new MessageResponse("Token không hợp lệ!"));
+        }
+    }
+
+    @GetMapping("/validateToken")
+    public ResponseEntity<?> validateToken(@RequestHeader(value = "Authorization", required = false) String token) {
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authorization header is missing");
+        }
+
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+
+        if (jwtUtils.validateJwtToken(jwtToken)) {
+            return ResponseEntity.ok("done");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
 }
