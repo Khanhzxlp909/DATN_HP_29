@@ -1,0 +1,15 @@
+package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
+
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.ERole;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
+public class RoleDTO {
+    private Integer ID;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole name;
+
+}

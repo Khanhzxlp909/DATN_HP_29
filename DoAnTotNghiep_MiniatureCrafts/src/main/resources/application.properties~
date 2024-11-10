@@ -9,4 +9,5 @@ spring.jpa.database-platform=org.hibernate.dialect.SQLServerDialect
 
 spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
-jwt.secret=siuefgawbeuikrtgf3w2879
+khanhnguyenJava.jwt.appSecret=siuefgawbeuikrtgf3w2879ahrio3ur329823ajfhf983u1hrq89washf91374hah
+khanhnguyenJava.jwt.JwtTokenExpiry=86400000

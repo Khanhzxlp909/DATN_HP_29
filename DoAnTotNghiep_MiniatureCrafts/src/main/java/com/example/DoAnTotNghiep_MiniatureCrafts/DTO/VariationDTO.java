@@ -6,7 +6,7 @@ public class VariationDTO {
     private Long ID;
     private ProductDTO ProductID;
     private String SKU;
-    private Double Price;
+    private String Price;
     private Integer Quantity;
     private BrandDTO BrandID;
     private String Material;
@@ -16,7 +16,7 @@ public class VariationDTO {
     public VariationDTO() {
     }
 
-    public VariationDTO(Long ID, ProductDTO productID, String SKU, Double price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status) {
+    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status) {
         this.ID = ID;
         ProductID = productID;
         this.SKU = SKU;
@@ -56,11 +56,11 @@ public class VariationDTO {
         this.SKU = SKU;
     }
 
-    public Double getPrice() {
+    public String getPrice() {
         return Price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(String price) {
         Price = price;
     }
 
