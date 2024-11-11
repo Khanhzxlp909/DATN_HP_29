@@ -7,21 +7,13 @@ import jakarta.validation.constraints.Size;
 import java.util.Set;
 
 public class SignupRequest {
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @NotBlank
     @Size(min = 3, max = 20)
     private String username;
 
-    @NotBlank
-    @Size(min = 3, max = 20)
-    private String name;
+//    @NotBlank
+    private Long id;
 
     @NotBlank
     @Size(max = 50)
@@ -33,6 +25,14 @@ public class SignupRequest {
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

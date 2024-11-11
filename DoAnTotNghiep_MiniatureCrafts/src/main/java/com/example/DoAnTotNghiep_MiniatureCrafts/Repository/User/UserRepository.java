@@ -1,21 +1,21 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User;
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface UserRepository extends JpaRepository<Users, Long> {
+public interface UserRepository extends JpaRepository<Account, Long> {
 
-    @Query("SELECT u FROM Users u WHERE u.Username = :username AND u.Password = :password")
-    Users loginByUsername(@Param("username") String username, @Param("password") String password);
+    @Query("SELECT a FROM Account a WHERE a.Username = :username AND a.Password = :password")
+    Account loginByUsername(@Param("username") String username, @Param("password") String password);
 
-    @Query("SELECT u FROM Users u WHERE u.Username = :username")
-    Users findByUsername(@Param("username") String username);
+    @Query("SELECT a FROM Account a WHERE a.Username = :username")
+    Account findByUsername(@Param("username") String username);
 
-    @Query("SELECT COUNT(u) > 0 FROM Users u WHERE u.Username = :username")
+    @Query("SELECT COUNT(a) > 0 FROM Account a WHERE a.Username = :username")
     boolean existsByUsername(@Param("username") String username);
 
-    @Query("SELECT COUNT(u) > 0 FROM Users u WHERE u.Email = :email")
+    @Query("SELECT COUNT(a) > 0 FROM Account a WHERE a.Email = :email")
     boolean existsByEmail(@Param("email") String email);
 }

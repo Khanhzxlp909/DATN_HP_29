@@ -2,7 +2,8 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.Controller.Auth;
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.ERole;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Account;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.EmployeeRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.RoleRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.LoginRequest;
@@ -41,6 +42,9 @@ public class AuthController {
     UserRepository userRepository;
 
     @Autowired
+    EmployeeRepository employeeRepository;
+
+    @Autowired
     RoleRepository roleRepository;
 
     @Autowired
@@ -71,11 +75,6 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        BigDecimal totalAmount = new BigDecimal(90000);
-        BigDecimal totalAmount2 = new BigDecimal(10000);
-        BigDecimal totalAmount3 =  totalAmount.add(totalAmount2);
-        System.out.println("tiền: "+totalAmount3);
-
 
         // Trả về thông tin JWT cùng với thông tin người dùng và các vai trò
         return ResponseEntity.ok(new JwtResponse(jwt,
@@ -103,10 +102,11 @@ public class AuthController {
         }
 
         // Tạo tài khoản người dùng mới với các thông tin từ yêu cầu đăng ký
-        Users user = new Users(signUpRequest.getName(),
-                signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+        Account user = new Account(
+                            signUpRequest.getId(),
+                            signUpRequest.getUsername(),
+                            signUpRequest.getEmail(),
+                            encoder.encode(signUpRequest.getPassword()));
 
         // Lấy danh sách vai trò từ yêu cầu đăng ký
         Set<String> strRoles = signUpRequest.getRole();

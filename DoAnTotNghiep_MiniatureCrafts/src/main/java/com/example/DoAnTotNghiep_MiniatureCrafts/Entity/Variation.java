@@ -16,6 +16,7 @@ public class Variation {
     private String SKU;
     private Double Price;
     private Integer Quantity;
+
     @ManyToOne
     @JoinColumn (name = "BrandID")
     private Brand BrandID;  // Liên kết với Brand

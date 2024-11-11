@@ -1,6 +1,6 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.security.services;
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Account;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Override
   @Transactional
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Users user = userRepository.findByUsername(username);
+    Account user = userRepository.findByUsername(username);
     return UserDetailsImpl.build(user);
   }
 
