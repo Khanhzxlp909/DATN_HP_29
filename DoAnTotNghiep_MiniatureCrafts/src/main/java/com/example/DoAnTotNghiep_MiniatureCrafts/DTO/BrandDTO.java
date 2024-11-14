@@ -1,20 +1,37 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Brand;
+
 public class BrandDTO {
-    private Integer ID;
+    private Long ID;
     private String Name;
     private String Note;
     private Boolean Status;
 
-    public BrandDTO(Integer ID, String name, String note, Boolean status) {
+
+    public BrandDTO(Long ID, String name, String note, Boolean status) {
         this.ID = ID;
         Name = name;
         Note = note;
         Status = status;
     }
 
+
+    public BrandDTO(Brand brands) {
+        this.ID = brands.getID();
+        this.Name = brands.getName();
+        this.Note = brands.getNote();
+        this.Status = brands.getStatus();
+    }
+
+
     public BrandDTO() {
     }
+
+    public BrandDTO(Long id) {
+        this.ID = id;
+    }
+
 
     public String getNote() {
         return Note;
@@ -28,11 +45,11 @@ public class BrandDTO {
 
 
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

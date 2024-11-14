@@ -1,24 +1,38 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Customer;
+
 import java.util.Date;
 
 public class CustomerDTO {
-    private Integer ID;
+    private Long ID;
     private String Name;
-    private String Username;
-    private String Password;
     private String Address;
     private String Phone;
     private Boolean Status;
     private Date Creation_date;
     private Date Edit_Date;
 
+    public CustomerDTO(Long ID, String name, String address, String phone, Boolean status, Date creation_date, Date edit_Date) {
+        this.ID = ID;
+        Name = name;
+        Address = address;
+        Phone = phone;
+        Status = status;
+        Creation_date = creation_date;
+        Edit_Date = edit_Date;
+    }
+
+    public CustomerDTO(Customer customerID) {
+        this.ID = customerID.getID();
+    }
+
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 
@@ -28,22 +42,6 @@ public class CustomerDTO {
 
     public void setName(String name) {
         Name = name;
-    }
-
-    public String getUsername() {
-        return Username;
-    }
-
-    public void setUsername(String username) {
-        Username = username;
-    }
-
-    public String getPassword() {
-        return Password;
-    }
-
-    public void setPassword(String password) {
-        Password = password;
     }
 
     public String getAddress() {

@@ -1,11 +1,10 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Controller.Auth;
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.ERole;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Account;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.*;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.CustomerRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.EmployeeRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.RoleRepository;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.AccountRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.LoginRequest;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.SignupRequest;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.response.JwtResponse;
@@ -24,7 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +38,11 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
+    AccountRepository accountRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
+
 
     @Autowired
     EmployeeRepository employeeRepository;
@@ -57,45 +60,58 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-        // Xác thực người dùng với username và password
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        // Lưu thông tin xác thực vào SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Tạo token JWT cho người dùng sau khi đăng nhập thành công
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        // Lấy thông tin người dùng hiện tại
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Long userId = userDetails.getId();
 
-        // Lấy danh sách các vai trò của người dùng
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+//        String userRole = roles.stream()
+//                .filter(role -> role.equals("CUSTOMER") || role.equals("ADMIN") || role.equals("USERS"))
+//                .map(role -> {
+//                    if (role.equals("CUSTOMER") && customerRepository.existsById(userId)) {
+//                        return "customer";
+//                    } else if (role.equals("ADMIN") && employeeRepository.existsById(userId)) {
+//                        return "admin";
+//                    } else if (role.equals("USERS") && employeeRepository.existsById(userId)) {
+//                        return "users";
+//                    }
+//                    return "unknown"; // Giá trị mặc định nếu vai trò không hợp lệ
+//                })
+//                .findFirst()
+//                .orElse("unknown");
 
-        // Trả về thông tin JWT cùng với thông tin người dùng và các vai trò
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles));
+                roles
+
+        ));
     }
+
+
 
     // Phương thức để đăng ký người dùng mới
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         // Kiểm tra xem username đã tồn tại trong hệ thống chưa
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+        if (accountRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Lỗi: Tên người dùng đã tồn tại!"));
         }
 
         // Kiểm tra xem email đã được sử dụng chưa
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (accountRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Lỗi: Email đã được sử dụng!"));
@@ -103,10 +119,10 @@ public class AuthController {
 
         // Tạo tài khoản người dùng mới với các thông tin từ yêu cầu đăng ký
         Account user = new Account(
-                            signUpRequest.getId(),
-                            signUpRequest.getUsername(),
-                            signUpRequest.getEmail(),
-                            encoder.encode(signUpRequest.getPassword()));
+                signUpRequest.getId(),
+                signUpRequest.getUsername(),
+                signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()));
 
         // Lấy danh sách vai trò từ yêu cầu đăng ký
         Set<String> strRoles = signUpRequest.getRole();
@@ -128,7 +144,7 @@ public class AuthController {
                         roles.add(adminRole);
                         break;
                     case "2":
-                        Role modRole = roleRepository.findByName(ERole.MOD)
+                        Role modRole = roleRepository.findByName(ERole.CUSTOMER)
                                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
                         roles.add(modRole);
                         break;
@@ -143,22 +159,10 @@ public class AuthController {
         // Thiết lập vai trò cho người dùng
         user.setRoles(roles);
         // Lưu người dùng mới vào cơ sở dữ liệu
-        userRepository.save(user);
+        accountRepository.save(user);
 
         // Trả về thông báo đăng ký thành công
         return ResponseEntity.ok(new MessageResponse("Đăng ký người dùng thành công!"));
-    }
-
-    @PostMapping("/verifyToken")
-    public ResponseEntity<?> verifyToken(@RequestBody String token) {
-        // Kiểm tra tính hợp lệ của token
-        if (jwtUtils.validateJwtToken(token)) {
-            // Token hợp lệ, trả về phản hồi thành công
-            return ResponseEntity.ok(new MessageResponse("done"));
-        } else {
-            // Token không hợp lệ, trả về phản hồi lỗi
-            return ResponseEntity.badRequest().body(new MessageResponse("Token không hợp lệ!"));
-        }
     }
 
     @GetMapping("/validateToken")

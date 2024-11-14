@@ -13,9 +13,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
 
-    @ManyToOne
-    @JoinColumn(name = "Users")
-    private Employee Users;
+    private Long Users;
 
     private String Email;
     private String Username;  // Đảm bảo Username là duy nhất
@@ -35,13 +33,14 @@ public class Account {
     private Date Edit_Date;
 
 
-    public Account(Long id, String username, String email, String password) {
-        this.Users = new Employee(); // Tạo đối tượng Employee trước khi gán ID
-        this.Users.setID(id.longValue());
+    public Account(Long idusers, String username, String email, String password) {
+//        this.Users = new Employee(); // Tạo đối tượng Employee trước khi gán ID
+        this.Users = idusers;
         this.Email = email;
         this.Username = username;
         this.Password = password;
     }
+
     public Integer getID() {
         return ID;
     }
@@ -50,11 +49,11 @@ public class Account {
         this.ID = ID;
     }
 
-    public Employee getUsers() {
+    public Long getUsers() {
         return Users;
     }
 
-    public void setUsers(Employee users) {
+    public void setUsers(Long users) {
         Users = users;
     }
 
@@ -118,7 +117,7 @@ public class Account {
         Email = email;
     }
 
-    public Account(Integer ID, Employee users, String email, String username, String password, Set<Role> roles, Boolean isActive, Date creation_date, Date edit_Date) {
+    public Account(Integer ID, Long users, String email, String username, String password, Set<Role> roles, Boolean isActive, Date creation_date, Date edit_Date) {
         this.ID = ID;
         Users = users;
         Email = email;

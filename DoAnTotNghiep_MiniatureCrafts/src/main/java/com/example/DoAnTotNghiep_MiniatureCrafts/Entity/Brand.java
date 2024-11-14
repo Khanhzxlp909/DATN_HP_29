@@ -7,18 +7,30 @@ import jakarta.persistence.*;
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ID;  // ID tự tăng
+    private Long ID;  // ID tự tăng
 
     private String Name;
     private String Note;
     private Boolean Status;
 
+
+
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public Brand() {
+    }
+
+    public Brand(Long ID, String name, String note, Boolean status) {
+        this.ID = ID;
+        Name = name;
+        Note = note;
+        Status = status;
+    }
+
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

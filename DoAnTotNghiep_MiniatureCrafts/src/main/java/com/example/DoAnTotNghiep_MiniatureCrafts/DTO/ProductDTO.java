@@ -6,21 +6,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class ProductDTO {
-    private Integer ID;
+    private Long ID;
     private String Name;
     private Category CategoryID;
 
     public ProductDTO() {
     }
 
-    public ProductDTO(Integer ID, String name, Category categoryID) {
+    public ProductDTO(Long ID, String name, Category categoryID) {
         this.ID = ID;
         Name = name;
         CategoryID = categoryID;
     }
 
+    public ProductDTO(Long id) {
+        this.ID = id;
+    }
+
     @JsonProperty("id")
-    public Integer getId() {
+    public Long getId() {
         return ID;
     }
 
@@ -34,7 +38,7 @@ public class ProductDTO {
         return CategoryID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

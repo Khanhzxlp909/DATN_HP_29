@@ -1,21 +1,48 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Voucher;
+
 import java.util.Date;
-import java.util.UUID;
 
 public class VoucherDTO {
     private Integer ID;
-    private UUID Code;
+    private String Code;
     private Double DiscountValue;
-    private Double DiscountAmount;
     private Date StartDate;
     private Date EndDate;
-    private String TypeVoucher;
+    private Boolean TypeVoucher;
     private Boolean Status;
     private Date Creation_date;
     private Date Edit_Date;
 
-    // Getters and Setters
+
+    public VoucherDTO(Integer ID, String code, Double discountValue, Date startDate, Date endDate, Boolean typeVoucher, Boolean status, Date creation_date, Date edit_Date) {
+        this.ID = ID;
+        Code = code;
+        DiscountValue = discountValue;
+        StartDate = startDate;
+        EndDate = endDate;
+        TypeVoucher = typeVoucher;
+        Status = status;
+        Creation_date = creation_date;
+        Edit_Date = edit_Date;
+    }
+
+    public VoucherDTO() {
+    }
+
+    public VoucherDTO(Voucher voucher) {
+        this.ID = voucher.getID();
+        Code = voucher.getCode();
+        DiscountValue = voucher.getDiscountValue();
+        StartDate = voucher.getStartDate();
+        EndDate = voucher.getEndDate();
+        TypeVoucher = voucher.getTypeVoucher();
+        Status = voucher.getStatus();
+        Creation_date = voucher.getCreation_date();
+        Edit_Date = voucher.getEdit_Date();
+    }
+
     public Integer getID() {
         return ID;
     }
@@ -24,11 +51,11 @@ public class VoucherDTO {
         this.ID = ID;
     }
 
-    public UUID getCode() {
+    public String getCode() {
         return Code;
     }
 
-    public void setCode(UUID code) {
+    public void setCode(String code) {
         Code = code;
     }
 
@@ -38,14 +65,6 @@ public class VoucherDTO {
 
     public void setDiscountValue(Double discountValue) {
         DiscountValue = discountValue;
-    }
-
-    public Double getDiscountAmount() {
-        return DiscountAmount;
-    }
-
-    public void setDiscountAmount(Double discountAmount) {
-        DiscountAmount = discountAmount;
     }
 
     public Date getStartDate() {
@@ -64,11 +83,11 @@ public class VoucherDTO {
         EndDate = endDate;
     }
 
-    public String getTypeVoucher() {
+    public Boolean getTypeVoucher() {
         return TypeVoucher;
     }
 
-    public void setTypeVoucher(String typeVoucher) {
+    public void setTypeVoucher(Boolean typeVoucher) {
         TypeVoucher = typeVoucher;
     }
 

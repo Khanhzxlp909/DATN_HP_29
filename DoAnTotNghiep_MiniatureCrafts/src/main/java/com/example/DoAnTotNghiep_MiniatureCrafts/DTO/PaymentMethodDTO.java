@@ -1,10 +1,23 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.PaymentMethod;
+
 public class PaymentMethodDTO {
     private Integer ID;
     private String Type;
     private String Note;
     private Boolean Status;
+
+    public PaymentMethodDTO(Integer ID, String type, String note, Boolean status) {
+        this.ID = ID;
+        Type = type;
+        Note = note;
+        Status = status;
+    }
+
+    public PaymentMethodDTO(PaymentMethod paymentMethod) {
+        ID = paymentMethod.getID();
+    }
 
     // Getters and Setters
     public Integer getID() {

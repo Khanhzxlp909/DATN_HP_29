@@ -1,6 +1,7 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Brand;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Variation;
 
 public class VariationDTO {
     private Long ID;
@@ -26,6 +27,18 @@ public class VariationDTO {
         Material = material;
         Weight = weight;
         Status = status;
+    }
+
+    public VariationDTO(Variation variationID) {
+        this.ID = variationID.getID();
+        ProductID = new ProductDTO(variationID.getID());
+        this.SKU = variationID.getSKU();
+        Price = variationID.getPrice().toString();
+        Quantity = variationID.getQuantity();
+        BrandID = new BrandDTO(variationID.getID());
+        Material = variationID.getMaterial();
+        Weight = variationID.getWeight();
+        Status = variationID.getStatus();
     }
 
     // Getters and Setters

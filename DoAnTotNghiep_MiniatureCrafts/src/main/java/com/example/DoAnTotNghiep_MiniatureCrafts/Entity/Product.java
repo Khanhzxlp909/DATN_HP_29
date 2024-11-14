@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ID;  // ID tự tăng
+    private Long ID;  // ID tự tăng
 
     private String Name;
 
@@ -16,11 +16,20 @@ public class Product {
     private Category CategoryID;  // Liên kết với Category
 
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public Product() {
+    }
+
+    public Product(Long ID, String name, Category categoryID) {
+        this.ID = ID;
+        Name = name;
+        CategoryID = categoryID;
+    }
+
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

@@ -1,16 +1,16 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
 public class CategoryDTO {
-    private Integer ID;
+    private Long ID;
     private String Name;
     private Boolean Status;
 
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 
