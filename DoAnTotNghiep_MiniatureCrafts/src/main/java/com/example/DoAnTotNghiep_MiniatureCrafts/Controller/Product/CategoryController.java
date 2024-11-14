@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/category")
 public class CategoryController {
     @Autowired
@@ -31,8 +31,8 @@ public class CategoryController {
         categoryService.delete(id);
         return "done";
     }
-    @GetMapping("search")
-    public List<CategoryDTO> search(@RequestParam String query) {
+    @GetMapping("search/{name}")
+    public List<CategoryDTO> search(@PathVariable("name") String query) {
         return categoryService.search(query);
     }
 }

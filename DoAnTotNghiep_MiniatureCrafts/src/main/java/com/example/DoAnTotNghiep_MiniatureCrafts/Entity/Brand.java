@@ -14,6 +14,9 @@ public class Brand {
     private String Note;
     private Boolean Status;
 
+    public Brand() {
+    }
+
     public Brand(BrandDTO brandDTO) {
         this.ID = brandDTO.getID();
         this.Name = brandDTO.getName();

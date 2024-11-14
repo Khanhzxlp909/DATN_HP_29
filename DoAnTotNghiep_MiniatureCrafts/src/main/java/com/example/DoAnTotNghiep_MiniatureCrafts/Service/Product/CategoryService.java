@@ -30,14 +30,10 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
     public List<CategoryDTO> search(String query) {
-        // Convert the query to lowercase for case-insensitive matching
-        query = query.toLowerCase();
+       List<Category> list = categoryRepository.findByName(query);
 
         // Use Spring Data JPA's [findBy](cci:1://file:///D:/git-clone/DATN_HP_29/DoAnTotNghiep_MiniatureCrafts/src/main/java/com/example/DoAnTotNghiep_MiniatureCrafts/Repository/Product/VariationRepository.java:13:4-14:78) methods to search for categories that match the query
-        return categoryRepository.findByNameContainingIgnoreCase(query)
-                .stream()
-                .map(category -> new CategoryDTO(category))
-                .collect(Collectors.toList());
+        return list.stream().map(category -> new CategoryDTO(category)).collect(Collectors.toList());
     }
 
 }
