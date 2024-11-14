@@ -1,9 +1,17 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Category;
+
 public class CategoryDTO {
     private Integer ID;
     private String Name;
     private Boolean Status;
+
+    public CategoryDTO(Category category) {
+        this.ID = category.getID();
+        this.Name = category.getName();
+        this.Status = category.getStatus();
+    }
 
     // Getters and Setters
     public Integer getID() {

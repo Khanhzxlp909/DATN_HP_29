@@ -1,5 +1,6 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.CategoryDTO;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,16 @@ public class Category {
 
     private String Name;
     private Boolean Status;
+
+    public Category(CategoryDTO categoryDTO) {
+        this.ID = categoryDTO.getID();
+        this.Name = categoryDTO.getName();
+        this.Status = categoryDTO.getStatus();
+    }
+
+    public Category() {
+
+    }
 
     // Getters and Setters
     public Integer getID() {

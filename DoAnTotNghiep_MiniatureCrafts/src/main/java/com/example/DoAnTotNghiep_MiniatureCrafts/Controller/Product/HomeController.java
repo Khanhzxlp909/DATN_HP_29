@@ -24,7 +24,7 @@ public class HomeController {
         return variationService.getAll(pageable);
     }
 
-
+    // tim kiem
     @GetMapping("result/{name}")
     public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {
         return variationService.findByName(pageable, name);

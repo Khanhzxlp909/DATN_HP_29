@@ -1,5 +1,7 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Brand;
+
 public class BrandDTO {
     private Integer ID;
     private String Name;
@@ -14,6 +16,14 @@ public class BrandDTO {
     }
 
     public BrandDTO() {
+    }
+
+    public BrandDTO(Brand brand) {
+        this.ID = brand.getID();
+        this.Name = brand.getName();
+        this.Note = brand.getNote();
+        this.Status = brand.getStatus();
+
     }
 
     public String getNote() {

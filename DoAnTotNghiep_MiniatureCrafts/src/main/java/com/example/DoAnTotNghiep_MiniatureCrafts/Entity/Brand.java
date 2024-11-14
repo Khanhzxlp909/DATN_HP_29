@@ -1,5 +1,6 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.BrandDTO;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,13 @@ public class Brand {
     private String Name;
     private String Note;
     private Boolean Status;
+
+    public Brand(BrandDTO brandDTO) {
+        this.ID = brandDTO.getID();
+        this.Name = brandDTO.getName();
+        this.Note = brandDTO.getNote();
+        this.Status = brandDTO.getStatus();
+    }
 
     // Getters and Setters
     public Integer getID() {
