@@ -1,29 +1,30 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Controller.Auth;
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.ERole;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.*;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.CustomerRepository;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.EmployeeRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.RoleRepository;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.AccountRepository;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Security.AuthService;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.LoginRequest;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.SignupRequest;
-import com.example.DoAnTotNghiep_MiniatureCrafts.payload.response.JwtResponse;
+import com.example.DoAnTotNghiep_MiniatureCrafts.payload.response.JwtCustomerResponse;
+import com.example.DoAnTotNghiep_MiniatureCrafts.payload.response.JwtEmployeeResponse;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.response.MessageResponse;
 import com.example.DoAnTotNghiep_MiniatureCrafts.security.jwt.JwtUtils;
-import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UserDetailsImpl;
+import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.CustomerDetailsImpl;
+import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.EmployeeDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +40,17 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
+    AccountRepository accountRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
+
+    @Autowired
+    AuthService authService;
+
+
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     @Autowired
     RoleRepository roleRepository;
@@ -50,55 +61,147 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    // Phương thức để xác thực người dùng khi đăng nhập
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-        // Xác thực người dùng với username và password
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        // Lưu thông tin xác thực vào SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Tạo token JWT cho người dùng sau khi đăng nhập thành công
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        // Lấy thông tin người dùng hiện tại
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        // Lấy danh sách các vai trò của người dùng
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+        // Lấy thông tin người dùng đã đăng nhập
+        Object principal = authentication.getPrincipal();
+        System.out.println("Principal: " + principal.getClass().getName());
 
-        // Trả về thông tin JWT cùng với thông tin người dùng và các vai trò
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+
+        // Kiểm tra xem principal có phải là EmployeeDetailsImpl hay CustomerDetailsImpl
+        if (principal instanceof EmployeeDetailsImpl) {
+            EmployeeDetailsImpl employeeDetails = (EmployeeDetailsImpl) principal;
+
+            // Lấy danh sách vai trò của nhân viên
+            List<String> roles = employeeDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+
+            // Lấy vai trò của người dùng
+            String userRole = authService.getRole(roles);
+
+            // Xử lý logic cho ADMIN
+            if (userRole.equals("ADMIN")) {
+                System.out.println("ADMIN");
+            }
+
+            // Trả về JWT và thông tin nhân viên
+            return ResponseEntity.ok(new JwtEmployeeResponse(
+                    jwt,
+                    employeeDetails.getEmployees(),  // Trả về danh sách nhân viên
+                    employeeDetails.getUsername(),
+                    employeeDetails.getEmail(),
+                    List.of(userRole)
+            ));
+
+        } else if (principal instanceof CustomerDetailsImpl) {
+            // Nếu là customer
+            CustomerDetailsImpl customerDetails = (CustomerDetailsImpl) principal;
+
+            // Lấy danh sách vai trò của khách hàng
+            List<String> roles = customerDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+
+            // Lấy vai trò của người dùng
+            String userRole = authService.getRole(roles);
+            System.out.println(userRole);
+            System.out.println("Customer: " + customerDetails.getCustomer());
+            // Trả về JWT và thông tin khách hàng
+            return ResponseEntity.ok(new JwtCustomerResponse(
+                    jwt,
+                    customerDetails.getCustomer(),  //trả về thông tin khách hàng
+                    customerDetails.getUsername(),
+                    customerDetails.getEmail(),
+                    List.of(userRole)
+            ));
+        }
+
+        // Nếu không phải là Employee hay Customer
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user details");
     }
+
+
+    @PostMapping("/signins")
+    public ResponseEntity<?> authenticateUsers(@Valid @RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        Object principal = authentication.getPrincipal();
+        List<String> roles = null;
+        String userRole = null;
+
+        if (principal instanceof EmployeeDetailsImpl) {
+            EmployeeDetailsImpl employeeDetails = (EmployeeDetailsImpl) principal;
+            roles = employeeDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+            userRole = authService.getRole(roles);
+
+            if (userRole.equals("ADMIN") || userRole.equals("USERS")) {
+                return ResponseEntity.ok(new JwtEmployeeResponse(
+                        jwt,
+                        employeeDetails.getEmployees(),
+                        employeeDetails.getUsername(),
+                        employeeDetails.getEmail(),
+                        List.of(userRole)
+                ));
+            }
+        } else if (principal instanceof CustomerDetailsImpl) {
+            CustomerDetailsImpl customerDetails = (CustomerDetailsImpl) principal;
+            roles = customerDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+            userRole = authService.getRole(roles);
+
+            if (userRole.equals("CUSTOMER")) {
+                return ResponseEntity.ok(new JwtCustomerResponse(
+                        jwt,
+                        customerDetails.getCustomer(),
+                        customerDetails.getUsername(),
+                        customerDetails.getEmail(),
+                        List.of(userRole)
+                ));
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user details");
+    }
+
 
     // Phương thức để đăng ký người dùng mới
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         // Kiểm tra xem username đã tồn tại trong hệ thống chưa
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+        if (accountRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Lỗi: Tên người dùng đã tồn tại!"));
         }
 
         // Kiểm tra xem email đã được sử dụng chưa
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (accountRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Lỗi: Email đã được sử dụng!"));
         }
 
         // Tạo tài khoản người dùng mới với các thông tin từ yêu cầu đăng ký
-        Users user = new Users(signUpRequest.getName(),
+        Account user = new Account(
+                signUpRequest.getId(),
                 signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
@@ -117,13 +220,13 @@ public class AuthController {
             // Gán vai trò dựa trên yêu cầu
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin":
+                    case "1":
                         Role adminRole = roleRepository.findByName(ERole.ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
                         roles.add(adminRole);
                         break;
-                    case "mod":
-                        Role modRole = roleRepository.findByName(ERole.MODERATOR)
+                    case "2":
+                        Role modRole = roleRepository.findByName(ERole.CUSTOMER)
                                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
                         roles.add(modRole);
                         break;
@@ -137,11 +240,26 @@ public class AuthController {
 
         // Thiết lập vai trò cho người dùng
         user.setRoles(roles);
-
         // Lưu người dùng mới vào cơ sở dữ liệu
-        userRepository.save(user);
+        accountRepository.save(user);
 
         // Trả về thông báo đăng ký thành công
         return ResponseEntity.ok(new MessageResponse("Đăng ký người dùng thành công!"));
     }
+
+    @GetMapping("/validateToken")
+    public ResponseEntity<?> validateToken(@RequestHeader(value = "Authorization", required = false) String token) {
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authorization header is missing");
+        }
+
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+
+        if (jwtUtils.validateJwtToken(jwtToken)) {
+            return ResponseEntity.ok("done");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
 }

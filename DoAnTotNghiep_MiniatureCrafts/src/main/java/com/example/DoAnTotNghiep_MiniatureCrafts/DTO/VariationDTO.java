@@ -1,12 +1,13 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Brand;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Variation;
 
 public class VariationDTO {
     private Long ID;
     private ProductDTO ProductID;
     private String SKU;
-    private Double Price;
+    private String Price;
     private Integer Quantity;
     private BrandDTO BrandID;
     private String Material;
@@ -16,7 +17,7 @@ public class VariationDTO {
     public VariationDTO() {
     }
 
-    public VariationDTO(Long ID, ProductDTO productID, String SKU, Double price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status) {
+    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status) {
         this.ID = ID;
         ProductID = productID;
         this.SKU = SKU;
@@ -26,6 +27,18 @@ public class VariationDTO {
         Material = material;
         Weight = weight;
         Status = status;
+    }
+
+    public VariationDTO(Variation variationID) {
+        this.ID = variationID.getID();
+        ProductID = new ProductDTO(variationID.getID());
+        this.SKU = variationID.getSKU();
+        Price = variationID.getPrice().toString();
+        Quantity = variationID.getQuantity();
+        BrandID = new BrandDTO(variationID.getID());
+        Material = variationID.getMaterial();
+        Weight = variationID.getWeight();
+        Status = variationID.getStatus();
     }
 
     // Getters and Setters
@@ -56,11 +69,11 @@ public class VariationDTO {
         this.SKU = SKU;
     }
 
-    public Double getPrice() {
+    public String getPrice() {
         return Price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(String price) {
         Price = price;
     }
 

@@ -14,7 +14,6 @@ public class Voucher {
     private String Code;
 
     private Double DiscountValue;
-    private Double DiscountAmount;
 
     @Column(name = "StartDate")
     @Temporal(TemporalType.DATE)
@@ -24,7 +23,7 @@ public class Voucher {
     @Temporal(TemporalType.DATE)
     private Date EndDate;
 
-    private String TypeVoucher;
+    private Boolean TypeVoucher;
     private Boolean Status;
 
     @Column(name = "Creation_date")
@@ -34,6 +33,22 @@ public class Voucher {
     @Column(name = "Edit_Date")
     @Temporal(TemporalType.DATE)
     private Date Edit_Date;
+
+
+    public Voucher() {
+    }
+
+    public Voucher(Integer ID, String code, Double discountValue, Date startDate, Date endDate, Boolean typeVoucher, Boolean status, Date creation_date, Date edit_Date) {
+        this.ID = ID;
+        Code = code;
+        DiscountValue = discountValue;
+        StartDate = startDate;
+        EndDate = endDate;
+        TypeVoucher = typeVoucher;
+        Status = status;
+        Creation_date = creation_date;
+        Edit_Date = edit_Date;
+    }
 
     // Getters and Setters
     public Integer getID() {
@@ -60,14 +75,6 @@ public class Voucher {
         DiscountValue = discountValue;
     }
 
-    public Double getDiscountAmount() {
-        return DiscountAmount;
-    }
-
-    public void setDiscountAmount(Double discountAmount) {
-        DiscountAmount = discountAmount;
-    }
-
     public Date getStartDate() {
         return StartDate;
     }
@@ -84,11 +91,11 @@ public class Voucher {
         EndDate = endDate;
     }
 
-    public String getTypeVoucher() {
+    public Boolean getTypeVoucher() {
         return TypeVoucher;
     }
 
-    public void setTypeVoucher(String typeVoucher) {
+    public void setTypeVoucher(Boolean typeVoucher) {
         TypeVoucher = typeVoucher;
     }
 

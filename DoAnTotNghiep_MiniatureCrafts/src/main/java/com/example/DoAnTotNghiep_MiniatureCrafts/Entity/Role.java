@@ -13,6 +13,11 @@ public class Role {
     @Column(length = 20)
     private ERole name;
 
+    public Role(Integer ID, ERole name) {
+        this.ID = ID;
+        this.name = name;
+    }
+
     public Integer getID() {
         return ID;
     }

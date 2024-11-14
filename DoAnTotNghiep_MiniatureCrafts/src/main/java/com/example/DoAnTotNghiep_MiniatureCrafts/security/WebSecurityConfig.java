@@ -2,10 +2,11 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.security;
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.security.jwt.AuthEntryPointJwt;
 import com.example.DoAnTotNghiep_MiniatureCrafts.security.jwt.AuthTokenFilter;
-import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UserDetailsServiceImpl;
+import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.EmployeeDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,10 +25,12 @@ import java.util.Arrays;
 
 @Configuration
 @EnableMethodSecurity // Kích hoạt bảo mật cấp phương thức (các chú thích như @PreAuthorize, @Secured)
+@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
+
 public class WebSecurityConfig {
 
     @Autowired
-    UserDetailsServiceImpl userDetailsService; // Dịch vụ tùy chỉnh để tải thông tin người dùng từ cơ sở dữ liệu
+    EmployeeDetailsServiceImpl userDetailsService; // Dịch vụ tùy chỉnh để tải thông tin người dùng từ cơ sở dữ liệu
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler; // Xử lý khi có yêu cầu không hợp lệ hoặc không có quyền truy cập
@@ -66,11 +69,11 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // Xử lý ngoại lệ khi không có quyền
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Không dùng session (stateless)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/users/signup").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
-
-                                .requestMatchers("/users/signin").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
-                                .requestMatchers("/shop/all**").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
-                                .requestMatchers("/shop/result/**").permitAll() // Cho phép truy cập không cần xác thực cho /api/test/**
+                        auth.requestMatchers("/**").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
+//
+//                                .requestMatchers("/users/signin").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
+//                                .requestMatchers("/shop/all**").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
+//                                .requestMatchers("/shop/result/**").permitAll() // Cho phép truy cập không cần xác thực cho /api/test/**
                                 .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các URL khác
                 );
 

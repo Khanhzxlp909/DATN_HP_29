@@ -1,6 +1,7 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.security.services;
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Users;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Account;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Employee; // Thêm import nếu cần
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,10 +12,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class UserDetailsImpl implements UserDetails {
+public class EmployeeDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private List<Employee> employees; // Lưu trữ danh sách Employee
 
     private String username;
 
@@ -25,22 +26,24 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password,
-                           Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
+    // Constructor mới nhận vào danh sách employees
+    public EmployeeDetailsImpl(List<Employee> employees, String username, String email, String password,
+                               Collection<? extends GrantedAuthority> authorities) {
+        this.employees = employees;
         this.username = username;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
     }
 
-    public static UserDetailsImpl build(Users user) {
+    // Phương thức build đã sửa lại để trả về EmployeeDetailsImpl với danh sách employees
+    public static EmployeeDetailsImpl build(Account user, List<Employee> employees) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
                 .collect(Collectors.toList());
 
-        return new UserDetailsImpl(
-                user.getID().longValue(),
+        return new EmployeeDetailsImpl(
+                employees, // Truyền vào danh sách employees
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
@@ -52,8 +55,8 @@ public class UserDetailsImpl implements UserDetails {
         return authorities;
     }
 
-    public Long getId() {
-        return id;
+    public List<Employee> getEmployees() {  // Trả về danh sách employees
+        return employees;
     }
 
     public String getEmail() {
@@ -96,7 +99,7 @@ public class UserDetailsImpl implements UserDetails {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        UserDetailsImpl user = (UserDetailsImpl) o;
-        return Objects.equals(id, user.id);
+        EmployeeDetailsImpl user = (EmployeeDetailsImpl) o;
+        return Objects.equals(employees, user.employees);  // So sánh danh sách employees
     }
 }

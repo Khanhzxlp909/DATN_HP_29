@@ -1,63 +1,142 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 
 import jakarta.persistence.*;
-import java.util.Date;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "POSOrder")
+@Table(name = "POSOder")
 public class POSOrder {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ID;  // ID tự tăng
+    private Long ID;
 
-    @Column(name = "Code_Order", unique = true)
-    private String Code_Order;  // Đảm bảo Code_Order là duy nhất
+    @ManyToOne
+    @JoinColumn(name = "CustomerID")
+    private Customer CustomerID;
 
-    @Column(name = "UserID")
-    private Integer UserID;
+    @Column(name = "Code_Voucher", length = 50)
+    private String Code_Voucher;
 
-    private Double TotalAmount;
-    private Boolean Status;
+    @Column(name = "Total_Amount", precision = 10, scale = 2)
+    private BigDecimal Total_Amount;
+
+    @Column(name = "Discount_Amount", precision = 10, scale = 2)
+    private BigDecimal Discount_Amount;
+
+    @Column(name = "Total_Payment", precision = 10, scale = 2)
+    private BigDecimal Total_Payment;
+
+    @ManyToOne
+    @JoinColumn(name = "PaymentMethod")
+    private PaymentMethod PaymentMethod;
 
     @Column(name = "Creation_date")
-    @Temporal(TemporalType.DATE)
-    private Date Creation_date;
+    private LocalDate Creation_date;
 
     @Column(name = "Edit_Date")
-    @Temporal(TemporalType.DATE)
-    private Date Edit_Date;
+    private LocalDate Edit_Date;
 
-    // Getters and Setters
-    public Integer getID() {
+    @Column(name = "Type_Oder")
+    private Integer Type_Oder;
+
+    @Column(name = "Note", length = 255)
+    private String Note;
+
+    @Column(name = "Status")
+    private Boolean Status;
+
+    public POSOrder() {
+    }
+
+    public POSOrder(Long ID, Customer customerID, LocalDate creation_date, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.DoAnTotNghiep_MiniatureCrafts.Entity.PaymentMethod paymentMethod, String note, Boolean status, LocalDate edit_Date, Integer type_Oder) {
+        this.ID = ID;
+        CustomerID = customerID;
+        Creation_date = creation_date;
+        Code_Voucher = code_Voucher;
+        Total_Amount = total_Amount;
+        Discount_Amount = discount_Amount;
+        Total_Payment = total_Payment;
+        PaymentMethod = paymentMethod;
+        Note = note;
+        Status = status;
+        Edit_Date = edit_Date;
+        Type_Oder = type_Oder;
+    }
+
+
+    public Customer getCustomerID() {
+        return CustomerID;
+    }
+
+    public void setCustomerID(Customer customerID) {
+        CustomerID = customerID;
+    }
+
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 
-    public String getCode_Order() {
-        return Code_Order;
+    public LocalDate getCreation_date() {
+        return Creation_date;
     }
 
-    public void setCode_Order(String code_Order) {
-        Code_Order = code_Order;
+    public void setCreation_date(LocalDate creation_date) {
+        Creation_date = creation_date;
     }
 
-    public Integer getUserID() {
-        return UserID;
+    public String getCode_Voucher() {
+        return Code_Voucher;
     }
 
-    public void setUserID(Integer userID) {
-        UserID = userID;
+    public void setCode_Voucher(String code_Voucher) {
+        Code_Voucher = code_Voucher;
     }
 
-    public Double getTotalAmount() {
-        return TotalAmount;
+    public BigDecimal getTotal_Amount() {
+        return Total_Amount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
-        TotalAmount = totalAmount;
+    public void setTotal_Amount(BigDecimal total_Amount) {
+        Total_Amount = total_Amount;
+    }
+
+    public BigDecimal getDiscount_Amount() {
+        return Discount_Amount;
+    }
+
+    public void setDiscount_Amount(BigDecimal discount_Amount) {
+        Discount_Amount = discount_Amount;
+    }
+
+    public BigDecimal getTotal_Payment() {
+        return Total_Payment;
+    }
+
+    public void setTotal_Payment(BigDecimal total_Payment) {
+        Total_Payment = total_Payment;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return PaymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        PaymentMethod = paymentMethod;
+    }
+
+    public String getNote() {
+        return Note;
+    }
+
+    public void setNote(String note) {
+        Note = note;
     }
 
     public Boolean getStatus() {
@@ -68,19 +147,21 @@ public class POSOrder {
         Status = status;
     }
 
-    public Date getCreation_date() {
-        return Creation_date;
-    }
-
-    public void setCreation_date(Date creation_date) {
-        Creation_date = creation_date;
-    }
-
-    public Date getEdit_Date() {
+    public LocalDate getEdit_Date() {
         return Edit_Date;
     }
 
-    public void setEdit_Date(Date edit_Date) {
+    public void setEdit_Date(LocalDate edit_Date) {
         Edit_Date = edit_Date;
     }
+
+    public Integer getType_Oder() {
+        return Type_Oder;
+    }
+
+    public void setType_Oder(Integer type_Oder) {
+        Type_Oder = type_Oder;
+    }
+
+
 }

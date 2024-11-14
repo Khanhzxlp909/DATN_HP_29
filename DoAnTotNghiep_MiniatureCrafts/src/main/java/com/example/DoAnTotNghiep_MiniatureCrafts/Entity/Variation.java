@@ -16,6 +16,19 @@ public class Variation {
     private String SKU;
     private Double Price;
     private Integer Quantity;
+
+    public Variation(Long ID, Product productID, String SKU, Double price, Integer quantity, Brand brandID, String material, Double weight, Boolean status) {
+        this.ID = ID;
+        ProductID = productID;
+        this.SKU = SKU;
+        Price = price;
+        Quantity = quantity;
+        BrandID = brandID;
+        Material = material;
+        Weight = weight;
+        Status = status;
+    }
+
     @ManyToOne
     @JoinColumn (name = "BrandID")
     private Brand BrandID;  // Liên kết với Brand
@@ -23,6 +36,9 @@ public class Variation {
     private String Material;
     private Double Weight;
     private Boolean Status;
+
+    public Variation() {
+    }
 
     // Getters and Setters
     public Long getID() {

@@ -1,18 +1,20 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.payload.response;
 
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Employee;
+
 import java.util.List;
 
-public class JwtResponse {
+public class JwtEmployeeResponse {
     private String token;
     private String type = "Bearer";
-    private Long id;
+    private List<Employee> employee;
     private String username;
     private String email;
     private List<String> roles;
 
-    public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
+    public JwtEmployeeResponse(String accessToken, List<Employee> employee, String username, String email, List<String> roles) {
         this.token = accessToken;
-        this.id = id;
+        this.employee = employee;
         this.username = username;
         this.email = email;
         this.roles = roles;
@@ -34,12 +36,12 @@ public class JwtResponse {
         this.type = tokenType;
     }
 
-    public Long getId() {
-        return id;
+    public List<Employee> getId() {
+        return employee;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(List<Employee> employee) {
+        this.employee = employee;
     }
 
     public String getEmail() {

@@ -1,25 +1,26 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 
 import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Users")
-public class Users {
+@Table(name = "Account")
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
-    private String Name;
-    private String Email;  // Đảm bảo Email là duy nhất
+
+    private Long Users;
+
+    private String Email;
     private String Username;  // Đảm bảo Username là duy nhất
     private String Password;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     private Boolean IsActive;
@@ -31,6 +32,15 @@ public class Users {
     @Temporal(TemporalType.DATE)
     private Date Edit_Date;
 
+
+    public Account(Long idusers, String username, String email, String password) {
+//        this.Users = new Employee(); // Tạo đối tượng Employee trước khi gán ID
+        this.Users = idusers;
+        this.Email = email;
+        this.Username = username;
+        this.Password = password;
+    }
+
     public Integer getID() {
         return ID;
     }
@@ -39,20 +49,12 @@ public class Users {
         this.ID = ID;
     }
 
-    public String getName() {
-        return Name;
+    public Long getUsers() {
+        return Users;
     }
 
-    public void setName(String name) {
-        Name = name;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        Email = email;
+    public void setUsers(Long users) {
+        Users = users;
     }
 
     public String getUsername() {
@@ -103,25 +105,33 @@ public class Users {
         Edit_Date = edit_Date;
     }
 
-    public Users() {
+
+
+
+
+    public String getEmail() {
+        return Email;
     }
 
-
-    public Users(String name, String username, String email, String password) {
-        Name = name;
-        Username = username;
+    public void setEmail(String email) {
         Email = email;
-        Password = password;
     }
 
-    public Users(Integer ID, String name, String email, String username, String password, Boolean isActive, Date creation_date, Date edit_Date) {
+    public Account(Integer ID, Long users, String email, String username, String password, Set<Role> roles, Boolean isActive, Date creation_date, Date edit_Date) {
         this.ID = ID;
-        Name = name;
+        Users = users;
         Email = email;
         Username = username;
         Password = password;
+        this.roles = roles;
         IsActive = isActive;
         Creation_date = creation_date;
         Edit_Date = edit_Date;
     }
+
+
+
+    public Account() {
+    }
+
 }
