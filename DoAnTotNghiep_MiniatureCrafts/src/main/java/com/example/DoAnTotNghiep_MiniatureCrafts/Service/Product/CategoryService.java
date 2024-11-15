@@ -2,7 +2,7 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.Service.Product;
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.CategoryDTO;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Category;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Product.CategoryRepository;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.thuoctinh.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -127,7 +127,6 @@ public class Account {
 
     public Account(Integer ID, Long users, String email, String username, String password, Set<Role> roles, Boolean isActive, Date creation_date, Date edit_Date) {
         this.ID = ID;
-        Name = name;
         Email = email;
         Username = username;
         Password = password;

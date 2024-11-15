@@ -1,7 +1,6 @@
-package com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Product;
+package com.example.DoAnTotNghiep_MiniatureCrafts.Repository.thuoctinh;
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Category;
-import org.hibernate.type.descriptor.converter.spi.JpaAttributeConverter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -93,7 +93,8 @@ public class AuthController {
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                userInfo
+                userInfo,
+                accountRole
         ));
     }
 

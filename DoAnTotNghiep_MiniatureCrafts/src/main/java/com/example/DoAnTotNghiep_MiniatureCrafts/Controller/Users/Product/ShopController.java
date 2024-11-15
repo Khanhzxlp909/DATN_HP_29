@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("vmgKtShop")
-public class HomeController {
+public class ShopController {
 
     @Autowired
     private VariationService variationService;

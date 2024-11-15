@@ -35,7 +35,7 @@ public class VariationDTO {
         this.SKU = variationID.getSKU();
         Price = variationID.getPrice().toString();
         Quantity = variationID.getQuantity();
-        BrandID = new BrandDTO(variationID.getID());
+        BrandID = new BrandDTO(variationID.getBrandID());
         Material = variationID.getMaterial();
         Weight = variationID.getWeight();
         Status = variationID.getStatus();

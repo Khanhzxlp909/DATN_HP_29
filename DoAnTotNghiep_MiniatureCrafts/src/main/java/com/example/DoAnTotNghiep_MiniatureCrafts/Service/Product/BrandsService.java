@@ -2,7 +2,7 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.Service.Product;
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.DTO.BrandDTO;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Brand;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Product.BrandsRepository;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.thuoctinh.BrandsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
