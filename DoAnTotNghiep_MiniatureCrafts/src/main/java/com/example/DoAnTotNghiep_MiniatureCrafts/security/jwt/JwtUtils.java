@@ -1,6 +1,7 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.security.jwt;
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.EmployeeDetailsImpl;
+import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UserDetailsImpl;
+import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UsersDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -25,7 +26,7 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
 
-        EmployeeDetailsImpl userPrincipal = (EmployeeDetailsImpl) authentication.getPrincipal();
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
