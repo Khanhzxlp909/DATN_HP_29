@@ -1,11 +1,11 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Controller.Auth;
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.ERole;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Role;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Account;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.*;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.CustomerRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.EmployeeRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.RoleRepository;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.UserRepository;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User.AccountRepository;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Security.AuthService;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.LoginRequest;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.SignupRequest;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.response.JwtResponse;
@@ -20,15 +20,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/users/")
@@ -39,7 +38,14 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
+    AccountRepository accountRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
+
+    @Autowired
+    AuthService authService;
+
 
     @Autowired
     EmployeeRepository employeeRepository;
@@ -53,113 +59,120 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    // Phương thức để xác thực người dùng khi đăng nhập
+    // search cột role trong db, nếu thỏa mãn điều kiện AcccoutRole là ADMIN hoặc USERS, thì sẽ gọi hàm tìm kiếm bảng Employee theo USERS id
+//    nếu thỏa mãn điều kiện là CUSTOMER sẽ tìm kiếm bên bảng customer theo Users id
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-        // Xác thực người dùng với username và password
+        // Xác thực người dùng
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        // Lưu thông tin xác thực vào SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Tạo token JWT cho người dùng sau khi đăng nhập thành công
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        // Lấy thông tin người dùng hiện tại
+        // Lấy thông tin người dùng từ đối tượng xác thực
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String accountRole = userDetails.getAccountRole();  // Lấy vai trò hiện tại
+        Long id = userDetails.getId();
 
-        // Lấy danh sách các vai trò của người dùng
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+        List<?> userInfo;
 
+        // Kiểm tra vai trò và truy xuất thông tin từ bảng tương ứng
+        if ("ADMIN".equals(accountRole) || "USERS".equals(accountRole)) {
+            userInfo = employeeRepository.findEmployeeByUsers(id);
+        } else if ("CUSTOMER".equals(accountRole)) {
+            userInfo = customerRepository.findByUsers(id);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vai trò không hợp lệ!");
+        }
 
-        // Trả về thông tin JWT cùng với thông tin người dùng và các vai trò
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        // Trả về JWT và thông tin của người dùng
+        return ResponseEntity.ok(new JwtResponse(
+                jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles));
+                userInfo
+        ));
     }
 
     // Phương thức để đăng ký người dùng mới
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         // Kiểm tra xem username đã tồn tại trong hệ thống chưa
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+        if (accountRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Lỗi: Tên người dùng đã tồn tại!"));
         }
 
         // Kiểm tra xem email đã được sử dụng chưa
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (accountRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Lỗi: Email đã được sử dụng!"));
         }
 
         // Tạo tài khoản người dùng mới với các thông tin từ yêu cầu đăng ký
+        String accountRole = "USERS"; // Đặt giá trị mặc định cho accountRole
         Account user = new Account(
-                            signUpRequest.getId(),
-                            signUpRequest.getUsername(),
-                            signUpRequest.getEmail(),
-                            encoder.encode(signUpRequest.getPassword()));
+                signUpRequest.getId(),
+                signUpRequest.getUsername(),
+                signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()),
+                accountRole
+        );
 
         // Lấy danh sách vai trò từ yêu cầu đăng ký
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
         // Kiểm tra và gán vai trò cho người dùng
-        if (strRoles == null) {
+        if (strRoles == null || strRoles.isEmpty()) {
             // Nếu không có vai trò trong yêu cầu, gán vai trò mặc định là USER
             Role userRole = roleRepository.findByName(ERole.USER)
                     .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
             roles.add(userRole);
         } else {
             // Gán vai trò dựa trên yêu cầu
-            strRoles.forEach(role -> {
+            for (String role : strRoles) {
                 switch (role) {
                     case "1":
                         Role adminRole = roleRepository.findByName(ERole.ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
+                                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò ADMIN."));
                         roles.add(adminRole);
+                        accountRole = "ADMIN";
                         break;
                     case "2":
-                        Role modRole = roleRepository.findByName(ERole.MOD)
-                                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
-                        roles.add(modRole);
+                        Role customerRole = roleRepository.findByName(ERole.CUSTOMER)
+                                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò CUSTOMER."));
+                        roles.add(customerRole);
+                        accountRole = "CUSTOMER";
                         break;
                     default:
                         Role userRole = roleRepository.findByName(ERole.USER)
-                                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
+                                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò USER."));
                         roles.add(userRole);
+                        accountRole = "USERS";
                 }
-            });
+            }
         }
+
+        System.out.println("Role hiện tại: " + accountRole);
 
         // Thiết lập vai trò cho người dùng
         user.setRoles(roles);
+        // Cập nhật lại role vào account trước khi lưu
+        user.setAccountRole(accountRole);
+
         // Lưu người dùng mới vào cơ sở dữ liệu
-        userRepository.save(user);
+        accountRepository.save(user);
 
         // Trả về thông báo đăng ký thành công
         return ResponseEntity.ok(new MessageResponse("Đăng ký người dùng thành công!"));
     }
 
-    @PostMapping("/verifyToken")
-    public ResponseEntity<?> verifyToken(@RequestBody String token) {
-        // Kiểm tra tính hợp lệ của token
-        if (jwtUtils.validateJwtToken(token)) {
-            // Token hợp lệ, trả về phản hồi thành công
-            return ResponseEntity.ok(new MessageResponse("done"));
-        } else {
-            // Token không hợp lệ, trả về phản hồi lỗi
-            return ResponseEntity.badRequest().body(new MessageResponse("Token không hợp lệ!"));
-        }
-    }
 
     @GetMapping("/validateToken")
     public ResponseEntity<?> validateToken(@RequestHeader(value = "Authorization", required = false) String token) {

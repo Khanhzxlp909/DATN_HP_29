@@ -18,15 +18,13 @@ public class HomeController {
     @Autowired
     private VariationService variationService;
 
-
     @GetMapping("all")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
     }
 
-    // tim kiem
     @GetMapping("result/{name}")
-    public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {
+    public Page<VariationDTO> findByName(Pageable pageable,@PathVariable("name") String name) {
         return variationService.findByName(pageable, name);
     }
 

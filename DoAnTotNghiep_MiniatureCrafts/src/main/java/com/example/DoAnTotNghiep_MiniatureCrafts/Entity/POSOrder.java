@@ -1,6 +1,7 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.Entity;
 
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -12,14 +13,9 @@ public class POSOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
 
-    @Column(name = "InvoiceDetail")
-    private Long InvoiceDetail;
-
-    @Column(name = "CustomerID")
-    private Integer CustomerID;
-
-    @Column(name = "Creation_date")
-    private LocalDate Creation_date;
+    @ManyToOne
+    @JoinColumn(name = "CustomerID")
+    private Customer CustomerID;
 
     @Column(name = "Code_Voucher", length = 50)
     private String Code_Voucher;
@@ -33,14 +29,12 @@ public class POSOrder {
     @Column(name = "Total_Payment", precision = 10, scale = 2)
     private BigDecimal Total_Payment;
 
-    @Column(name = "PaymentMethod")
-    private Integer PaymentMethod;
+    @ManyToOne
+    @JoinColumn(name = "PaymentMethod")
+    private PaymentMethod PaymentMethod;
 
-    @Column(name = "Note", length = 255)
-    private String Note;
-
-    @Column(name = "Status")
-    private Boolean Status;
+    @Column(name = "Creation_date")
+    private LocalDate Creation_date;
 
     @Column(name = "Edit_Date")
     private LocalDate Edit_Date;
@@ -48,7 +42,37 @@ public class POSOrder {
     @Column(name = "Type_Oder")
     private Integer Type_Oder;
 
+    @Column(name = "Note", length = 255)
+    private String Note;
+
+    @Column(name = "Status")
+    private Boolean Status;
+
     public POSOrder() {
+    }
+
+    public POSOrder(Long ID, Customer customerID, LocalDate creation_date, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.DoAnTotNghiep_MiniatureCrafts.Entity.PaymentMethod paymentMethod, String note, Boolean status, LocalDate edit_Date, Integer type_Oder) {
+        this.ID = ID;
+        CustomerID = customerID;
+        Creation_date = creation_date;
+        Code_Voucher = code_Voucher;
+        Total_Amount = total_Amount;
+        Discount_Amount = discount_Amount;
+        Total_Payment = total_Payment;
+        PaymentMethod = paymentMethod;
+        Note = note;
+        Status = status;
+        Edit_Date = edit_Date;
+        Type_Oder = type_Oder;
+    }
+
+
+    public Customer getCustomerID() {
+        return CustomerID;
+    }
+
+    public void setCustomerID(Customer customerID) {
+        CustomerID = customerID;
     }
 
     public Long getID() {
@@ -57,22 +81,6 @@ public class POSOrder {
 
     public void setID(Long ID) {
         this.ID = ID;
-    }
-
-    public Long getInvoiceDetail() {
-        return InvoiceDetail;
-    }
-
-    public void setInvoiceDetail(Long invoiceDetail) {
-        InvoiceDetail = invoiceDetail;
-    }
-
-    public Integer getCustomerID() {
-        return CustomerID;
-    }
-
-    public void setCustomerID(Integer customerID) {
-        CustomerID = customerID;
     }
 
     public LocalDate getCreation_date() {
@@ -115,11 +123,11 @@ public class POSOrder {
         Total_Payment = total_Payment;
     }
 
-    public Integer getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return PaymentMethod;
     }
 
-    public void setPaymentMethod(Integer paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         PaymentMethod = paymentMethod;
     }
 
@@ -155,19 +163,5 @@ public class POSOrder {
         Type_Oder = type_Oder;
     }
 
-    public POSOrder(Long ID, Long invoiceDetail, Integer customerID, LocalDate creation_date, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, Integer paymentMethod, String note, Boolean status, LocalDate edit_Date, Integer type_Oder) {
-        this.ID = ID;
-        InvoiceDetail = invoiceDetail;
-        CustomerID = customerID;
-        Creation_date = creation_date;
-        Code_Voucher = code_Voucher;
-        Total_Amount = total_Amount;
-        Discount_Amount = discount_Amount;
-        Total_Payment = total_Payment;
-        PaymentMethod = paymentMethod;
-        Note = note;
-        Status = status;
-        Edit_Date = edit_Date;
-        Type_Oder = type_Oder;
-    }
+
 }

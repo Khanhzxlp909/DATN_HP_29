@@ -8,13 +8,15 @@ import java.util.Date;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ID;  // ID tự tăng
+    private Long ID;  // ID tự tăng
 
     private String Name;
-    private String Username;  // Đảm bảo Username là duy nhất
-    private String Password;
     private String Address;
     private String Phone;
+
+
+
+    private String Note;
     private Boolean Status;
 
     @Column(name = "Creation_date")
@@ -26,11 +28,11 @@ public class Customer {
     private Date Edit_Date;
 
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 
@@ -42,21 +44,6 @@ public class Customer {
         Name = name;
     }
 
-    public String getUsername() {
-        return Username;
-    }
-
-    public void setUsername(String username) {
-        Username = username;
-    }
-
-    public String getPassword() {
-        return Password;
-    }
-
-    public void setPassword(String password) {
-        Password = password;
-    }
 
     public String getAddress() {
         return Address;
@@ -96,5 +83,12 @@ public class Customer {
 
     public void setEdit_Date(Date edit_Date) {
         Edit_Date = edit_Date;
+    }
+    public String getNote() {
+        return Note;
+    }
+
+    public void setNote(String note) {
+        Note = note;
     }
 }

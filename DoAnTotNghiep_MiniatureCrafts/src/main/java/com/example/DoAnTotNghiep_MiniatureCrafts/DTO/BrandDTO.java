@@ -3,12 +3,13 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.DTO;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Brand;
 
 public class BrandDTO {
-    private Integer ID;
+    private Long ID;
     private String Name;
     private String Note;
     private Boolean Status;
 
-    public BrandDTO(Integer ID, String name, String note, Boolean status) {
+
+    public BrandDTO(Long ID, String name, String note, Boolean status) {
         this.ID = ID;
         Name = name;
         Note = note;
@@ -38,11 +39,11 @@ public class BrandDTO {
 
 
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

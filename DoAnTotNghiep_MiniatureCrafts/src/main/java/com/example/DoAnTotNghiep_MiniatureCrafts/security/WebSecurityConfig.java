@@ -2,10 +2,11 @@ package com.example.DoAnTotNghiep_MiniatureCrafts.security;
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.security.jwt.AuthEntryPointJwt;
 import com.example.DoAnTotNghiep_MiniatureCrafts.security.jwt.AuthTokenFilter;
-import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UserDetailsServiceImpl;
+import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UsersDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,10 +25,12 @@ import java.util.Arrays;
 
 @Configuration
 @EnableMethodSecurity // Kích hoạt bảo mật cấp phương thức (các chú thích như @PreAuthorize, @Secured)
+@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
+
 public class WebSecurityConfig {
 
     @Autowired
-    UserDetailsServiceImpl userDetailsService; // Dịch vụ tùy chỉnh để tải thông tin người dùng từ cơ sở dữ liệu
+    UsersDetailsServiceImpl userDetailsService; // Dịch vụ tùy chỉnh để tải thông tin người dùng từ cơ sở dữ liệu
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler; // Xử lý khi có yêu cầu không hợp lệ hoặc không có quyền truy cập

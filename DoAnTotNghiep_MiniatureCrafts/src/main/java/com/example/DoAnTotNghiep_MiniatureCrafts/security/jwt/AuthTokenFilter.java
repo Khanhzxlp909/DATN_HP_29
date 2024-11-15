@@ -1,6 +1,6 @@
 package com.example.DoAnTotNghiep_MiniatureCrafts.security.jwt;
 
-import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UserDetailsServiceImpl;
+import com.example.DoAnTotNghiep_MiniatureCrafts.security.services.UsersDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     // Tự động tiêm lớp JwtUtils để làm việc với token JWT.
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UsersDetailsServiceImpl userDetailsService;
     // Tự động tiêm UserDetailsServiceImpl để lấy thông tin người dùng từ username.
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
