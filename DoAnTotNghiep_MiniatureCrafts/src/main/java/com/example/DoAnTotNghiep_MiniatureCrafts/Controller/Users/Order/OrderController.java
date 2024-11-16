@@ -43,6 +43,7 @@ public class OrderController {
         return orders;
 
     }
+
     // lấy ra những sp có trong hóa đơn
     @GetMapping("history/{id}/{order}")
     public List<POSOrderDTO> getAllOrder(@PathVariable("id") Long id, @PathVariable("order") String orderID) {
@@ -68,11 +69,16 @@ public class OrderController {
     // sau đó nhảy về trang order
 
     @PostMapping("/newOrder/")
-    public ResponseEntity<?> createOrder(@Valid @RequestBody POSOrderDTO posOrderDTO) {
+    public ResponseEntity<?> createOrder(@Valid @RequestBody POSOrderDTO posOrderDTO, @Valid @RequestBody OrderLineDTO orderLineDTO) {
         try {
             // Tạo order
             POSOrder order = orderService.addSHOP(posOrderDTO);
 
+            System.out.println("ID ORDER: " + order.getID());
+            if(order.getID() != null){
+                orderService.addOrderline(orderLineDTO, order.getID());
+
+            }
             // Chuyển đổi entity sang DTO để trả về response
             POSOrderDTO responseDTO = orderService.mapOrderEntityToDTO(order);
 
@@ -82,9 +88,6 @@ public class OrderController {
         } catch (RuntimeException ex) {
             // Trả về thông báo lỗi với HTTP status 400 Bad Request
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        } catch (Exception ex) {
-            // Trả về lỗi server với HTTP status 500 Internal Server Error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi khi tạo đơn hàng!");
         }
     }
 

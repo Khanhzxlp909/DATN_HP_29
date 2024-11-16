@@ -113,6 +113,26 @@ public class OrderService {
     }
 
 
+
+    public OrderLine addOrderline(OrderLineDTO dto, Long orderID) {
+
+        return orderLineRepository.save(
+                new OrderLine(
+                        dto.getID(),
+                        orderID,
+                        variationService.mapVariationDTOtoVariation(dto.getVariationID()),
+                        dto.getVariationName(),
+                        dto.getMarterial(),
+                        dto.getQuantity(),
+                        dto.getUnit_Price(),
+                        dto.getPrice(),
+                        dto.getCreation_date(),
+                        dto.getEdit_Date(),
+                        dto.getStatus()
+                )
+        );
+    }
+
     public POSOrder addSHOP(POSOrderDTO posOrderDTO) {
 
         POSOrder order = new POSOrder();
@@ -124,6 +144,7 @@ public class OrderService {
 
         // gán customer vào customerID
         order.setCustomerID(customer);
+
 
         order.setCode_Voucher(posOrderDTO.getCode_Voucher());
 
@@ -153,15 +174,6 @@ public class OrderService {
         return orderRepository.save(order);
 
     }
-
-    private OrderLine addOrderLineWebShop(OrderLineDTO dto) {
-        OrderLine entity = new OrderLine();
-        entity.setID(dto.getID());
-
-
-        return entity;
-    }
-
 
     public POSOrder addPOS(POSOrderDTO posOrderDTO) {
 
@@ -203,6 +215,7 @@ public class OrderService {
         return orderRepository.save(entity);
 
     }
+
 
     public OrderLine mapOrderLineDTOToEntity(OrderLineDTO dto) {
         return new OrderLine(
