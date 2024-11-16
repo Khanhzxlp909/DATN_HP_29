@@ -146,19 +146,87 @@ public class VariationService {
             // chuyển đổi từ double sang dạng string và đưa ra dưới dạng giá + VND
             dto.setPrice(formatter.format(price));
 
+            dto.setBrandID(mapBrandToBrandDTO(variation.getBrandID()));
+
             dto.setQuantity(variation.getQuantity());
-            dto.setBrandID(new BrandDTO(
-                    variation.getBrandID().getID(),
-                    variation.getBrandID().getName(),
-                    variation.getBrandID().getNote(),
-                    variation.getBrandID().getStatus()
-            ));
+
             dto.setMaterial(variation.getMaterial());
             dto.setWeight(variation.getWeight());
             dto.setStatus(variation.getStatus());
             return dto;
         });
     }
+
+    // Chuyển từ ProductDTO sang Product entity
+    public Product mapProductDTOtoProduct(ProductDTO dto) {
+        return new Product(
+                dto.getId(),
+                dto.getName(),
+                dto.getCategoryID()
+        );
+    }
+
+    // Chuyển từ Product entity sang ProductDTO
+    public ProductDTO mapProductToProductDTO(Product entity) {
+        return new ProductDTO(
+                entity.getID(),
+                entity.getName(),
+                entity.getCategoryID()
+        );
+    }
+
+    // Chuyển từ BrandDTO sang Brand entity
+    public Brand mapBrandDTOtoBrand(BrandDTO dto) {
+        return new Brand(
+                dto.getID(),
+                dto.getName(),
+                dto.getNote(),
+                dto.getStatus()
+        );
+    }
+
+    // Chuyển từ Brand entity sang BrandDTO
+    public BrandDTO mapBrandToBrandDTO(Brand entity) {
+        return new BrandDTO(
+                entity.getID(),
+                entity.getName(),
+                entity.getNote(),
+                entity.getStatus()
+        );
+    }
+
+    // Chuyển từ VariationDTO sang Variation entity
+    public Variation mapVariationDTOtoVariation(VariationDTO dto) {
+        return new Variation(
+                dto.getID(),
+                mapProductDTOtoProduct(dto.getProductID()),
+                dto.getSKU(),
+                parsePrice(dto.getPrice()),
+                dto.getQuantity(),
+                mapBrandDTOtoBrand(dto.getBrandID()),
+                dto.getMaterial(),
+                dto.getWeight(),
+                dto.getStatus()
+
+        );
+    }
+
+    // Chuyển từ Variation entity sang VariationDTO
+    public VariationDTO mapVariationToVariationDTO(Variation entity) {
+        return new VariationDTO(
+                entity.getID(),
+                mapProductToProductDTO(entity.getProductID()),
+                entity.getSKU(),
+                formatPrice(entity.getPrice()),
+                entity.getQuantity(),
+                mapBrandToBrandDTO(entity.getBrandID()),
+                entity.getMaterial(),
+                entity.getWeight(),
+                entity.getStatus()
+
+        );
+    }
+
 
     public Page<VariationDTO> findByName(Pageable pageable, String id) {
         // Truy vấn các Variations theo Status và phân trang
@@ -193,4 +261,22 @@ public class VariationService {
             return dto;
         });
     }
+
+    // Chuyển từ String (đơn vị tiền tệ) sang double
+    public double parsePrice(String price) {
+        try {
+            return NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
+                    .parse(price)
+                    .doubleValue();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0; // Giá trị mặc định khi lỗi
+        }
+    }
+
+    // Chuyển từ double sang String (đơn vị tiền tệ VND)
+    public String formatPrice(double price) {
+        return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(price);
+    }
+
 }

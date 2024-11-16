@@ -19,6 +19,10 @@ public class PaymentMethodDTO {
         ID = paymentMethod.getID();
     }
 
+    public PaymentMethodDTO() {
+
+    }
+
     // Getters and Setters
     public Integer getID() {
         return ID;

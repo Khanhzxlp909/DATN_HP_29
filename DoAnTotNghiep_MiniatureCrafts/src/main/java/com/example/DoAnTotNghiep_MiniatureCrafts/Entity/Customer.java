@@ -27,6 +27,22 @@ public class Customer {
     @Temporal(TemporalType.DATE)
     private Date Edit_Date;
 
+    public Customer() {
+    }
+
+    public Customer(Long ID, String name, String address, String phone, String note, Boolean status, Date creation_date, Date edit_Date) {
+        this.ID = ID;
+        Name = name;
+        Address = address;
+        Phone = phone;
+        Note = note;
+        Status = status;
+        Creation_date = creation_date;
+        Edit_Date = edit_Date;
+    }
+
+
+
     // Getters and Setters
     public Long getID() {
         return ID;

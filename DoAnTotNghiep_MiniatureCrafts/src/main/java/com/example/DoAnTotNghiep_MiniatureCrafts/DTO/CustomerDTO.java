@@ -9,15 +9,26 @@ public class CustomerDTO {
     private String Name;
     private String Address;
     private String Phone;
+    private String Note;
+
     private Boolean Status;
     private Date Creation_date;
     private Date Edit_Date;
 
-    public CustomerDTO(Long ID, String name, String address, String phone, Boolean status, Date creation_date, Date edit_Date) {
+    public String getNote() {
+        return Note;
+    }
+
+    public void setNote(String note) {
+        Note = note;
+    }
+
+    public CustomerDTO(Long ID, String name, String address, String phone, String note, Boolean status, Date creation_date, Date edit_Date) {
         this.ID = ID;
         Name = name;
         Address = address;
         Phone = phone;
+        Note = note;
         Status = status;
         Creation_date = creation_date;
         Edit_Date = edit_Date;
@@ -25,6 +36,10 @@ public class CustomerDTO {
 
     public CustomerDTO(Customer customerID) {
         this.ID = customerID.getID();
+    }
+
+    public CustomerDTO() {
+
     }
 
     // Getters and Setters

@@ -9,16 +9,17 @@ import java.time.LocalDate;
 public class OrderLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ID;  // ID tự tăng
+    private Long ID;  // ID tự tăng
+
+    //    @ManyToOne
+//    @JoinColumn( name ="OderID")
+    private Long OderID;
 
     @ManyToOne
-    @JoinColumn( name ="OderID")
-    private POSOrder OderID;
-
-    @ManyToOne
-    @JoinColumn(name="VariationID")
+    @JoinColumn(name = "VariationID")
     private Variation VariationID;
-
+    private String VariationName;
+    private String Marterial;
     private Integer Quantity;
     private Double Unit_Price;
     private Double Price;
@@ -26,19 +27,19 @@ public class OrderLine {
     private LocalDate Edit_Date;
     private Boolean Status;
 
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 
-    public POSOrder getOderID() {
+    public Long getOderID() {
         return OderID;
     }
 
-    public void setOderID(POSOrder oderID) {
+    public void setOderID(Long oderID) {
         OderID = oderID;
     }
 
@@ -101,10 +102,28 @@ public class OrderLine {
     public OrderLine() {
     }
 
-    public OrderLine(Integer ID, POSOrder oderID, Variation variationID, Integer quantity, Double unit_Price, Double price, LocalDate creation_date, LocalDate edit_Date, Boolean status) {
+    public String getVariationName() {
+        return VariationName;
+    }
+
+    public void setVariationName(String variationName) {
+        VariationName = variationName;
+    }
+
+    public String getMarterial() {
+        return Marterial;
+    }
+
+    public void setMarterial(String marterial) {
+        Marterial = marterial;
+    }
+
+    public OrderLine(Long ID, Long oderID, Variation variationID, String VariationName, String Marterial, Integer quantity, Double unit_Price, Double price, LocalDate creation_date, LocalDate edit_Date, Boolean status) {
         this.ID = ID;
         OderID = oderID;
         VariationID = variationID;
+        this.VariationName = VariationName;
+        this.Marterial = Marterial;
         Quantity = quantity;
         Unit_Price = unit_Price;
         Price = price;

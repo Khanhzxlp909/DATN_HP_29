@@ -1,4 +1,4 @@
-package com.example.DoAnTotNghiep_MiniatureCrafts.Repository.User;
+package com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Auth;
 
 
 import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.Employee;

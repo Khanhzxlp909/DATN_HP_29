@@ -38,7 +38,9 @@ public class Variation {
         Weight = weight;
         Status = status;
     }
+
     public Variation() {
+
     }
 
     // Getters and Setters

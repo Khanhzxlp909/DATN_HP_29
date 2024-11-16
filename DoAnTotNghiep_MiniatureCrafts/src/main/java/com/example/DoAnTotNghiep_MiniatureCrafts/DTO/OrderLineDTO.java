@@ -9,10 +9,12 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 
 public class OrderLineDTO {
-    private Integer ID;  // ID tự tăng
-    private POSOrderDTO OderID;
+    private Long ID;  // ID tự tăng
+    private Long OderID;
     private VariationDTO VariationID;
 
+    private String VariationName;
+    private String Marterial;
     private Integer Quantity;
     private Double Unit_Price;
     private Double Price;
@@ -20,10 +22,28 @@ public class OrderLineDTO {
     private LocalDate Edit_Date;
     private Boolean Status;
 
+    public String getVariationName() {
+        return VariationName;
+    }
+
+    public void setVariationName(String variationName) {
+        VariationName = variationName;
+    }
+
+    public String getMarterial() {
+        return Marterial;
+    }
+
+    public void setMarterial(String marterial) {
+        Marterial = marterial;
+    }
+
     public OrderLineDTO(OrderLine orderLine) {
         this.ID = orderLine.getID();
-        OderID = new POSOrderDTO(orderLine.getOderID());
+        OderID = orderLine.getOderID();
         VariationID = new VariationDTO(orderLine.getVariationID());
+        VariationName = orderLine.getVariationName();
+        Marterial = orderLine.getMarterial();
         Quantity = orderLine.getQuantity();
         Unit_Price = orderLine.getUnit_Price();
         Price = orderLine.getPrice();
@@ -31,10 +51,13 @@ public class OrderLineDTO {
         Edit_Date = orderLine.getEdit_Date();
         Status = orderLine.getStatus();
     }
-    public OrderLineDTO(Integer ID, POSOrderDTO oderID, VariationDTO variationID, Integer quantity, Double unit_Price, Double price, LocalDate creation_date, LocalDate edit_Date, Boolean status) {
+
+    public OrderLineDTO(Long ID, Long oderID, VariationDTO variationID, String VariationName, String Marterial, Integer quantity, Double unit_Price, Double price, LocalDate creation_date, LocalDate edit_Date, Boolean status) {
         this.ID = ID;
         OderID = oderID;
         VariationID = variationID;
+        this.VariationName = VariationName;
+        this.Marterial = Marterial;
         Quantity = quantity;
         Unit_Price = unit_Price;
         Price = price;
@@ -44,19 +67,19 @@ public class OrderLineDTO {
     }
 
 
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 
-    public POSOrderDTO getOderID() {
+    public Long getOderID() {
         return OderID;
     }
 
-    public void setOderID(POSOrderDTO oderID) {
+    public void setOderID(Long oderID) {
         OderID = oderID;
     }
 

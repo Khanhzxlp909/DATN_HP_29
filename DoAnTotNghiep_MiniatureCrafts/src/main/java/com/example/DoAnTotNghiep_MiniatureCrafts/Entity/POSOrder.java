@@ -51,10 +51,9 @@ public class POSOrder {
     public POSOrder() {
     }
 
-    public POSOrder(Long ID, Customer customerID, LocalDate creation_date, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.DoAnTotNghiep_MiniatureCrafts.Entity.PaymentMethod paymentMethod, String note, Boolean status, LocalDate edit_Date, Integer type_Oder) {
+    public POSOrder(Long ID, Customer customerID, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.DoAnTotNghiep_MiniatureCrafts.Entity.PaymentMethod paymentMethod, String note, Boolean status,LocalDate creation_date, LocalDate edit_Date, Integer type_Oder) {
         this.ID = ID;
         CustomerID = customerID;
-        Creation_date = creation_date;
         Code_Voucher = code_Voucher;
         Total_Amount = total_Amount;
         Discount_Amount = discount_Amount;
@@ -62,6 +61,7 @@ public class POSOrder {
         PaymentMethod = paymentMethod;
         Note = note;
         Status = status;
+        Creation_date = creation_date;
         Edit_Date = edit_Date;
         Type_Oder = type_Oder;
     }

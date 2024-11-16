@@ -13,23 +13,24 @@ public class POSOrderDTO {
     private Long ID;
     private CustomerDTO customerID;
     private String Code_Voucher;
-    private BigDecimal Total_Amount;
-    private BigDecimal Discount_Amount;
-    private BigDecimal Total_Payment;
+    private String Total_Amount;
+    private String Discount_Amount;
+    private String Total_Payment;
     private PaymentMethodDTO PaymentMethod;
     private LocalDate Creation_date;
     private LocalDate Edit_Date;
     private Integer Type_Oder;
     private String Note;
     private Boolean Status;
+    private List<OrderLineDTO> orderLine;
 
     public POSOrderDTO(POSOrder oder) {
         this.ID = oder.getID();
         this.customerID = new CustomerDTO(oder.getCustomerID());
         Code_Voucher = oder.getCode_Voucher();
-        Total_Amount = oder.getTotal_Amount();
-        Discount_Amount = oder.getDiscount_Amount();
-        Total_Payment = oder.getTotal_Payment();
+        Total_Amount = oder.getTotal_Amount().toString();
+        Discount_Amount = oder.getDiscount_Amount().toString();
+        Total_Payment = oder.getTotal_Payment().toString();
         PaymentMethod = new PaymentMethodDTO(oder.getPaymentMethod());
         Creation_date = oder.getCreation_date();
         Edit_Date = oder.getEdit_Date();
@@ -38,7 +39,7 @@ public class POSOrderDTO {
         Status = oder.getStatus();
     }
 
-    public POSOrderDTO(Long ID,  CustomerDTO customerID, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, PaymentMethodDTO paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Boolean status) {
+    public POSOrderDTO(Long ID, CustomerDTO customerID, String code_Voucher, String total_Amount, String discount_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Boolean status, List<OrderLineDTO> orderlineDTO) {
         this.ID = ID;
         this.customerID = customerID;
         Code_Voucher = code_Voucher;
@@ -51,6 +52,7 @@ public class POSOrderDTO {
         Type_Oder = type_Oder;
         Note = note;
         Status = status;
+        orderLine = orderlineDTO;
     }
 
     public Long getID() {
@@ -77,27 +79,27 @@ public class POSOrderDTO {
         Code_Voucher = code_Voucher;
     }
 
-    public BigDecimal getTotal_Amount() {
+    public String getTotal_Amount() {
         return Total_Amount;
     }
 
-    public void setTotal_Amount(BigDecimal total_Amount) {
+    public void setTotal_Amount(String total_Amount) {
         Total_Amount = total_Amount;
     }
 
-    public BigDecimal getDiscount_Amount() {
+    public String getDiscount_Amount() {
         return Discount_Amount;
     }
 
-    public void setDiscount_Amount(BigDecimal discount_Amount) {
+    public void setDiscount_Amount(String discount_Amount) {
         Discount_Amount = discount_Amount;
     }
 
-    public BigDecimal getTotal_Payment() {
+    public String getTotal_Payment() {
         return Total_Payment;
     }
 
-    public void setTotal_Payment(BigDecimal total_Payment) {
+    public void setTotal_Payment(String total_Payment) {
         Total_Payment = total_Payment;
     }
 
@@ -147,6 +149,14 @@ public class POSOrderDTO {
 
     public void setStatus(Boolean status) {
         Status = status;
+    }
+
+    public List<OrderLineDTO> getOrderLine() {
+        return orderLine;
+    }
+
+    public void setOrderLine(List<OrderLineDTO> orderLine) {
+        this.orderLine = orderLine;
     }
 
     public POSOrderDTO() {
