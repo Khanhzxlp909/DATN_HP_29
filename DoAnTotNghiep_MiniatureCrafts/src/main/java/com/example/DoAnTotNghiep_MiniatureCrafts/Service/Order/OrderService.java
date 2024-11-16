@@ -204,18 +204,26 @@ public class OrderService {
 
         entity.setNote(posOrderDTO.getNote());
 
-        // json body bao gồm:
-        //customerID.ID
-        //status
-        //type_Oder
-        //creation_date
-        //paymentMethod.id
-        //code_Voucher
-        //note
         return orderRepository.save(entity);
 
     }
 
+
+    public OrderLineDTO mapOrderLineEntityToDTO(OrderLine entity) {
+        return new OrderLineDTO(
+                entity.getID(),
+                entity.getOderID(),
+                variationService.mapVariationToVariationDTO(entity.getVariationID()),
+                entity.getVariationName(),
+                entity.getMarterial(),
+                entity.getQuantity(),
+                entity.getUnit_Price(),
+                entity.getPrice(),
+                entity.getCreation_date(),
+                entity.getEdit_Date(),
+                entity.getStatus()
+        );
+    }
 
     public OrderLine mapOrderLineDTOToEntity(OrderLineDTO dto) {
         return new OrderLine(
