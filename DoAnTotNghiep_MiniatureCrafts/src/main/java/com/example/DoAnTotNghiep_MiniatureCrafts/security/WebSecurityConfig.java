@@ -87,12 +87,12 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // Cho phép tất cả các pattern của origin
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Cho phép tất cả các phương thức HTTP
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Cho phép các header cần thiết
-        configuration.setAllowCredentials(true); // Cho phép gửi cookie hoặc thông tin xác thực
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Specify your frontend URL
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true); // Allow credentials like cookies or auth tokens
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // Apply to all endpoints
         return source;
     }
 }
