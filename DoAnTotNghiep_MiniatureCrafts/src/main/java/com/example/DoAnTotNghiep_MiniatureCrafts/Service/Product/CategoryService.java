@@ -36,4 +36,5 @@ public class CategoryService {
         return list.stream().map(category -> new CategoryDTO(category)).collect(Collectors.toList());
     }
 
+
 }
