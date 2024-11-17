@@ -36,6 +36,14 @@ public class CustomerDTO {
 
     public CustomerDTO(Customer customerID) {
         this.ID = customerID.getID();
+        this.Name = customerID.getName();
+        this.Address = customerID.getAddress();
+        this.Phone = customerID.getPhone();
+        this.Note = customerID.getNote();
+        this.Status = customerID.getStatus();
+        this.Creation_date = customerID.getCreation_date();
+        this.Edit_Date = customerID.getEdit_Date();
+
     }
 
     public CustomerDTO() {

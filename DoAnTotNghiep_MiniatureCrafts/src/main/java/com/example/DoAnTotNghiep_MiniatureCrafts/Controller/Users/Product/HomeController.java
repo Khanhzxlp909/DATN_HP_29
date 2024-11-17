@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("vmgKtShop")
-public class ShopController {
+@CrossOrigin(value = "*")
+public class HomeController {
 
     @Autowired
     private VariationService variationService;
 
 
-    @GetMapping("all")
+    @GetMapping("home")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
     }

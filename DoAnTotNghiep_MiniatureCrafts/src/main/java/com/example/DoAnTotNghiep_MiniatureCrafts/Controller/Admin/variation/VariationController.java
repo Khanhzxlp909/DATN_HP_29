@@ -18,41 +18,16 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("admin")
+@RequestMapping("admin/variation")
+@CrossOrigin(value = "*")
 public class VariationController {
 
 
     @Autowired
     private VariationService variationService;
 
-    @Autowired
-    private VoucherService voucherService;
-
-
     @GetMapping("result/all")
     public Page<VariationDTO> home(Pageable pageable) {
-//        List<VoucherDTO> list = voucherService.getAll();
-//        for (VoucherDTO voucherDTO : list) {
-//            if (voucherDTO.getTypeVoucher()){
-//                System.out.println("Voucher trừ trực tiếp: "+voucherDTO.getID());
-//                System.out.println("Voucher trừ trực tiếp: "+voucherDTO.getCode());
-//                System.out.println("Voucher trừ trực tiếp: "+voucherDTO.getDiscountValue());
-//            }else {
-//                System.out.println("Voucher trừ theo %: "+voucherDTO.getID());
-//                System.out.println("Voucher trừ theo %: "+voucherDTO.getCode());
-//                System.out.println("Voucher trừ theo %: "+voucherDTO.getDiscountValue());
-//            }
-//        }
-        double giaDemo = 900000;
-
-        VoucherDTO voucher = voucherService.findByCode("f0aee30f-98e8-4794-ab7a-0a91f9e75ebd");
-        if (voucher.getTypeVoucher()){
-            double gia = giaDemo - voucher.getDiscountValue();
-            System.out.println("Giá: "+ gia);
-        }else {
-            double gia = giaDemo - (giaDemo * (voucher.getDiscountValue()/100));
-            System.out.println("theo %: "+gia);
-        }
         return variationService.getAll(pageable);
     }
 
@@ -61,7 +36,7 @@ public class VariationController {
         return variationService.findByName(pageable, name);
     }
 
-    @PostMapping("add")
+    @PostMapping("add/variation")
     public Variation add(@RequestBody VariationDTO varDTO) {
         return variationService.add(varDTO);
     }

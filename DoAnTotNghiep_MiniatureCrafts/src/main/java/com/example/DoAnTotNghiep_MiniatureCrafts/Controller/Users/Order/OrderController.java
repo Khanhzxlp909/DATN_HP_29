@@ -8,7 +8,6 @@ import com.example.DoAnTotNghiep_MiniatureCrafts.Entity.POSOrder;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Order.OrderService;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Order.Voucher.VoucherService;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Product.VariationService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +17,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("vmgKtShop")
+@CrossOrigin(value = "*")
+
 public class OrderController {
     @Autowired
     private VariationService variationService;
@@ -44,12 +45,16 @@ public class OrderController {
         return orders;
 
     }
+    // khi order client sẽ gửi về 2 json bao gồm thông tin khách hàng,
+    // là customer thông qua idCustomer được lưu trên session
+    // khi đăng xuất sẽ clear session, hoặc localstore
+
 
     // lấy ra những sp có trong hóa đơn
     @GetMapping("history/{id}/{order}")
-    public List<POSOrderDTO> getAllOrder(@PathVariable("id") Long id, @PathVariable("order") String orderID) {
+    public List<POSOrderDTO> getOrderHistory(@PathVariable("id") Long customerid) {
         // Lấy danh sách các POSOrderDTO từ service
-        List<POSOrderDTO> orders = orderService.getAllOrders(id);
+        List<POSOrderDTO> orders = orderService.getAllOrders(customerid);
 
         // Lặp qua từng đơn hàng và gắn danh sách OrderLineDTO vào đối tượng POSOrderDTO
         orders.forEach(order -> {
@@ -63,55 +68,38 @@ public class OrderController {
     }
     // khi bấm đặt hàng thì tạo hóa đơn r trực tiếp thêm sản phẩm đó vào hóa đơn
     // bấm đặt hàng\
+
+
     // trang đăng ký:
     // nhập thông tin
     // sau đó save vào csdl
     // tiếp tục đẩy đến trang tạo tài khoản
     // sau đó nhảy về trang order
 
-    @PostMapping("/newOrder/")
-    public ResponseEntity<?> createOrder(@Valid @RequestBody POSOrderDTO posOrderDTO) {
+    @PostMapping("/newOrder")
+    public ResponseEntity<?> createOrder(@RequestBody POSOrderDTO posOrderDTO) {
         try {
-            // Tạo order
-            POSOrder order = orderService.addSHOP(posOrderDTO);
+            // Tạo POSOrder
+            POSOrder order = orderService.orderInShop(posOrderDTO);
 
-            System.out.println("ID ORDER: " + order.getID());
+            // Lấy ID của POSOrder vừa được lưu
+            Long orderId = order.getID();
+            System.out.println("ID ORDER: " + orderId);
 
-            // Nếu order được tạo thành công, tạo dòng đơn hàng
-            if (order.getID() != null) {
-                // Giả sử bạn nhận được thông tin dòng đơn hàng từ client (có thể được truyền dưới dạng JSON)
-                // Tạo OrderLineDTO và gọi createOrderLine
-                OrderLineDTO orderLineDTO = new OrderLineDTO();
-                // Cập nhật thông tin cho orderLineDTO (tùy theo yêu cầu của bạn)
-                // orderLineDTO.set...
-
-                createOrderLine(orderLineDTO, order.getID());  // Gọi createOrderLine với thông tin dòng đơn hàng và orderID
+            // Thêm danh sách OrderLine từ DTO
+            for (OrderLineDTO orderLineDTO : posOrderDTO.getOrderLine()) {
+                OrderLine savedOrderLine = orderService.addOrderline(orderLineDTO, orderId);
+                System.out.println("variation id : " + savedOrderLine.getVariationID().getID());
+                System.out.println("Saved OrderLine: " + savedOrderLine);
             }
 
+            // Chuyển đổi POSOrder entity sang DTO để trả về
             POSOrderDTO responseDTO = orderService.mapOrderEntityToDTO(order);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
-
         } catch (RuntimeException ex) {
-            // Trả về thông báo lỗi với HTTP status 400 Bad Request
+            // Trả về lỗi nếu có exception
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
-
-    public ResponseEntity<?> createOrderLine(@Valid @RequestBody OrderLineDTO orderLineDTO, Long orderID) {
-        try {
-            // Tạo dòng đơn hàng mới
-            OrderLine orderline = orderService.addOrderline(orderLineDTO, orderID);
-
-            // Chuyển đổi entity sang DTO để trả về response
-            OrderLineDTO responseDTO = orderService.mapOrderLineEntityToDTO(orderline);
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
-
-        } catch (RuntimeException ex) {
-            // Trả về thông báo lỗi với HTTP status 400 Bad Request
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
-    }
-
-
 }

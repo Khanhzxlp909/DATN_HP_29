@@ -10,9 +10,6 @@ public class OrderLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;  // ID tự tăng
-
-    //    @ManyToOne
-//    @JoinColumn( name ="OderID")
     private Long OderID;
 
     @ManyToOne

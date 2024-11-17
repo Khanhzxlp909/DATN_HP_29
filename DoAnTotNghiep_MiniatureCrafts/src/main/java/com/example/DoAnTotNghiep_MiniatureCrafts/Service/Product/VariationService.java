@@ -24,35 +24,52 @@ public class VariationService {
 
 
     @Autowired
-    private VariationRepository prdRepo;
+    private VariationRepository variationRepository;
+
+
+
+    public VariationDTO editVariation(Long id) {
+        Variation variation = variationRepository.findById(id).orElseThrow();
+        return new VariationDTO(variation);
+    }
+
+    public VariationDTO findByIDDTO(Long id) {
+        Variation variation = variationRepository.findById(id).orElseThrow();
+        return new VariationDTO(variation);
+    }
+
+    public Variation findByIDEntity(Long id) {
+        Variation variation = variationRepository.findById(id).orElseThrow();
+        return variation;
+    }
 
     // thêm sản phẩm mới
-    public Variation add(VariationDTO varDTO) {
-        Variation variation = new Variation();
+    public Variation add(VariationDTO dto) {
+        Variation entity = new Variation();
 
         // Chuyển từ ProductDTO sang Product entity
         Product product = new Product();
-        product.setID(varDTO.getProductID().getId());
-        product.setName(varDTO.getProductID().getName());
-        product.setCategoryID(varDTO.getProductID().getCategoryID());
+        product.setID(dto.getProductID().getId());
+        product.setName(dto.getProductID().getName());
+        product.setCategoryID(dto.getProductID().getCategoryID());
 
 
         // Chuyển từ BrandDTO sang Brand entity
         Brand brand = new Brand();
-        brand.setID(varDTO.getBrandID().getID());
-        brand.setName(varDTO.getBrandID().getName());
-        brand.setNote(varDTO.getBrandID().getNote());
-        brand.setStatus(varDTO.getBrandID().getStatus());
+        brand.setID(dto.getBrandID().getID());
+        brand.setName(dto.getBrandID().getName());
+        brand.setNote(dto.getBrandID().getNote());
+        brand.setStatus(dto.getBrandID().getStatus());
 
 
         //tryền DTO vào entity
-        variation.setProductID(product);
-        variation.setSKU(UUID.randomUUID().toString());
+        entity.setProductID(product);
+        entity.setSKU(UUID.randomUUID().toString());
 
         try {
-            String currency = varDTO.getPrice();
+            String currency = dto.getPrice();
             double amount = parseCurrency(currency);
-            variation.setPrice(amount);
+            entity.setPrice(amount);
 
             System.out.println(amount); // In ra: 1500000.0
 
@@ -60,15 +77,18 @@ public class VariationService {
             e.printStackTrace();
         }
 
-        variation.setBrandID(brand);
-        variation.setQuantity(varDTO.getQuantity());
-        variation.setMaterial(varDTO.getMaterial());
-        variation.setWeight(varDTO.getWeight());
-        variation.setStatus(varDTO.getStatus());
+        entity.setBrandID(brand);
+        entity.setQuantity(dto.getQuantity());
+        entity.setMaterial(dto.getMaterial());
+        entity.setWeight(dto.getWeight());
+        entity.setStatus(dto.getStatus());
 
-        return prdRepo.save(variation);
+        return variationRepository.save(entity);
     }
 
+    public Variation save(Variation variation) {
+        return variationRepository.save(variation);
+    }
     //update sarn pham
     public Variation update(VariationDTO varDTO) {
         Variation variation = new Variation();
@@ -109,7 +129,7 @@ public class VariationService {
         variation.setWeight(varDTO.getWeight());
         variation.setStatus(varDTO.getStatus());
 
-        return prdRepo.save(variation);
+        return variationRepository.save(variation);
     }
 
     public static double parseCurrency(String currency) throws ParseException {
@@ -119,14 +139,14 @@ public class VariationService {
     }
 
     public void delete(Long id) {
-        prdRepo.deleteById(id);
+        variationRepository.deleteById(id);
     }
 
 
     // lấy sản phaarm và phân trang
     public Page<VariationDTO> getAll(Pageable pageable) {
         // Truy vấn các Variations theo Status và phân trang
-        Page<Variation> variations = prdRepo.findAll(pageable);
+        Page<Variation> variations = variationRepository.findAll(pageable);
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
@@ -230,7 +250,7 @@ public class VariationService {
 
     public Page<VariationDTO> findByName(Pageable pageable, String id) {
         // Truy vấn các Variations theo Status và phân trang
-        Page<Variation> variations = prdRepo.findByName(pageable, id);
+        Page<Variation> variations = variationRepository.findByName(pageable, id);
 
         // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
         return variations.map(variation -> {

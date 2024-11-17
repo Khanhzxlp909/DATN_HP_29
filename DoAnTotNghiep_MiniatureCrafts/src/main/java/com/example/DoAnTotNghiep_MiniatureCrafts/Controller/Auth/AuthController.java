@@ -5,7 +5,7 @@ import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Auth.CustomerReposit
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Auth.EmployeeRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Auth.RoleRepository;
 import com.example.DoAnTotNghiep_MiniatureCrafts.Repository.Auth.AccountRepository;
-import com.example.DoAnTotNghiep_MiniatureCrafts.Service.Security.AuthService;
+import com.example.DoAnTotNghiep_MiniatureCrafts.Service.AccountService.AuthService;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.LoginRequest;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.request.SignupRequest;
 import com.example.DoAnTotNghiep_MiniatureCrafts.payload.response.JwtResponse;
@@ -97,7 +97,6 @@ public class AuthController {
                 accountRole
         ));
     }
-
     // Phương thức để đăng ký người dùng mới
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -177,17 +176,53 @@ public class AuthController {
 
     @GetMapping("/validateToken")
     public ResponseEntity<?> validateToken(@RequestHeader(value = "Authorization", required = false) String token) {
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authorization header is missing");
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse("Lỗi: Header Authorization thiếu hoặc không hợp lệ"));
         }
 
-        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+        // Lấy token từ Authorization header
+        String jwtToken = token.substring(7);  // Cắt bỏ "Bearer " khỏi token
 
-        if (jwtUtils.validateJwtToken(jwtToken)) {
-            return ResponseEntity.ok("done");
+        // Kiểm tra tính hợp lệ của token
+        if (!jwtUtils.validateJwtToken(jwtToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new MessageResponse("Lỗi: Token không hợp lệ hoặc đã hết hạn"));
+        }
+
+        // Lấy username từ token
+        String username = jwtUtils.getUserNameFromJwtToken(jwtToken);
+
+        // Tìm Account từ username
+        Account account = accountRepository.findByUsername(username);
+
+        // Lấy vai trò của người dùng từ UserDetailsImpl
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String accountRole = userDetails.getAccountRole();  // Vai trò hiện tại của người dùng
+        Long id = userDetails.getId();
+
+        List<?> userInfo;
+
+        // Kiểm tra vai trò và truy xuất thông tin từ bảng tương ứng
+        if ("ADMIN".equals(accountRole) || "USERS".equals(accountRole)) {
+            userInfo = employeeRepository.findEmployeeByUsers(id);
+        } else if ("CUSTOMER".equals(accountRole)) {
+            userInfo = customerRepository.findByUsers(id);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vai trò không hợp lệ!");
         }
+
+        // Trả về JWT và thông tin của người dùng
+        return ResponseEntity.ok(new JwtResponse(
+                jwtToken,  // Trả về chính token được xác minh
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                userInfo,
+                accountRole
+        ));
     }
+
+
 
 }
