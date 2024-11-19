@@ -1,0 +1,94 @@
+package com.example.hp_29_MiniatureCrafts.dto;
+
+import java.time.LocalDate;
+
+public class SupplierDTO {
+    private Integer id;
+    private String name;
+    private String phone;
+    private String address;
+    private String note;
+    private Boolean status;
+    private LocalDate creationDate;
+    private LocalDate editDate;
+
+    // Getters and Setters
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDate getEditDate() {
+        return editDate;
+    }
+
+    public void setEditDate(LocalDate editDate) {
+        this.editDate = editDate;
+    }
+
+    public SupplierDTO() {
+    }
+
+    public SupplierDTO(Integer id, String name, String phone, String address, String note, Boolean status, LocalDate creationDate, LocalDate editDate) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.note = note;
+        this.status = status;
+        this.creationDate = creationDate;
+        this.editDate = editDate;
+    }
+}
