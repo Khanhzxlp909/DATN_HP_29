@@ -1,13 +1,8 @@
 package com.example.hp_29_MiniatureCrafts.service.product;
 
-import com.example.hp_29_MiniatureCrafts.dto.BrandDTO;
-import com.example.hp_29_MiniatureCrafts.dto.CategoryDTO;
-import com.example.hp_29_MiniatureCrafts.dto.ProductDTO;
-import com.example.hp_29_MiniatureCrafts.dto.VariationDTO;
-import com.example.hp_29_MiniatureCrafts.entity.Brand;
-import com.example.hp_29_MiniatureCrafts.entity.Category;
-import com.example.hp_29_MiniatureCrafts.entity.Product;
-import com.example.hp_29_MiniatureCrafts.entity.Variation;
+import com.example.hp_29_MiniatureCrafts.dto.*;
+import com.example.hp_29_MiniatureCrafts.entity.*;
+import com.example.hp_29_MiniatureCrafts.repository.product.ImagesRepository;
 import com.example.hp_29_MiniatureCrafts.repository.product.VariationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,8 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class VariationService {
@@ -27,6 +25,12 @@ public class VariationService {
 
     @Autowired
     private VariationRepository variationRepository;
+
+    @Autowired
+    static ImagesRepository staticImagesRepository;
+
+    @Autowired
+     ImagesRepository imagesRepository;
 
 
     public VariationDTO editVariation(Long id) {
@@ -166,9 +170,8 @@ public class VariationService {
             dto.setID(variation.getID());
             dto.setSKU(variation.getSKU());
             dto.setProductID(new ProductDTO(
-                    variation.getProductID().getID(),
-                    variation.getProductID().getName(),
-                    mapCategoryToDTO(variation.getProductID().getCategoryID())
+                    mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                    getImageByProduct(variation.getProductID().getID())
             ));
 
             // chuyển đổi giá từ biến thể qua double
@@ -198,11 +201,11 @@ public class VariationService {
     }
 
     // Chuyển từ Product entity sang ProductDTO
-    public static ProductDTO mapProductToProductDTO(Product entity) {
+    public ProductDTO mapProductToProductDTO(Product entity) {
         return new ProductDTO(
-                entity.getID(),
-                entity.getName(),
-                mapCategoryToDTO(entity.getCategoryID())
+                mapCategoryToDTO(entity.getCategoryID()),
+                getImageByProduct(entity.getID())
+
         );
     }
 
@@ -243,7 +246,9 @@ public class VariationService {
     }
 
     // Chuyển từ Variation entity sang VariationDTO
-    public static VariationDTO mapVariationToVariationDTO(Variation entity) {
+    public VariationDTO mapVariationToVariationDTO(Variation entity) {
+        ProductDTO productDTO = mapProductToProductDTO(entity.getProductID());
+        System.out.println("CD Images: "+ getImageByProduct(entity.getProductID().getID()));
         return new VariationDTO(
                 entity.getID(),
                 mapProductToProductDTO(entity.getProductID()),
@@ -253,11 +258,16 @@ public class VariationService {
                 mapBrandToBrandDTO(entity.getBrandID()),
                 entity.getMaterial(),
                 entity.getWeight(),
-                entity.getStatus()
+                entity.getStatus(),
+                getImageByProduct(entity.getProductID().getID())
 
         );
     }
 
+    public List<ImagesDTO> getImageByProduct(Long productID) {
+        List<Images> list = imagesRepository.findByProduct(productID);
+        return  list.stream().map(images -> new ImagesDTO(images) ).collect(Collectors.toList());
+    }
 
 
     public Page<VariationDTO> findByName(Pageable pageable, String id) {
@@ -270,10 +280,11 @@ public class VariationService {
             dto.setID(variation.getID());
             dto.setSKU(variation.getSKU());
             dto.setProductID(new ProductDTO(
-                    variation.getProductID().getID(),
-                    variation.getProductID().getName(),
-                    mapCategoryToDTO(variation.getProductID().getCategoryID())
+                    mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                    getImageByProduct(variation.getProductID().getID())
             ));
+            System.out.println("ID Product for Images: "+ getImageByProduct(variation.getProductID().getID()));
+
             // chuyển đổi giá từ biến thể qua double
             double price = variation.getPrice();
             System.out.println(price);

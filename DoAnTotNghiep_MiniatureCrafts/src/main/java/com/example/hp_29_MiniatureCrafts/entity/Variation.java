@@ -27,6 +27,7 @@ public class Variation {
     private Boolean Status;
 
 
+
     public Variation(Long ID, Product productID, String SKU, Double price, Integer quantity, Brand brandID, String material, Double weight, Boolean status) {
         this.ID = ID;
         ProductID = productID;

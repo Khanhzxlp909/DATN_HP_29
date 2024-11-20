@@ -1,5 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.entity;
 
+import com.example.hp_29_MiniatureCrafts.dto.ImagesDTO;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,11 +10,30 @@ public class Images {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
 
-    @Column(name = "Product")
-    private Integer Product;
+    @ManyToOne
+    @JoinColumn(name = "ProductID", nullable = false) // Đặt tên cột là Product_ID
+    private Product Product;
+
 
     private String Cd_Images;
     private Boolean Set_Default;
+    public Images(Integer ID, Product product, String cd_Images, Boolean set_Default) {
+        this.ID = ID;
+        Product = product;
+        Cd_Images = cd_Images;
+        Set_Default = set_Default;
+    }
+
+    public Images(ImagesDTO dto) {
+        this.ID = dto.getID();
+        this.Product = new Product(dto.getProduct());
+        this.Cd_Images = dto.getCd_Images();
+        this.Set_Default = dto.getSet_Default();
+    }
+
+    public Images() {
+    }
+
 
     // Getters and Setters
     public Integer getID() {
@@ -24,11 +44,11 @@ public class Images {
         this.ID = ID;
     }
 
-    public Integer getProduct() {
+    public Product getProduct() {
         return Product;
     }
 
-    public void setProduct(Integer product) {
+    public void setProduct(Product product) {
         Product = product;
     }
 

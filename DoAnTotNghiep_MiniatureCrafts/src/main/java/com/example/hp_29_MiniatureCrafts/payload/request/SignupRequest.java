@@ -8,12 +8,13 @@ import java.util.Set;
 
 public class SignupRequest {
 
+
     @NotBlank
     @Size(min = 3, max = 20)
     private String username;
 
 //    @NotBlank
-    private Long id;
+    private Long usersid;
 
     @NotBlank
     @Size(max = 50)
@@ -26,12 +27,12 @@ public class SignupRequest {
     @Size(min = 6, max = 40)
     private String password;
 
-    public Long getId() {
-        return id;
+    public Long getUsersid() {
+        return usersid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUsersid(Long usersid) {
+        this.usersid = usersid;
     }
 
     public String getUsername() {

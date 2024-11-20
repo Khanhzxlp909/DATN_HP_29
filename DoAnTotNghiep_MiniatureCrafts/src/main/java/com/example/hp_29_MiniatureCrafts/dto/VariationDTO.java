@@ -2,6 +2,8 @@ package com.example.hp_29_MiniatureCrafts.dto;
 
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
 
+import java.util.List;
+
 public class VariationDTO {
     private Long ID;
     private ProductDTO ProductID;
@@ -12,11 +14,12 @@ public class VariationDTO {
     private String Material;
     private Double Weight;
     private Boolean Status;
+    private List<ImagesDTO> ImagesDTO;
 
     public VariationDTO() {
     }
 
-    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status) {
+    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status,List<ImagesDTO> images) {
         this.ID = ID;
         ProductID = productID;
         this.SKU = SKU;
@@ -26,6 +29,7 @@ public class VariationDTO {
         Material = material;
         Weight = weight;
         Status = status;
+        ImagesDTO = images;
     }
 
     public VariationDTO(Variation variationID) {

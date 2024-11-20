@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -115,9 +116,9 @@ public class AuthController {
         }
 
         // Tạo tài khoản người dùng mới với các thông tin từ yêu cầu đăng ký
-        String accountRole = "USERS"; // Đặt giá trị mặc định cho accountRole
+        String accountRole = "CUSTOMER"; // Đặt giá trị mặc định cho accountRole là "CUSTOMER"
         Account user = new Account(
-                signUpRequest.getId(),
+                signUpRequest.getUsersid(),
                 signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()),
@@ -130,10 +131,10 @@ public class AuthController {
 
         // Kiểm tra và gán vai trò cho người dùng
         if (strRoles == null || strRoles.isEmpty()) {
-            // Nếu không có vai trò trong yêu cầu, gán vai trò mặc định là USER
-            Role userRole = roleRepository.findByName(ERole.USER)
-                    .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò."));
-            roles.add(userRole);
+            // Nếu không có vai trò trong yêu cầu, gán vai trò mặc định là CUSTOMER
+            Role customerRole = roleRepository.findByName(ERole.CUSTOMER)
+                    .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò CUSTOMER."));
+            roles.add(customerRole);
         } else {
             // Gán vai trò dựa trên yêu cầu
             for (String role : strRoles) {
@@ -142,36 +143,38 @@ public class AuthController {
                         Role adminRole = roleRepository.findByName(ERole.ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò ADMIN."));
                         roles.add(adminRole);
-                        accountRole = "ADMIN";
+                        accountRole = "ADMIN"; // Cập nhật accountRole thành ADMIN
                         break;
                     case "2":
-                        Role customerRole = roleRepository.findByName(ERole.CUSTOMER)
-                                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò CUSTOMER."));
-                        roles.add(customerRole);
-                        accountRole = "CUSTOMER";
-                        break;
-                    default:
                         Role userRole = roleRepository.findByName(ERole.USER)
                                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò USER."));
                         roles.add(userRole);
-                        accountRole = "USERS";
+                        accountRole = "USER"; // Cập nhật accountRole thành USER
+                        break;
+                    default:
+                        Role customerRole = roleRepository.findByName(ERole.CUSTOMER)
+                                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò CUSTOMER."));
+                        roles.add(customerRole);
+                        accountRole = "CUSTOMER"; // Cập nhật accountRole thành CUSTOMER
                 }
             }
         }
-
-        System.out.println("Role hiện tại: " + accountRole);
 
         // Thiết lập vai trò cho người dùng
         user.setRoles(roles);
         // Cập nhật lại role vào account trước khi lưu
         user.setAccountRole(accountRole);
 
+        user.setActive(true);
+
+        user.setCreation_date(LocalDate.now());
         // Lưu người dùng mới vào cơ sở dữ liệu
         accountRepository.save(user);
 
         // Trả về thông báo đăng ký thành công
-        return ResponseEntity.ok(new MessageResponse("Đăng ký người dùng thành công!"));
+        return ResponseEntity.ok(user);
     }
+
 
 
     @GetMapping("/validateToken")

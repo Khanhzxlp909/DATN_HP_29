@@ -1,22 +1,38 @@
 package com.example.hp_29_MiniatureCrafts.dto;
 
 import com.example.hp_29_MiniatureCrafts.entity.Category;
+import com.example.hp_29_MiniatureCrafts.entity.Images;
 import com.example.hp_29_MiniatureCrafts.entity.Product;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
 
 public class ProductDTO {
     private Long ID;
     private String Name;
     private CategoryDTO CategoryID;
+    private List<ImagesDTO> imagesDTOS;
+
+    public ProductDTO(CategoryDTO categoryID, List<ImagesDTO> imagesDTOS) {
+        CategoryID = categoryID;
+        this.imagesDTOS = imagesDTOS;
+    }
+
+    public Long getID() {
+        return ID;
+    }
+
+    public List<ImagesDTO> getImagesDTOS() {
+        return imagesDTOS;
+    }
+
+    public void setImagesDTOS(List<ImagesDTO> imagesDTOS) {
+        this.imagesDTOS = imagesDTOS;
+    }
 
     public ProductDTO() {
     }
 
-    public ProductDTO(Long ID, String name, CategoryDTO categoryID) {
-        this.ID = ID;
-        Name = name;
-        CategoryID = categoryID;
-    }
 
     public ProductDTO(Product entity) {
         this.ID = entity.getID();
