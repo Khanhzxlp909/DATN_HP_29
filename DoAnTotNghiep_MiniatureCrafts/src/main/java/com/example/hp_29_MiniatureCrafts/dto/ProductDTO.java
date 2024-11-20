@@ -13,7 +13,9 @@ public class ProductDTO {
     private CategoryDTO CategoryID;
     private List<ImagesDTO> imagesDTOS;
 
-    public ProductDTO(CategoryDTO categoryID, List<ImagesDTO> imagesDTOS) {
+    public ProductDTO(Long id, String name,CategoryDTO categoryID, List<ImagesDTO> imagesDTOS) {
+        this.ID= id;
+        this.Name= name;
         CategoryID = categoryID;
         this.imagesDTOS = imagesDTOS;
     }

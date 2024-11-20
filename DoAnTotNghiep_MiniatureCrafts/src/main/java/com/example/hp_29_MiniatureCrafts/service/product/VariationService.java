@@ -170,6 +170,8 @@ public class VariationService {
             dto.setID(variation.getID());
             dto.setSKU(variation.getSKU());
             dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
                     mapCategoryToDTO(variation.getProductID().getCategoryID()),
                     getImageByProduct(variation.getProductID().getID())
             ));
@@ -203,6 +205,8 @@ public class VariationService {
     // Chuyển từ Product entity sang ProductDTO
     public ProductDTO mapProductToProductDTO(Product entity) {
         return new ProductDTO(
+                entity.getID(),
+                entity.getName(),
                 mapCategoryToDTO(entity.getCategoryID()),
                 getImageByProduct(entity.getID())
 
@@ -280,6 +284,8 @@ public class VariationService {
             dto.setID(variation.getID());
             dto.setSKU(variation.getSKU());
             dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
                     mapCategoryToDTO(variation.getProductID().getCategoryID()),
                     getImageByProduct(variation.getProductID().getID())
             ));
