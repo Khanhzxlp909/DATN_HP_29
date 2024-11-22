@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("vmgKtShop")
+@RequestMapping("MiniatureCrafts")
 @CrossOrigin(value = "*")
 public class HomeController {
 
@@ -26,5 +26,15 @@ public class HomeController {
     public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {
         return variationService.findByName(pageable, name);
 
+    }
+
+    @GetMapping("category/{category}")
+    public Page<VariationDTO> filterCategory(Pageable pageable, @PathVariable("category") Long category) {
+        return variationService.getProductByCategory(pageable,category);
+    }
+
+    @GetMapping("brands/{brands}")
+    public Page<VariationDTO> filterBrands(Pageable pageable, @PathVariable("brands") Long brands) {
+        return variationService.getVariationByBrands(pageable,brands);
     }
 }
