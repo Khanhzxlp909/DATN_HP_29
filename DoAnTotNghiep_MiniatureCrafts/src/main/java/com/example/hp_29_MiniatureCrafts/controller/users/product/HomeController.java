@@ -1,7 +1,12 @@
 package com.example.hp_29_MiniatureCrafts.controller.users.product;
 
 
+import com.example.hp_29_MiniatureCrafts.dto.CustomerDTO;
 import com.example.hp_29_MiniatureCrafts.dto.VariationDTO;
+import com.example.hp_29_MiniatureCrafts.entity.Account;
+import com.example.hp_29_MiniatureCrafts.entity.Customer;
+import com.example.hp_29_MiniatureCrafts.service.account.AccountService;
+import com.example.hp_29_MiniatureCrafts.service.account.customer.CustomerService;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,10 +21,26 @@ public class HomeController {
     @Autowired
     private VariationService variationService;
 
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private AccountService accountService;
+
 
     @GetMapping("home")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
+    }
+
+    @PostMapping("updateInfo")
+    public Customer updateCustomer(@RequestBody CustomerDTO customerDTO) {
+        return customerService.updateCustomer(customerDTO);
+    }
+
+    @PostMapping("updateAccount")
+    public Account updateCustomer(@RequestBody Account account) {
+        return accountService.updateAccount(account);
     }
 
     @GetMapping("result/{name}")

@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Controller
+@RestController
 @RequestMapping("/users/")
 @CrossOrigin(value = "*")
 public class AuthController {
