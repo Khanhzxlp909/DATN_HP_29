@@ -77,7 +77,7 @@ public class AuthController {
         String accountRole = userDetails.getAccountRole();  // Lấy vai trò hiện tại
         Long id = userDetails.getId();
 
-        List<?> userInfo;
+        Object userInfo;
 
         // Kiểm tra vai trò và truy xuất thông tin từ bảng tương ứng
         if ("ADMIN".equals(accountRole) || "USERS".equals(accountRole)) {
@@ -204,7 +204,7 @@ public class AuthController {
         String accountRole = userDetails.getAccountRole();  // Vai trò hiện tại của người dùng
         Long id = userDetails.getId();
 
-        List<?> userInfo;
+        Object userInfo;
 
         // Kiểm tra vai trò và truy xuất thông tin từ bảng tương ứng
         if ("ADMIN".equals(accountRole) || "USERS".equals(accountRole)) {
@@ -225,7 +225,6 @@ public class AuthController {
                 accountRole
         ));
     }
-
 
 
 }

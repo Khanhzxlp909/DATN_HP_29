@@ -30,7 +30,7 @@ public class VariationService {
     static ImagesRepository staticImagesRepository;
 
     @Autowired
-     ImagesRepository imagesRepository;
+    ImagesRepository imagesRepository;
 
 
     public VariationDTO editVariation(Long id) {
@@ -252,7 +252,7 @@ public class VariationService {
     // Chuyển từ Variation entity sang VariationDTO
     public VariationDTO mapVariationToVariationDTO(Variation entity) {
         ProductDTO productDTO = mapProductToProductDTO(entity.getProductID());
-        System.out.println("CD Images: "+ getImageByProduct(entity.getProductID().getID()));
+        System.out.println("CD Images: " + getImageByProduct(entity.getProductID().getID()));
         return new VariationDTO(
                 entity.getID(),
                 mapProductToProductDTO(entity.getProductID()),
@@ -270,7 +270,7 @@ public class VariationService {
 
     public List<ImagesDTO> getImageByProduct(Long productID) {
         List<Images> list = imagesRepository.findByProduct(productID);
-        return  list.stream().map(images -> new ImagesDTO(images) ).collect(Collectors.toList());
+        return list.stream().map(images -> new ImagesDTO(images)).collect(Collectors.toList());
     }
 
 
@@ -289,7 +289,7 @@ public class VariationService {
                     mapCategoryToDTO(variation.getProductID().getCategoryID()),
                     getImageByProduct(variation.getProductID().getID())
             ));
-            System.out.println("ID Product for Images: "+ getImageByProduct(variation.getProductID().getID()));
+            System.out.println("ID Product for Images: " + getImageByProduct(variation.getProductID().getID()));
 
             // chuyển đổi giá từ biến thể qua double
             double price = variation.getPrice();
@@ -311,15 +311,52 @@ public class VariationService {
         });
     }
 
-    public Page<VariationDTO> getProductByCategory(Pageable pageable,Long category) {
-        Page<Variation> list = variationRepository.findProductbyCatrgory(pageable,category);
+
+    public VariationDTO findByid(Long id) {
+        // Truy vấn các Variations theo Status và phân trang
+        Variation variation = variationRepository.findByID(id);
+
+        // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
+        VariationDTO dto = new VariationDTO();
+        dto.setID(variation.getID());
+        dto.setSKU(variation.getSKU());
+        dto.setProductID(new ProductDTO(
+                variation.getProductID().getID(),
+                variation.getProductID().getName(),
+                mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                getImageByProduct(variation.getProductID().getID())
+        ));
+        System.out.println("ID Product for Images: " + getImageByProduct(variation.getProductID().getID()));
+
+        // chuyển đổi giá từ biến thể qua double
+        double price = variation.getPrice();
+        System.out.println(price);
+        // chuyển đổi từ double sang dạng string và đưa ra dưới dạng giá + VND
+        dto.setPrice(formatter.format(price));
+
+        dto.setQuantity(variation.getQuantity());
+        dto.setBrandID(new BrandDTO(
+                variation.getBrandID().getID(),
+                variation.getBrandID().getName(),
+                variation.getBrandID().getNote(),
+                variation.getBrandID().getStatus()
+        ));
+        dto.setMaterial(variation.getMaterial());
+        dto.setWeight(variation.getWeight());
+        dto.setStatus(variation.getStatus());
+
+        return dto;
+    }
+
+    public Page<VariationDTO> getProductByCategory(Pageable pageable, Long category) {
+        Page<Variation> list = variationRepository.findProductbyCatrgory(pageable, category);
 
         return list.map(variation ->
                 new VariationDTO(variation));
     }
 
-    public Page<VariationDTO> getVariationByBrands(Pageable pageable,Long brands) {
-        Page<Variation> list = variationRepository.findByBrand(pageable,brands);
+    public Page<VariationDTO> getVariationByBrands(Pageable pageable, Long brands) {
+        Page<Variation> list = variationRepository.findByBrand(pageable, brands);
 
         return list.map(variation ->
                 new VariationDTO(variation));

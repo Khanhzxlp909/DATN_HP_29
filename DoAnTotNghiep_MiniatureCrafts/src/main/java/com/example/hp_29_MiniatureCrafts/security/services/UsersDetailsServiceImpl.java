@@ -39,11 +39,11 @@ public class UsersDetailsServiceImpl implements UserDetailsService {
         }
 
         if (user.getAccountRole().equals("ADMIN")|| user.getAccountRole().equals("USERS")) {
-            List<Employee> employees = employeeRepository.findEmployeeByUsers(user.getUsersID());
+            Employee employees = employeeRepository.findEmployeeByUsers(user.getUsersID());
 
             return UserDetailsImpl.build(user, employees);
         } else if (user.getAccountRole().equals("CUSTOMER")) {
-            List<Customer> customers = customerRepository.findByUsers(user.getUsersID());
+            Customer customers = customerRepository.findByUsers(user.getUsersID());
 
             return UserDetailsImpl.build(user, customers);
         }

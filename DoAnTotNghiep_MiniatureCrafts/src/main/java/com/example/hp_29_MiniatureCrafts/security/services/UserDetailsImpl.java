@@ -18,7 +18,7 @@ public class UserDetailsImpl implements UserDetails {
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsImpl.class);
 
     private Long id;
-    private List<?> users;  // Lưu danh sách Employee hoặc Customer
+    private Object users;  // Lưu danh sách Employee hoặc Customer
     private String username;
     private String email;
     private String accountRole;  // Vai trò tài khoản
@@ -27,7 +27,7 @@ public class UserDetailsImpl implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     // Constructor nhận danh sách employees hoặc customers
-    public UserDetailsImpl(Long id, List<?> users, String username, String email, String password, String accountRole,
+    public UserDetailsImpl(Long id, Object users, String username, String email, String password, String accountRole,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.users = users;
@@ -39,7 +39,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     // Xây dựng UserDetailsImpl cho cả Employee và Customer
-    public static UserDetailsImpl build(Account user, List<?> userList) {
+    public static UserDetailsImpl build(Account user, Object userList) {
         logger.info("Building UserDetailsImpl for user: {}", user.getUsername());
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
@@ -68,7 +68,7 @@ public class UserDetailsImpl implements UserDetails {
         return authorities;
     }
 
-    public List<?> getUsers() {
+    public Object getUsers() {
         return users;
     }
 

@@ -8,9 +8,9 @@ public class JwtResponse {
     private String username;
     private String email;
     private String roles;
-    private List<?> userInfo;  // Lưu thông tin Employee hoặc Customer
+    private Object userInfo;  // Lưu thông tin Employee hoặc Customer
 
-    public JwtResponse(String token, Long id, String username, String email, List<?> userInfo,String roles) {
+    public JwtResponse(String token, Long id, String username, String email, Object userInfo,String roles) {
         this.token = token;
         this.id = id;
         this.username = username;
@@ -43,7 +43,7 @@ public class JwtResponse {
         return email;
     }
 
-    public List<?> getUserInfo() {
+    public Object getUserInfo() {
         return userInfo;
     }
 }

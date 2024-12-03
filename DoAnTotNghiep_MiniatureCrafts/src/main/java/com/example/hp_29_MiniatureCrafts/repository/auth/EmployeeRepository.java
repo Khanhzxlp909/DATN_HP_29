@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(value = "Select e from Employee e where e.ID = :userID")
-    List<Employee> findEmployeeByUsers(@Param("userID") Long usersID);
+    Employee findEmployeeByUsers(@Param("userID") Long usersID);
 
 }
