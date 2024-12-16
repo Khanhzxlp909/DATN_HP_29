@@ -349,17 +349,75 @@ public class VariationService {
     }
 
     public Page<VariationDTO> getProductByCategory(Pageable pageable, Long category) {
-        Page<Variation> list = variationRepository.findProductbyCatrgory(pageable, category);
+        Page<Variation> variations = variationRepository.findProductbyCatrgory(pageable, category);
 
-        return list.map(variation ->
-                new VariationDTO(variation));
+        // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
+        return variations.map(variation -> {
+            VariationDTO dto = new VariationDTO();
+            dto.setID(variation.getID());
+            dto.setSKU(variation.getSKU());
+            dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
+                    mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                    getImageByProduct(variation.getProductID().getID())
+            ));
+            System.out.println("ID Product for Images: " + getImageByProduct(variation.getProductID().getID()));
+
+            // chuyển đổi giá từ biến thể qua double
+            double price = variation.getPrice();
+            System.out.println(price);
+            // chuyển đổi từ double sang dạng string và đưa ra dưới dạng giá + VND
+            dto.setPrice(formatter.format(price));
+
+            dto.setQuantity(variation.getQuantity());
+            dto.setBrandID(new BrandDTO(
+                    variation.getBrandID().getID(),
+                    variation.getBrandID().getName(),
+                    variation.getBrandID().getNote(),
+                    variation.getBrandID().getStatus()
+            ));
+            dto.setMaterial(variation.getMaterial());
+            dto.setWeight(variation.getWeight());
+            dto.setStatus(variation.getStatus());
+            return dto;
+        });
     }
 
     public Page<VariationDTO> getVariationByBrands(Pageable pageable, Long brands) {
-        Page<Variation> list = variationRepository.findByBrand(pageable, brands);
+        Page<Variation> variations = variationRepository.findByBrand(pageable, brands);
 
-        return list.map(variation ->
-                new VariationDTO(variation));
+        // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
+        return variations.map(variation -> {
+            VariationDTO dto = new VariationDTO();
+            dto.setID(variation.getID());
+            dto.setSKU(variation.getSKU());
+            dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
+                    mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                    getImageByProduct(variation.getProductID().getID())
+            ));
+            System.out.println("ID Product for Images: " + getImageByProduct(variation.getProductID().getID()));
+
+            // chuyển đổi giá từ biến thể qua double
+            double price = variation.getPrice();
+            System.out.println(price);
+            // chuyển đổi từ double sang dạng string và đưa ra dưới dạng giá + VND
+            dto.setPrice(formatter.format(price));
+
+            dto.setQuantity(variation.getQuantity());
+            dto.setBrandID(new BrandDTO(
+                    variation.getBrandID().getID(),
+                    variation.getBrandID().getName(),
+                    variation.getBrandID().getNote(),
+                    variation.getBrandID().getStatus()
+            ));
+            dto.setMaterial(variation.getMaterial());
+            dto.setWeight(variation.getWeight());
+            dto.setStatus(variation.getStatus());
+            return dto;
+        });
     }
 
     // Chuyển từ double sang String (đơn vị tiền tệ VND)

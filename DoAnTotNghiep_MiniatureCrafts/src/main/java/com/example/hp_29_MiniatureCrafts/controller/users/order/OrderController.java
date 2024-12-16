@@ -30,6 +30,20 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
+
+    @DeleteMapping("/cancelOrder/{orderId}")
+    @Transactional
+    public String cancelOrder(@PathVariable Long orderId) {
+        try {
+            // Gọi service để hủy đơn hàng
+            orderService.cancelOrder(orderId);
+            return "huỷ thành công";
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
     @GetMapping("history/{id}")
     public List<POSOrderDTO> getAllOrder(@PathVariable("id") Long id) {
 

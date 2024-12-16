@@ -16,7 +16,6 @@ public class Product {
     @JoinColumn(name = "CategoryID")
     private Category CategoryID;  // Liên kết với Category
 
-
     // Getters and Setters
     public Long getID() {
         return ID;

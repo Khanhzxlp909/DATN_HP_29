@@ -44,6 +44,31 @@ public class OrderService {
     @Autowired
     ProductRepository productRepository;
 
+//    @Transactional
+    public void cancelOrder(Long orderId) {
+        // Tìm đơn hàng theo ID
+        POSOrder order = posOrderRepository.findByOrderID(orderId);
+        // Lấy danh sách OrderLine liên quan đến đơn hàng
+        List<OrderLine> orderLines = orderLineRepository.findAllOrderID(orderId);
+
+        // Duyệt qua từng OrderLine để cập nhật số lượng cho Variation
+        for (OrderLine orderLine : orderLines) {
+            Variation variation = orderLine.getVariationID();
+            int quantityOrdered = orderLine.getQuantity();
+            orderLine.setStatus(false);
+            orderLineRepository.save(orderLine);
+            // Cập nhật số lượng cho Variation
+            variation.setQuantity(variation.getQuantity() + quantityOrdered);
+            variationService.save(variation); // Lưu lại sự thay đổi
+        }
+
+        // Xóa tất cả OrderLine liên quan đến đơn hàng
+//        orderLineRepository.deleteAll(orderLines)
+        order.setStatus(false);
+        // Xóa đơn hàng
+        posOrderRepository.save(order);
+    }
+
     public List<OrderLineDTO> findOrderLine(Long orderId) {
         List<OrderLine> orderLines = orderLineRepository.findAllOrderID(orderId);
 

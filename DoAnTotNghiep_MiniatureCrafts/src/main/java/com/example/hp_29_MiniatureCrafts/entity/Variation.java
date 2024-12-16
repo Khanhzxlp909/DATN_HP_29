@@ -1,5 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,7 @@ public class Variation {
 
     @ManyToOne
     @JoinColumn(name = "ProductID")
+    @JsonBackReference
     private Product ProductID;  // Liên kết với Product
 
     private String SKU;

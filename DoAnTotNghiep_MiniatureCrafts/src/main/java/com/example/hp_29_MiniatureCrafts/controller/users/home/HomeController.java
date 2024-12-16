@@ -1,14 +1,8 @@
-package com.example.hp_29_MiniatureCrafts.controller.users.product;
+package com.example.hp_29_MiniatureCrafts.controller.users.home;
 
 
-import com.example.hp_29_MiniatureCrafts.dto.BrandDTO;
-import com.example.hp_29_MiniatureCrafts.dto.CategoryDTO;
-import com.example.hp_29_MiniatureCrafts.dto.CustomerDTO;
-import com.example.hp_29_MiniatureCrafts.dto.VariationDTO;
-import com.example.hp_29_MiniatureCrafts.entity.Account;
-import com.example.hp_29_MiniatureCrafts.entity.Customer;
-import com.example.hp_29_MiniatureCrafts.entity.ERole;
-import com.example.hp_29_MiniatureCrafts.entity.Role;
+import com.example.hp_29_MiniatureCrafts.dto.*;
+import com.example.hp_29_MiniatureCrafts.entity.*;
 import com.example.hp_29_MiniatureCrafts.payload.request.LoginRequest;
 import com.example.hp_29_MiniatureCrafts.payload.request.SignupRequest;
 import com.example.hp_29_MiniatureCrafts.payload.response.JwtResponse;
@@ -17,6 +11,7 @@ import com.example.hp_29_MiniatureCrafts.repository.auth.AccountRepository;
 import com.example.hp_29_MiniatureCrafts.repository.auth.CustomerRepository;
 import com.example.hp_29_MiniatureCrafts.repository.auth.EmployeeRepository;
 import com.example.hp_29_MiniatureCrafts.repository.auth.RoleRepository;
+import com.example.hp_29_MiniatureCrafts.repository.order.voucher.VoucherRepository;
 import com.example.hp_29_MiniatureCrafts.security.jwt.JwtUtils;
 import com.example.hp_29_MiniatureCrafts.security.services.UserDetailsImpl;
 import com.example.hp_29_MiniatureCrafts.service.account.AccountService;
@@ -82,6 +77,9 @@ public class HomeController {
 
     @Autowired
     BrandsService brandsService;
+
+    @Autowired
+    VoucherRepository voucherRepository;
 
     // phương thức login
     @PostMapping("/signin")
@@ -206,6 +204,11 @@ public class HomeController {
         return variationService.getAll(pageable);
     }
 
+    @PostMapping("registerInfo")
+    public Customer registerInfo(@RequestBody CustomerDTO customerDTO) {
+        return customerService.createCustomer(customerDTO);
+    }
+
     @PostMapping("updateInfo")
     public Customer updateCustomer(@RequestBody CustomerDTO customerDTO) {
         return customerService.updateCustomer(customerDTO);
@@ -226,6 +229,12 @@ public class HomeController {
     public VariationDTO findByid(@PathVariable("id") Long id) {
         return variationService.findByid(id);
 
+    }
+
+    @GetMapping("findvoucher/{codevoucher}")
+    public VoucherDTO findByid(@PathVariable("codevoucher") String voucher) {
+        Voucher vouchers = voucherRepository.findVoucherByCode(voucher);
+        return new VoucherDTO(vouchers);
     }
 
     @GetMapping("category/{category}")
