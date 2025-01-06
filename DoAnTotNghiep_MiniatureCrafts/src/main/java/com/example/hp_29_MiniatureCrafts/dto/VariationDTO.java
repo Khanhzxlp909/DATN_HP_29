@@ -14,12 +14,13 @@ public class VariationDTO {
     private String Material;
     private Double Weight;
     private Boolean Status;
+    private String Note;
     private List<ImagesDTO> ImagesDTO;
 
     public VariationDTO() {
     }
 
-    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status,List<ImagesDTO> images) {
+    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status,String note,List<ImagesDTO> images) {
         this.ID = ID;
         ProductID = productID;
         this.SKU = SKU;
@@ -29,7 +30,24 @@ public class VariationDTO {
         Material = material;
         Weight = weight;
         Status = status;
+        Note = note;
         ImagesDTO = images;
+    }
+
+    public List<com.example.hp_29_MiniatureCrafts.dto.ImagesDTO> getImagesDTO() {
+        return ImagesDTO;
+    }
+
+    public void setImagesDTO(List<com.example.hp_29_MiniatureCrafts.dto.ImagesDTO> imagesDTO) {
+        ImagesDTO = imagesDTO;
+    }
+
+    public String getNote() {
+        return Note;
+    }
+
+    public void setNote(String note) {
+        Note = note;
     }
 
     public VariationDTO(Variation variationID) {
@@ -42,6 +60,7 @@ public class VariationDTO {
         Material = variationID.getMaterial();
         Weight = variationID.getWeight();
         Status = variationID.getStatus();
+        Note = variationID.getNote();
     }
 
     // Getters and Setters

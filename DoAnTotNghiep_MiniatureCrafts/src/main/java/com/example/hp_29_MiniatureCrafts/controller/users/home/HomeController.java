@@ -199,17 +199,58 @@ public class HomeController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping("/registerinfo")
+    public ResponseEntity<?> registerInfo(@Valid @RequestBody CustomerDTO registerInfo) {
+        // Kiểm tra xem username đã tồn tại trong hệ thống chưa
+        if (customerRepository.existsByPhone(registerInfo.getPhone())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Lỗi: Số điện thoại đã tồn tại!"));
+        }
+        CustomerDTO customerDTO = new CustomerDTO();
+        // Lấy danh sách vai trò từ yêu cầu đăng ký
+        System.out.println(registerInfo.getName());
+        System.out.println(registerInfo.getAddress());
+        System.out.println(registerInfo.getNote());
+        System.out.println(registerInfo.getPhone());
+
+        customerDTO.setName(registerInfo.getName());
+        customerDTO.setAddress(registerInfo.getAddress());
+        customerDTO.setPhone(registerInfo.getPhone());
+        customerDTO.setNote(registerInfo.getNote());
+
+        customerDTO.setStatus(true);
+        LocalDate date = LocalDate.now();
+        customerDTO.setCreation_date(date);
+        // Lưu người dùng mới vào cơ sở dữ liệu
+        customerService.createCustomer(customerDTO);
+
+        // Trả về thông báo đăng ký thành công
+        // trả về thông tin user mới đăng ký
+        CustomerDTO customer = customerService.findbyPhone(registerInfo.getPhone());
+        return ResponseEntity.ok(customer);
+    }
+
     @GetMapping("home")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
     }
 
-    @PostMapping("registerInfo")
-    public Customer registerInfo(@RequestBody CustomerDTO customerDTO) {
-        return customerService.createCustomer(customerDTO);
+    @GetMapping("filterByPrice")
+    public Page<VariationDTO> home(Pageable pageable,
+                                   @RequestParam(required = false) Double minPrice,
+                                   @RequestParam(required = false) Double maxPrice) {
+
+        // Gọi hàm xử lý từ repository hoặc service
+        return variationService.filterPrice(pageable, minPrice, maxPrice);
     }
 
-    @PostMapping("updateInfo")
+//    @PostMapping("registerInfo")
+//    public Customer registerInfo(@RequestBody CustomerDTO customerDTO) {
+//        return customerService.createCustomer(customerDTO);
+//    }
+
+    @PostMapping("updateInfo/{id}")
     public Customer updateCustomer(@RequestBody CustomerDTO customerDTO) {
         return customerService.updateCustomer(customerDTO);
     }
@@ -219,10 +260,14 @@ public class HomeController {
         return accountService.updateAccount(account);
     }
 
+    @PostMapping("changepassword/{username}")
+    public Account changePassword(@PathVariable("username") String username,@RequestBody Account account) {
+        return accountService.changePassword(username, account.getPassword());
+    }
+
     @GetMapping("result/{name}")
     public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {
         return variationService.findByName(pageable, name);
-
     }
 
     @GetMapping("findid/{id}")

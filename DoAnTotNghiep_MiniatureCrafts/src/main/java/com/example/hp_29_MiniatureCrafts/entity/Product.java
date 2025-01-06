@@ -1,6 +1,7 @@
 package com.example.hp_29_MiniatureCrafts.entity;
 
 import com.example.hp_29_MiniatureCrafts.dto.ProductDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "CategoryID")
+    @JsonBackReference
     private Category CategoryID;  // Liên kết với Category
 
     // Getters and Setters

@@ -73,9 +73,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/MiniatureCrafts/signin",
                                         "/MiniatureCrafts/signup",
-                                        "/MiniatureCrafts/signup",
-                                        "/MiniatureCrafts/signup",
+                                        "/MiniatureCrafts/registerinfo",
                                         "/MiniatureCrafts/home",
+                                        "/MiniatureCrafts/filterByPrice",
                                         "/MiniatureCrafts/result/**",
                                         "/MiniatureCrafts/findid/**",
                                         "/MiniatureCrafts/category/**",
@@ -84,7 +84,9 @@ public class WebSecurityConfig {
                                         "/MiniatureCrafts/categories",
                                         "/MiniatureCrafts/brand",
                                         "/MiniatureCrafts/history/**",
+                                        "/MiniatureCrafts/history/getprd/**",
                                         "/admin/warehouse/**",
+                                        "/users/signup",
                                         "/images/**").permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()
                 );
@@ -99,7 +101,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500/","http://127.0.0.1:5501/","http://127.0.0.1:5502/")); // Cho phép origin từ frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5502/","http://192.168.1.5:8081/","http://localhost:8081/","http://192.168.1.133:8081/","http://127.0.0.1:8081/")); // Cho phép origin từ frontend
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Các phương thức HTTP được phép
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Các headers cần thiết
         configuration.setAllowCredentials(true); // Cho phép cookie hoặc thông tin xác thực

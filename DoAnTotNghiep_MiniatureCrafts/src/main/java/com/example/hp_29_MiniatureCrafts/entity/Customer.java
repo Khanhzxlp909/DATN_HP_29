@@ -1,6 +1,8 @@
 package com.example.hp_29_MiniatureCrafts.entity;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -21,16 +23,16 @@ public class Customer {
 
     @Column(name = "Creation_date")
     @Temporal(TemporalType.DATE)
-    private Date Creation_date;
+    private LocalDate Creation_date;
 
     @Column(name = "Edit_Date")
     @Temporal(TemporalType.DATE)
-    private Date Edit_Date;
+    private LocalDate Edit_Date;
 
     public Customer() {
     }
 
-    public Customer(Long ID, String name, String address, String phone, String note, Boolean status, Date creation_date, Date edit_Date) {
+    public Customer(Long ID, String name, String address, String phone, String note, Boolean status, LocalDate creation_date, LocalDate edit_Date) {
         this.ID = ID;
         Name = name;
         Address = address;
@@ -85,19 +87,19 @@ public class Customer {
         Status = status;
     }
 
-    public Date getCreation_date() {
+    public LocalDate getCreation_date() {
         return Creation_date;
     }
 
-    public void setCreation_date(Date creation_date) {
+    public void setCreation_date(LocalDate creation_date) {
         Creation_date = creation_date;
     }
 
-    public Date getEdit_Date() {
+    public LocalDate getEdit_Date() {
         return Edit_Date;
     }
 
-    public void setEdit_Date(Date edit_Date) {
+    public void setEdit_Date(LocalDate edit_Date) {
         Edit_Date = edit_Date;
     }
     public String getNote() {

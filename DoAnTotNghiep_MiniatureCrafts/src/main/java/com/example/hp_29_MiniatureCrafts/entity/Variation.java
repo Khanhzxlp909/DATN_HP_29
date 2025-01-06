@@ -22,15 +22,18 @@ public class Variation {
 
     @ManyToOne
     @JoinColumn (name = "BrandID")
+    @JsonBackReference
     private Brand BrandID;  // Liên kết với Brand
 
     private String Material;
     private Double Weight;
     private Boolean Status;
+    private String Note;
 
 
 
-    public Variation(Long ID, Product productID, String SKU, Double price, Integer quantity, Brand brandID, String material, Double weight, Boolean status) {
+
+    public Variation(Long ID, Product productID, String SKU, Double price, Integer quantity, Brand brandID, String material, Double weight, Boolean status, String note) {
         this.ID = ID;
         ProductID = productID;
         this.SKU = SKU;
@@ -40,12 +43,19 @@ public class Variation {
         Material = material;
         Weight = weight;
         Status = status;
+        Note = note;
     }
 
     public Variation() {
 
     }
+    public String getNote() {
+        return Note;
+    }
 
+    public void setNote(String note) {
+        Note = note;
+    }
     // Getters and Setters
     public Long getID() {
         return ID;

@@ -66,20 +66,11 @@ public class OrderController {
 
 
     // lấy ra những sp có trong hóa đơn
-    @GetMapping("history/{id}/{order}")
-    public List<POSOrderDTO> getOrderHistory(@PathVariable("id") Long customerid) {
+    @GetMapping("history/getprd/{orderid}")
+    public List<OrderLineDTO> getOrderHistory(@PathVariable("orderid") Long orderid) {
         // Lấy danh sách các POSOrderDTO từ service
-        List<POSOrderDTO> orders = orderService.getAllOrders(customerid);
-
-        // Lặp qua từng đơn hàng và gắn danh sách OrderLineDTO vào đối tượng POSOrderDTO
-        orders.forEach(order -> {
-            // Lấy danh sách OrderLineDTO cho từng đơn hàng
-            List<OrderLineDTO> orderLines = orderService.getOrdersLine(order.getID());
-            // Gắn danh sách OrderLineDTO vào POSOrderDTO
-            order.setOrderLine(orderLines);
-        });
-
-        return orders;
+//        List<POSOrderDTO> orders = orderService.getAllOrders(customerid);
+        return orderService.getOrdersLine(orderid);
     }
     // khi bấm đặt hàng thì tạo hóa đơn r trực tiếp thêm sản phẩm đó vào hóa đơn
     // bấm đặt hàng\
@@ -92,7 +83,7 @@ public class OrderController {
     // sau đó nhảy về trang order
 
     @PostMapping("/newOrder")
-    @Transactional
+//    @Transactional
     public ResponseEntity<?> createOrder(@RequestBody POSOrderDTO posOrderDTO) {
         try {
             // Tạo POSOrder

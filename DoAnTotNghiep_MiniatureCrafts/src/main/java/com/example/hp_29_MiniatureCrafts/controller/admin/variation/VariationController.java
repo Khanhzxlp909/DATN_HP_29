@@ -29,14 +29,16 @@ public class VariationController {
         return variationService.getAll(pageable);
     }
 
+
+
     @GetMapping("category/{category}")
     public Page<VariationDTO> filterCategory(Pageable pageable, @PathVariable("category") Long category) {
-        return variationService.getProductByCategory(pageable,category);
+        return variationService.getProductByCategory(pageable, category);
     }
 
     @GetMapping("brands/{brands}")
     public Page<VariationDTO> filterBrands(Pageable pageable, @PathVariable("brands") Long brands) {
-        return variationService.getVariationByBrands(pageable,brands);
+        return variationService.getVariationByBrands(pageable, brands);
     }
 
     @GetMapping("result/{name}")

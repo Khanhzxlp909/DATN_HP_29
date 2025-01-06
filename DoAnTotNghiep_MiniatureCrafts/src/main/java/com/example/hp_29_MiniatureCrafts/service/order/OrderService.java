@@ -44,7 +44,7 @@ public class OrderService {
     @Autowired
     ProductRepository productRepository;
 
-//    @Transactional
+    //    @Transactional
     public void cancelOrder(Long orderId) {
         // Tìm đơn hàng theo ID
         POSOrder order = posOrderRepository.findByOrderID(orderId);
@@ -64,7 +64,7 @@ public class OrderService {
 
         // Xóa tất cả OrderLine liên quan đến đơn hàng
 //        orderLineRepository.deleteAll(orderLines)
-        order.setStatus(false);
+        order.setStatus(0);
         // Xóa đơn hàng
         posOrderRepository.save(order);
     }
@@ -184,7 +184,7 @@ public class OrderService {
 
         entity.setNote(dto.getNote());
         entity.setPaymentMethod(mapPaymentMethodDTOToEntity(dto.getPaymentMethod()));
-        entity.setStatus(dto.getStatus());
+        entity.setStatus(1);
         entity.setType_Oder(1);
         entity.setCreation_date(LocalDate.now());
         entity.setEdit_Date(LocalDate.now());
@@ -201,7 +201,8 @@ public class OrderService {
         return savedOrder;
     }
 
-    @Transactional
+    //
+//    @Transactional
     public OrderLine addOrderline(OrderLineDTO orderLineDTO, Long orderId) {
         OrderLine orderLine = new OrderLine();
 
@@ -326,27 +327,27 @@ public class OrderService {
 
     private Customer mapCustomerDTOToEntity(CustomerDTO dto) {
         return new Customer(
-                    dto.getID(),
-                    dto.getName(),
-                    dto.getAddress(),
-                    dto.getPhone(),
-                    dto.getNote(),
-                    dto.getStatus(),
-                    dto.getCreation_date(),
-                    dto.getEdit_Date()
+                dto.getID(),
+                dto.getName(),
+                dto.getAddress(),
+                dto.getPhone(),
+                dto.getNote(),
+                dto.getStatus(),
+                dto.getCreation_date(),
+                dto.getEdit_Date()
         );
     }
 
     private CustomerDTO mapCustomerEntityToDTO(Customer entity) {
         return new CustomerDTO(
-                    entity.getID(),
-                    entity.getName(),
-                    entity.getAddress(),
-                    entity.getPhone(),
-                    entity.getNote(),
-                    entity.getStatus(),
-                    entity.getCreation_date(),
-                    entity.getEdit_Date()
+                entity.getID(),
+                entity.getName(),
+                entity.getAddress(),
+                entity.getPhone(),
+                entity.getNote(),
+                entity.getStatus(),
+                entity.getCreation_date(),
+                entity.getEdit_Date()
         );
     }
 
@@ -391,8 +392,6 @@ public class OrderService {
         entity.setStatus(dto.getStatus());
         return entity;
     }
-
-
 
 
     public static double parseCurrency(String currency) throws ParseException {

@@ -46,12 +46,12 @@ public class POSOrder {
     private String Note;
 
     @Column(name = "Status")
-    private Boolean Status;
+    private Integer Status;
 
     public POSOrder() {
     }
 
-    public POSOrder(Long ID, Customer customerID, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.hp_29_MiniatureCrafts.entity.PaymentMethod paymentMethod, String note, Boolean status, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder) {
+    public POSOrder(Long ID, Customer customerID, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.hp_29_MiniatureCrafts.entity.PaymentMethod paymentMethod, String note, Integer status, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder) {
         this.ID = ID;
         CustomerID = customerID;
         Code_Voucher = code_Voucher;
@@ -139,11 +139,11 @@ public class POSOrder {
         Note = note;
     }
 
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return Status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         Status = status;
     }
 
