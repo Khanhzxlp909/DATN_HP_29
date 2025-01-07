@@ -83,6 +83,7 @@ public class WebSecurityConfig {
                                         "/MiniatureCrafts/user/**",
                                         "/MiniatureCrafts/categories",
                                         "/MiniatureCrafts/brand",
+                                        "/MiniatureCrafts/new",
                                         "/MiniatureCrafts/history/**",
                                         "/MiniatureCrafts/history/getprd/**",
                                         "/admin/warehouse/**",

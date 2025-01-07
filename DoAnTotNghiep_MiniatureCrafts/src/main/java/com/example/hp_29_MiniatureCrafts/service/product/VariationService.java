@@ -194,6 +194,42 @@ public class VariationService {
         });
     }
 
+    // lấy sản phaarm và phân trang
+    public Page<VariationDTO> newVariation(Pageable pageable) {
+        // Truy vấn các Variations theo Status và phân trang
+        Page<Variation> variations = variationRepository.newVariation(pageable);
+
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
+        return variations.map(variation -> {
+            VariationDTO dto = new VariationDTO();
+            dto.setID(variation.getID());
+            dto.setSKU(variation.getSKU());
+            dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
+                    mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                    getImageByProduct(variation.getProductID().getID())
+            ));
+
+            // chuyển đổi giá từ biến thể qua double
+            double price = variation.getPrice();
+            System.out.println(price);
+            // chuyển đổi từ double sang dạng string và đưa ra dưới dạng giá + VND
+            dto.setPrice(formatter.format(price));
+
+            dto.setBrandID(mapBrandToBrandDTO(variation.getBrandID()));
+
+            dto.setQuantity(variation.getQuantity());
+
+            dto.setMaterial(variation.getMaterial());
+            dto.setWeight(variation.getWeight());
+            dto.setStatus(variation.getStatus());
+            dto.setNote(variation.getNote());
+            return dto;
+        });
+    }
+
     // Chuyển từ ProductDTO sang Product entity
     public static Product mapProductDTOtoProduct(ProductDTO dto) {
         return new Product(

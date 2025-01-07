@@ -236,6 +236,11 @@ public class HomeController {
         return variationService.getAll(pageable);
     }
 
+    @GetMapping("new")
+    public Page<VariationDTO> newVariation(Pageable pageable) {
+        return variationService.newVariation(pageable);
+    }
+
     @GetMapping("filterByPrice")
     public Page<VariationDTO> home(Pageable pageable,
                                    @RequestParam(required = false) Double minPrice,

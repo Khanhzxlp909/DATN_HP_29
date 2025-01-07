@@ -26,6 +26,9 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     @Query("select v from Variation v where v.ProductID.ID =:id")
     Variation findByID(@Param("id") Long id);
 
+    @Query("select v from Variation v ORDER BY v.ID DESC")
+    Page<Variation> newVariation(Pageable pageable);
+
     @Query("select v from Variation v where v.ID= :idvariation")
     Variation findByIdVariation(@Param("idvariation") Long id);
 
