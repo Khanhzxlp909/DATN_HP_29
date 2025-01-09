@@ -63,8 +63,6 @@ public class OrderController {
     // khi order client sẽ gửi về 2 json bao gồm thông tin khách hàng,
     // là customer thông qua idCustomer được lưu trên session
     // khi đăng xuất sẽ clear session, hoặc localstore
-
-
     // lấy ra những sp có trong hóa đơn
     @GetMapping("history/getprd/{orderid}")
     public List<OrderLineDTO> getOrderHistory(@PathVariable("orderid") Long orderid) {
