@@ -72,8 +72,8 @@ public class WareHouseService {
     public String deleteWareHouse(Long id) {
         WareHouse wareHouse = wareHouseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("WareHouse with ID " + id + " not found"));
-
-        wareHouseRepository.delete(wareHouse);
+        wareHouse.setStatus(false);
+        wareHouseRepository.save(wareHouse);
         return "WareHouse with ID " + id + " has been deleted successfully.";
     }
 

@@ -44,6 +44,31 @@ public class OrderService {
     @Autowired
     ProductRepository productRepository;
 
+    //    @Transactional
+    public void cancelOrder(Long orderId) {
+        // Tìm đơn hàng theo ID
+        POSOrder order = posOrderRepository.findByOrderID(orderId);
+        // Lấy danh sách OrderLine liên quan đến đơn hàng
+        List<OrderLine> orderLines = orderLineRepository.findAllOrderID(orderId);
+
+        // Duyệt qua từng OrderLine để cập nhật số lượng cho Variation
+        for (OrderLine orderLine : orderLines) {
+            Variation variation = orderLine.getVariationID();
+            int quantityOrdered = orderLine.getQuantity();
+            orderLine.setStatus(false);
+            orderLineRepository.save(orderLine);
+            // Cập nhật số lượng cho Variation
+            variation.setQuantity(variation.getQuantity() + quantityOrdered);
+            variationService.save(variation); // Lưu lại sự thay đổi
+        }
+
+        // Xóa tất cả OrderLine liên quan đến đơn hàng
+//        orderLineRepository.deleteAll(orderLines)
+        order.setStatus(0);
+        // Xóa đơn hàng
+        posOrderRepository.save(order);
+    }
+
     public List<OrderLineDTO> findOrderLine(Long orderId) {
         List<OrderLine> orderLines = orderLineRepository.findAllOrderID(orderId);
 
@@ -159,7 +184,7 @@ public class OrderService {
 
         entity.setNote(dto.getNote());
         entity.setPaymentMethod(mapPaymentMethodDTOToEntity(dto.getPaymentMethod()));
-        entity.setStatus(dto.getStatus());
+        entity.setStatus(1);
         entity.setType_Oder(1);
         entity.setCreation_date(LocalDate.now());
         entity.setEdit_Date(LocalDate.now());
@@ -176,7 +201,8 @@ public class OrderService {
         return savedOrder;
     }
 
-    @Transactional
+    //
+//    @Transactional
     public OrderLine addOrderline(OrderLineDTO orderLineDTO, Long orderId) {
         OrderLine orderLine = new OrderLine();
 
@@ -220,50 +246,89 @@ public class OrderService {
     }
 
 
-    public POSOrder orderInPos(POSOrderDTO dto) {
-        POSOrder entity = new POSOrder();
-        // Mapping từ DTO sang entity
+    public POSOrder orderInPOS(POSOrderDTO dto) {
+        try {
+            // Tạo một đối tượng POSOrder mới
+            POSOrder entity = new POSOrder();
 
-        Customer customer = new Customer();
-        customer.setID(dto.getCustomerID().getID());
-        customer.setName(dto.getCustomerID().getName());
-        customer.setAddress(dto.getCustomerID().getAddress());
-        customer.setPhone(dto.getCustomerID().getPhone());
-        customer.setNote(dto.getCustomerID().getNote());
-        customer.setCreation_date(dto.getCustomerID().getCreation_date());
-        customer.setEdit_Date(dto.getCustomerID().getEdit_Date());
-        customer.setStatus(dto.getCustomerID().getStatus());
+            // Mapping từ DTO sang Entity
+            Customer customer = mapCustomerDTOToEntity(dto.getCustomerID());
+            entity.setCustomerID(customer);
 
-        entity.setCustomerID(customer);
-        entity.setCode_Voucher(dto.getCode_Voucher());
-
-
-        Voucher voucher = voucherRepository.findVoucherByCode(dto.getCode_Voucher());
-        if (voucher == null) {
-            throw new RuntimeException("Voucher không tồn tại với mã: " + dto.getCode_Voucher());
-        }
-
-        // giá đc giảm
-        BigDecimal discountAmount = BigDecimal.valueOf(voucher.getDiscountValue());
-        System.out.println("Discount Amount: " + discountAmount);
-        entity.setDiscount_Amount(discountAmount);
-
-        entity.setNote(dto.getNote());
-        entity.setPaymentMethod(mapPaymentMethodDTOToEntity(dto.getPaymentMethod()));
-        entity.setStatus(dto.getStatus());
-        entity.setType_Oder(0);
-
-        POSOrder savedOrder = posOrderRepository.save(entity);
-//
-        if (dto.getOrderLine() != null) {
-            for (OrderLineDTO orderLineDTO : dto.getOrderLine()) {
-                System.out.println("OrderLineDTO: " + orderLineDTO.getVariationID().getID());
-//                addOrderline(orderLineDTO, dto.getID());
+            // Kiểm tra và gán Voucher nếu tồn tại
+            String voucherCode = dto.getCode_Voucher();
+            if (voucherCode != null && !voucherCode.isEmpty()) {
+                Voucher voucher = voucherRepository.findVoucherByCode(voucherCode);
+                if (voucher == null) {
+                    throw new RuntimeException("Voucher không tồn tại với mã: " + voucherCode);
+                }
+                entity.setCode_Voucher(voucherCode);
+                BigDecimal discountAmount = BigDecimal.valueOf(voucher.getDiscountValue());
+                entity.setDiscount_Amount(discountAmount);
+            } else {
+                entity.setDiscount_Amount(BigDecimal.ZERO); // Nếu không có voucher, đặt giảm giá là 0
             }
+
+            // Gán thông tin PaymentMethod
+            PaymentMethod paymentMethod = mapPaymentMethodDTOToEntity(dto.getPaymentMethod());
+            entity.setPaymentMethod(paymentMethod);
+
+            // Gán thông tin khác
+            entity.setStatus(1); // Đơn hàng mặc định ở trạng thái "Hoàn thành"
+            entity.setType_Oder(dto.getType_Oder() != null ? dto.getType_Oder() : 0); // Đơn hàng POS (type_Oder = 0)
+            entity.setCreation_date(LocalDate.now());
+            entity.setEdit_Date(LocalDate.now());
+            entity.setNote(dto.getNote());
+
+            // Lưu thông tin đơn hàng vào database
+            POSOrder savedOrder = posOrderRepository.save(entity);
+
+            // Xử lý danh sách OrderLine
+            if (dto.getOrderLine() != null) {
+                for (OrderLineDTO orderLineDTO : dto.getOrderLine()) {
+                    OrderLine orderLine = new OrderLine();
+                    orderLine.setOderID(savedOrder.getID());
+
+                    // Tìm Variation dựa trên ID
+                    Variation variation = variationService.findByIDEntity(orderLineDTO.getVariationID().getID());
+                    if (variation == null) {
+                        throw new RuntimeException("Không tìm thấy sản phẩm với ID: " + orderLineDTO.getVariationID().getID());
+                    }
+
+                    // Kiểm tra số lượng tồn kho
+                    int availableQuantity = variation.getQuantity();
+                    int requestedQuantity = orderLineDTO.getQuantity();
+                    if (requestedQuantity > availableQuantity) {
+                        throw new RuntimeException("Số lượng tồn kho không đủ cho sản phẩm: " + variation.getProductID().getName());
+                    }
+
+                    // Cập nhật số lượng tồn kho
+                    variation.setQuantity(availableQuantity - requestedQuantity);
+                    variationService.save(variation);
+
+                    // Mapping thông tin OrderLine
+                    orderLine.setVariationID(variation);
+                    orderLine.setVariationName(variation.getProductID().getName());
+                    orderLine.setMarterial(variation.getMaterial());
+                    orderLine.setUnit_Price(variation.getPrice());
+                    orderLine.setQuantity(requestedQuantity);
+                    orderLine.setPrice(requestedQuantity * variation.getPrice());
+                    orderLine.setStatus(true);
+                    orderLine.setCreation_date(LocalDate.now());
+                    orderLine.setEdit_Date(LocalDate.now());
+
+                    // Lưu OrderLine vào database
+                    orderLineRepository.save(orderLine);
+                }
+            }
+
+            return savedOrder; // Trả về đối tượng POSOrder đã lưu
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Đã xảy ra lỗi khi đặt hàng POS: " + e.getMessage());
         }
-        // Lưu vào database
-        return savedOrder;
     }
+
 
 
     public OrderLineDTO mapOrderLineEntityToDTO(OrderLine entity) {
@@ -301,27 +366,27 @@ public class OrderService {
 
     private Customer mapCustomerDTOToEntity(CustomerDTO dto) {
         return new Customer(
-                    dto.getID(),
-                    dto.getName(),
-                    dto.getAddress(),
-                    dto.getPhone(),
-                    dto.getNote(),
-                    dto.getStatus(),
-                    dto.getCreation_date(),
-                    dto.getEdit_Date()
+                dto.getID(),
+                dto.getName(),
+                dto.getAddress(),
+                dto.getPhone(),
+                dto.getNote(),
+                dto.getStatus(),
+                dto.getCreation_date(),
+                dto.getEdit_Date()
         );
     }
 
     private CustomerDTO mapCustomerEntityToDTO(Customer entity) {
         return new CustomerDTO(
-                    entity.getID(),
-                    entity.getName(),
-                    entity.getAddress(),
-                    entity.getPhone(),
-                    entity.getNote(),
-                    entity.getStatus(),
-                    entity.getCreation_date(),
-                    entity.getEdit_Date()
+                entity.getID(),
+                entity.getName(),
+                entity.getAddress(),
+                entity.getPhone(),
+                entity.getNote(),
+                entity.getStatus(),
+                entity.getCreation_date(),
+                entity.getEdit_Date()
         );
     }
 
@@ -366,8 +431,6 @@ public class OrderService {
         entity.setStatus(dto.getStatus());
         return entity;
     }
-
-
 
 
     public static double parseCurrency(String currency) throws ParseException {

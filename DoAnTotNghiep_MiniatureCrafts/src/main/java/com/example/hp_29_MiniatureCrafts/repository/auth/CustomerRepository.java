@@ -12,4 +12,10 @@ import java.util.List;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query(value = "select c from Customer c where c.ID = :userID")
     Customer findByUsers(@Param("userID") Long userId);
+
+    @Query("SELECT COUNT(a) > 0 FROM Customer a WHERE a.Phone = :phone")
+    boolean existsByPhone(@Param("phone") String phone);
+
+    @Query(value = "select c from Customer c where c.Phone = :phone")
+    Customer findByPhone(@Param("phone") String phone);
 }

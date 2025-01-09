@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = "*")
+//@CrossOrigin(value = "*")
 @RequestMapping("admin/warehouse")
 public class WareHouseController {
     @Autowired

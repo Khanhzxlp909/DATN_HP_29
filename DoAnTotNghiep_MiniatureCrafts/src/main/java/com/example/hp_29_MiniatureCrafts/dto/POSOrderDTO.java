@@ -17,7 +17,7 @@ public class POSOrderDTO {
     private LocalDate Edit_Date;
     private Integer Type_Oder;
     private String Note;
-    private Boolean Status;
+    private Integer Status;
     private List<OrderLineDTO> orderLine;
 
     public POSOrderDTO(POSOrder oder) {
@@ -35,7 +35,7 @@ public class POSOrderDTO {
         Status = oder.getStatus();
     }
 
-    public POSOrderDTO(Long ID, CustomerDTO customerID, String code_Voucher, String total_Amount, String discount_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Boolean status, List<OrderLineDTO> orderlineDTO) {
+    public POSOrderDTO(Long ID, CustomerDTO customerID, String code_Voucher, String total_Amount, String discount_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Integer status, List<OrderLineDTO> orderlineDTO) {
         this.ID = ID;
         this.customerID = customerID;
         Code_Voucher = code_Voucher;
@@ -139,11 +139,11 @@ public class POSOrderDTO {
         Note = note;
     }
 
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return Status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         Status = status;
     }
 

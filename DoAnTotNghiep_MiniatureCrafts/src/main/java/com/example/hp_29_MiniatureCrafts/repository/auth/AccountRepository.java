@@ -20,4 +20,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Query("SELECT COUNT(a) > 0 FROM Account a WHERE a.Email = :email")
     boolean existsByEmail(@Param("email") String email);
+
+
 }

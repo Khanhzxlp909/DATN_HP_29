@@ -64,27 +64,6 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder(); // Mã hóa mật khẩu bằng thuật toán BCrypt
     }
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.csrf(csrf -> csrf.disable()) // Vô hiệu hóa CSRF cho ứng dụng RESTful
-//                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // Xử lý ngoại lệ khi không có quyền
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Không dùng session (stateless)
-//                .authorizeHttpRequests(auth ->
-//                        auth.requestMatchers("/**").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
-////
-////                                .requestMatchers("/users/signin").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
-////                                .requestMatchers("/shop/all**").permitAll() // Cho phép truy cập không cần xác thực cho /api/auth/**
-////                                .requestMatchers("/shop/result/**").permitAll() // Cho phép truy cập không cần xác thực cho /api/test/**
-//                                .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các URL khác
-//                );
-//
-//        http.authenticationProvider(authenticationProvider()); // Đăng ký authenticationProvider đã cấu hình
-//
-//        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class); // Thêm AuthTokenFilter trước UsernamePasswordAuthenticationFilter để kiểm tra token JWT
-//
-//        return http.build(); // Xây dựng cấu hình bảo mật hoàn chỉnh
-//    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Vô hiệu hóa CSRF
@@ -92,8 +71,11 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                auth.requestMatchers("/MiniatureCrafts/signin","/MiniatureCrafts/signup",
+                        auth.requestMatchers("/MiniatureCrafts/signin",
+                                        "/MiniatureCrafts/signup",
+                                        "/MiniatureCrafts/registerinfo",
                                         "/MiniatureCrafts/home",
+                                        "/MiniatureCrafts/filterByPrice",
                                         "/MiniatureCrafts/result/**",
                                         "/MiniatureCrafts/findid/**",
                                         "/MiniatureCrafts/category/**",
@@ -101,6 +83,24 @@ public class WebSecurityConfig {
                                         "/MiniatureCrafts/user/**",
                                         "/MiniatureCrafts/categories",
                                         "/MiniatureCrafts/brand",
+                                        "/MiniatureCrafts/new",
+                                        "/MiniatureCrafts/history/**",
+                                        "/MiniatureCrafts/history/getprd/**",
+                                        "/admin/warehouse/**",
+                                        "/users/signup",
+                                        "/admin/signin",
+                                        "/admin/variation/brands/**",
+                                        "/admin/signup",
+                                        "/brands/get",
+                                        "/admin/variation/category/**",
+                                        "/admin/variation/result/all",
+                                        "/admin/warehouse/findall",
+                                        "/admin/customer/result/all",
+                                        "/admin/result/all",
+                                        "/admin/warehouse/result/**",
+                                        "/admin/warehouse/update/**",
+                                        "/admin/warehouse/save",
+                                        "/admin/warehouse/**",
                                         "/images/**").permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()
                 );
@@ -115,7 +115,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500/","http://127.0.0.1:5501/")); // Cho phép origin từ frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/", "http://127.0.0.1:5502/", "http://192.168.1.5:8081/", "http://localhost:8081/", "http://192.168.1.133:8081/", "http://127.0.0.1:8081/")); // Cho phép origin từ frontend
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Các phương thức HTTP được phép
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Các headers cần thiết
         configuration.setAllowCredentials(true); // Cho phép cookie hoặc thông tin xác thực
