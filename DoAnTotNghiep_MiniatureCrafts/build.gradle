@@ -29,31 +29,43 @@ ext {
 }
 
 dependencies {
-    implementation 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
-    implementation 'io.jsonwebtoken:jjwt-gson:0.12.5'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    // JWT - Dùng jjwt phiên bản mới nhất để xử lý JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-gson:0.12.6'  // Hoặc thay bằng jjwt-jackson nếu không dùng Gson
+
+// Spring Security - Giữ các thư viện bảo mật mới nhất
     implementation 'org.springframework.security:spring-security-config:6.3.3'
     implementation 'org.springframework.security:spring-security-web:6.3.3'
     implementation 'org.springframework.security:spring-security-core:6.3.3'
 
+// Spring Boot Core Dependencies
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-//	implementation 'org.apache.xmlbeans:xmlbeans:5.2.1'
-//	implementation 'org.apache.poi:poi-ooxml:5.3.0'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.5'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+// Database Drivers
+    runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc:12.6.1.jre11'
+    runtimeOnly 'com.h2database:h2'
+
+// JSON Processing
     implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
+
+// AWS SDK (nếu sử dụng AWS Lambda)
     implementation 'com.amazonaws:aws-java-sdk-lambda:1.12.757'
-    implementation 'com.microsoft.sqlserver:mssql-jdbc:12.6.1.jre11'
+
+// HATEOAS (RESTful API nâng cao)
     implementation 'org.springframework.hateoas:spring-hateoas:2.3.3'
-//	implementation 'org.jfree:jfreechart:1.5.5'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.2.5'
+
+// Dev Tools và Lombok
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok:1.18.34'
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
+
+// Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
 }
 
 dependencyManagement {

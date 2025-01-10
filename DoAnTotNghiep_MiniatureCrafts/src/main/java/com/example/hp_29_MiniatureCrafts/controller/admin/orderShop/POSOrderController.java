@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin/orders")
-public class OrderController {
+public class POSOrderController {
 
     @Autowired
     private OrderService orderService;
