@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/admin/orders")
 public class POSOrderController {
@@ -100,6 +101,5 @@ public class POSOrderController {
             // Trả về lỗi nếu có exception
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
-
     }
 }
