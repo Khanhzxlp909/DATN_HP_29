@@ -171,17 +171,21 @@ public class OrderService {
         entity.setCustomerID(customer);
         entity.setCode_Voucher(dto.getCode_Voucher());
 
+        BigDecimal discountAmount = BigDecimal.ZERO; // Khởi tạo giá trị giảm giá là 0
 
-        Voucher voucher = voucherRepository.findVoucherByCode(dto.getCode_Voucher());
-        if (voucher == null) {
-            throw new RuntimeException("Voucher không tồn tại với mã: " + dto.getCode_Voucher());
+        if (dto.getCode_Voucher() != null) {
+            Voucher voucher = voucherRepository.findVoucherByCode(dto.getCode_Voucher());
+            if (voucher == null) {
+                throw new RuntimeException("Voucher không tồn tại với mã: " + dto.getCode_Voucher());
+            }
+            // Nếu voucher tồn tại, lấy giá trị giảm giá
+            discountAmount = BigDecimal.valueOf(voucher.getDiscountValue());
+            System.out.println("Discount Amount: " + discountAmount);
+        } else {
+            System.out.println("Không sử dụng voucher.");
         }
 
-        // giá đc giảm
-        BigDecimal discountAmount = BigDecimal.valueOf(voucher.getDiscountValue());
-        System.out.println("Discount Amount: " + discountAmount);
         entity.setDiscount_Amount(discountAmount);
-
         entity.setNote(dto.getNote());
         entity.setPaymentMethod(mapPaymentMethodDTOToEntity(dto.getPaymentMethod()));
         entity.setStatus(1);
@@ -190,11 +194,11 @@ public class OrderService {
         entity.setEdit_Date(LocalDate.now());
 
         POSOrder savedOrder = posOrderRepository.save(entity);
-//
+
         if (dto.getOrderLine() != null) {
             for (OrderLineDTO orderLineDTO : dto.getOrderLine()) {
                 System.out.println("OrderLineDTO: " + orderLineDTO.getVariationID().getID());
-//                addOrderline(orderLineDTO, dto.getID());
+                // addOrderline(orderLineDTO, dto.getID());
             }
         }
         // Lưu vào database

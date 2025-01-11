@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("admin/customer")
-@CrossOrigin(value = "*")
+//@CrossOrigin(value = "*")
 public class CustomerController {
 
     @Autowired
@@ -20,6 +20,11 @@ public class CustomerController {
     @GetMapping("result/all")
     public List<CustomerDTO> getAllCustomers() {
         return customerService.getAllCustomers();
+    }
+
+    @GetMapping("result/{name}")
+    public List<CustomerDTO> resultByName(@PathVariable("name") String name) {
+        return customerService.findbyName(name);
     }
 
     @PostMapping("save")
