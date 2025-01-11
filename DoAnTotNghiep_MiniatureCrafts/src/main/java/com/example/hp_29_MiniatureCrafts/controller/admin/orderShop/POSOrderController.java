@@ -2,10 +2,14 @@ package com.example.hp_29_MiniatureCrafts.controller.admin.orderShop;
 
 import com.example.hp_29_MiniatureCrafts.dto.OrderLineDTO;
 import com.example.hp_29_MiniatureCrafts.dto.POSOrderDTO;
+import com.example.hp_29_MiniatureCrafts.dto.VoucherDTO;
 import com.example.hp_29_MiniatureCrafts.entity.OrderLine;
 import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
 import com.example.hp_29_MiniatureCrafts.service.order.OrderService;
+import com.example.hp_29_MiniatureCrafts.service.order.Voucher.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,14 @@ public class POSOrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private VoucherService voucherService;
+
+    @GetMapping("resultvoucher/{voucher}")
+    public VoucherDTO findByVoucher(@PathVariable("voucher") String voucher) {
+        return voucherService.findVoucherByCodeVoucher(voucher);
+    }
 
     @GetMapping("history/getprd/{orderid}")
     public List<OrderLineDTO> getOrderHistory(@PathVariable("orderid") Long orderid) {
@@ -40,9 +52,9 @@ public class POSOrderController {
         }
     }
     @GetMapping("history/{id}")
-    public List<POSOrderDTO> getAllOrder(@PathVariable("id") Long id) {
+    public List<POSOrderDTO> getAllOrderByCustomer(@PathVariable("id") Long id) {
 
-        List<POSOrderDTO> orders = orderService.getAllOrders(id);
+        List<POSOrderDTO> orders = orderService.getAllOrdersbyCustomer(id);
 
         // Lặp qua từng đơn hàng và gắn danh sách OrderLineDTO vào đối tượng POSOrderDTO
         orders.forEach(order -> {
@@ -52,6 +64,13 @@ public class POSOrderController {
             order.setOrderLine(orderLines);
         });
 
+        return orders;
+
+    }
+
+    @GetMapping("findall")
+    public Page<POSOrderDTO> getAllOrder(Pageable pageable) {
+        Page<POSOrderDTO> orders = orderService.findAllOrder(pageable);
         return orders;
 
     }

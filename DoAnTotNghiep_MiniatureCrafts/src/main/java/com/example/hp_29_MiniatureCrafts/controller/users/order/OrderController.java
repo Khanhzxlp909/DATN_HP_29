@@ -47,7 +47,7 @@ public class OrderController {
     @GetMapping("history/{id}")
     public List<POSOrderDTO> getAllOrder(@PathVariable("id") Long id) {
 
-        List<POSOrderDTO> orders = orderService.getAllOrders(id);
+        List<POSOrderDTO> orders = orderService.getAllOrdersbyCustomer(id);
 
         // Lặp qua từng đơn hàng và gắn danh sách OrderLineDTO vào đối tượng POSOrderDTO
         orders.forEach(order -> {

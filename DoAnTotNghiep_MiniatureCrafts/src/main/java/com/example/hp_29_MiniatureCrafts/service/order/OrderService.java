@@ -9,8 +9,9 @@ import com.example.hp_29_MiniatureCrafts.repository.order.voucher.VoucherReposit
 import com.example.hp_29_MiniatureCrafts.repository.product.ProductRepository;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -79,7 +80,7 @@ public class OrderService {
     }
 
 
-    public List<POSOrderDTO> getAllOrders(Long customerID) {
+    public List<POSOrderDTO> getAllOrdersbyCustomer(Long customerID) {
         List<POSOrder> list = posOrderRepository.findAll();
 
         return list.stream()
@@ -107,6 +108,34 @@ public class OrderService {
                 })
                 .collect(Collectors.toList()); // Chuyển stream thành danh sách
     }
+
+    public Page<POSOrderDTO> findAllOrder(Pageable pageable) {
+        Page<POSOrder> posOrders = posOrderRepository.findAll(pageable);
+
+        return posOrders.map(entity -> {
+            POSOrderDTO dto = new POSOrderDTO();
+            dto.setID(entity.getID());
+            dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
+            dto.setCode_Voucher(entity.getCode_Voucher());
+            dto.setTotal_Amount(entity.getTotal_Amount() != null ? entity.getTotal_Amount().toString() : "0");
+            dto.setDiscount_Amount(entity.getDiscount_Amount() != null ? entity.getDiscount_Amount().toString() : "0");
+            dto.setTotal_Payment(entity.getTotal_Payment() != null ? entity.getTotal_Payment().toString() : "0");
+            dto.setPaymentMethod(new PaymentMethodDTO(
+                    entity.getPaymentMethod().getID(),
+                    entity.getPaymentMethod().getType(),
+                    entity.getPaymentMethod().getNote(),
+                    entity.getPaymentMethod().getStatus()
+            ));
+            dto.setCreation_date(entity.getCreation_date());
+            dto.setEdit_Date(entity.getEdit_Date());
+            dto.setType_Oder(entity.getType_Oder());
+            dto.setNote(entity.getNote());
+            dto.setStatus(entity.getStatus());
+            return dto; // Trả về dto trong lambda
+
+        });
+    }
+
 
     // nếu như trả về lỗi, thì trang chi tiết sp sẽ báo k tìm thấy sản phẩm này
     // order phải trả về 1 list orderline
@@ -332,7 +361,6 @@ public class OrderService {
             throw new RuntimeException("Đã xảy ra lỗi khi đặt hàng POS: " + e.getMessage());
         }
     }
-
 
 
     public OrderLineDTO mapOrderLineEntityToDTO(OrderLine entity) {

@@ -9,4 +9,8 @@ public interface VoucherRepository extends JpaRepository<Voucher,Integer> {
 
     @Query("select v from Voucher v where v.Code =:codevoucher")
     Voucher findVoucherByCode(@Param("codevoucher")String codevoucher);
+
+
+    @Query("select v from Voucher v where v.Code LIKE %:codevoucher%")
+    Voucher findVoucherByCodeVoucher(@Param("codevoucher")String codevoucher);
 }
