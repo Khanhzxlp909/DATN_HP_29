@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 //import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("admin/variation")
@@ -21,13 +23,17 @@ public class VariationController {
     @Autowired
     private VariationService variationService;
 
-    @Autowired
-    private CategoryService categoryService;
 
     @GetMapping("result/all")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
     }
+
+    @GetMapping("getproduct")
+    public List<ProductDTO> getProductDTOS() {
+        return variationService.getProducts();
+    }
+
 
     @GetMapping("result/{name}")
     public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {

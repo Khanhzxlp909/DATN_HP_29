@@ -3,6 +3,7 @@ package com.example.hp_29_MiniatureCrafts.service.product;
 import com.example.hp_29_MiniatureCrafts.dto.*;
 import com.example.hp_29_MiniatureCrafts.entity.*;
 import com.example.hp_29_MiniatureCrafts.repository.product.ImagesRepository;
+import com.example.hp_29_MiniatureCrafts.repository.product.ProductRepository;
 import com.example.hp_29_MiniatureCrafts.repository.product.VariationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,13 @@ public class VariationService {
     @Autowired
     ImagesRepository imagesRepository;
 
+    @Autowired
+    ProductRepository productRepository;
+
+    public List<ProductDTO> getProducts() {
+        List<Product> productList = productRepository.findAll();
+        return productList.stream().map(product -> new ProductDTO(product)).collect(Collectors.toList());
+    }
 
     public VariationDTO editVariation(Long id) {
         Variation variation = variationRepository.findByIdVariation(id);

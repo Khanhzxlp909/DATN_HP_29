@@ -90,6 +90,7 @@ public class WebSecurityConfig {
                                         "/users/signup",
                                         "/admin/signin",
                                         "/admin/variation/brands/**",
+                                        "/admin/variation/getproduct",
                                         "/admin/signup",
                                         "/brands/get",
                                         "/admin/variation/category/**",
