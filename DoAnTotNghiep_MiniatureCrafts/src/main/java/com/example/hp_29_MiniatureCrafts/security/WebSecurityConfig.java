@@ -95,7 +95,7 @@ public class WebSecurityConfig {
                                         "/admin/variation/category/**",
                                         "/admin/variation/result/all",
                                         "/admin/warehouse/findall",
-                                        "/admin/customer/result/all",
+                                        "/admin/customer/result/**",
                                         "/admin/result/all",
                                         "/admin/warehouse/result/**",
                                         "/admin/warehouse/update/**",
