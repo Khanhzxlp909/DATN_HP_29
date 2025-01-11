@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("admin/variation")
-@CrossOrigin(value = "*")
+//@CrossOrigin(value = "*")
 public class VariationController {
 
 
@@ -29,7 +29,10 @@ public class VariationController {
         return variationService.getAll(pageable);
     }
 
-
+    @GetMapping("result/{name}")
+    public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {
+        return variationService.findByName(pageable, name);
+    }
 
     @GetMapping("category/{category}")
     public Page<VariationDTO> filterCategory(Pageable pageable, @PathVariable("category") Long category) {
@@ -39,11 +42,6 @@ public class VariationController {
     @GetMapping("brands/{brands}")
     public Page<VariationDTO> filterBrands(Pageable pageable, @PathVariable("brands") Long brands) {
         return variationService.getVariationByBrands(pageable, brands);
-    }
-
-    @GetMapping("result/{name}")
-    public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {
-        return variationService.findByName(pageable, name);
     }
 
     @PostMapping("add")

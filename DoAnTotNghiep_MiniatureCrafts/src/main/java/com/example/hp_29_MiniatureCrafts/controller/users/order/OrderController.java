@@ -31,7 +31,7 @@ public class OrderController {
     OrderService orderService;
 
 
-    @DeleteMapping("/cancelOrder/{orderId}")
+    @GetMapping("/cancelOrder/{orderId}")
     @Transactional
     public String cancelOrder(@PathVariable Long orderId) {
         try {
@@ -47,7 +47,7 @@ public class OrderController {
     @GetMapping("history/{id}")
     public List<POSOrderDTO> getAllOrder(@PathVariable("id") Long id) {
 
-        List<POSOrderDTO> orders = orderService.getAllOrders(id);
+        List<POSOrderDTO> orders = orderService.getAllOrdersbyCustomer(id);
 
         // Lặp qua từng đơn hàng và gắn danh sách OrderLineDTO vào đối tượng POSOrderDTO
         orders.forEach(order -> {
@@ -85,6 +85,7 @@ public class OrderController {
     public ResponseEntity<?> createOrder(@RequestBody POSOrderDTO posOrderDTO) {
         try {
             // Tạo POSOrder
+            System.out.println("totalamount : " + posOrderDTO.getTotal_Amount());
             POSOrder order = orderService.orderInShop(posOrderDTO);
 
             // Lấy ID của POSOrder vừa được lưu

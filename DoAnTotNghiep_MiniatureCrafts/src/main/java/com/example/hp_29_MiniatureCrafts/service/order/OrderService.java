@@ -9,8 +9,9 @@ import com.example.hp_29_MiniatureCrafts.repository.order.voucher.VoucherReposit
 import com.example.hp_29_MiniatureCrafts.repository.product.ProductRepository;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -79,7 +80,7 @@ public class OrderService {
     }
 
 
-    public List<POSOrderDTO> getAllOrders(Long customerID) {
+    public List<POSOrderDTO> getAllOrdersbyCustomer(Long customerID) {
         List<POSOrder> list = posOrderRepository.findAll();
 
         return list.stream()
@@ -107,6 +108,34 @@ public class OrderService {
                 })
                 .collect(Collectors.toList()); // Chuyển stream thành danh sách
     }
+
+    public Page<POSOrderDTO> findAllOrder(Pageable pageable) {
+        Page<POSOrder> posOrders = posOrderRepository.findAll(pageable);
+
+        return posOrders.map(entity -> {
+            POSOrderDTO dto = new POSOrderDTO();
+            dto.setID(entity.getID());
+            dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
+            dto.setCode_Voucher(entity.getCode_Voucher());
+            dto.setTotal_Amount(entity.getTotal_Amount() != null ? entity.getTotal_Amount().toString() : "0");
+            dto.setDiscount_Amount(entity.getDiscount_Amount() != null ? entity.getDiscount_Amount().toString() : "0");
+            dto.setTotal_Payment(entity.getTotal_Payment() != null ? entity.getTotal_Payment().toString() : "0");
+            dto.setPaymentMethod(new PaymentMethodDTO(
+                    entity.getPaymentMethod().getID(),
+                    entity.getPaymentMethod().getType(),
+                    entity.getPaymentMethod().getNote(),
+                    entity.getPaymentMethod().getStatus()
+            ));
+            dto.setCreation_date(entity.getCreation_date());
+            dto.setEdit_Date(entity.getEdit_Date());
+            dto.setType_Oder(entity.getType_Oder());
+            dto.setNote(entity.getNote());
+            dto.setStatus(entity.getStatus());
+            return dto; // Trả về dto trong lambda
+
+        });
+    }
+
 
     // nếu như trả về lỗi, thì trang chi tiết sp sẽ báo k tìm thấy sản phẩm này
     // order phải trả về 1 list orderline
@@ -171,17 +200,21 @@ public class OrderService {
         entity.setCustomerID(customer);
         entity.setCode_Voucher(dto.getCode_Voucher());
 
+        BigDecimal discountAmount = BigDecimal.ZERO; // Khởi tạo giá trị giảm giá là 0
 
-        Voucher voucher = voucherRepository.findVoucherByCode(dto.getCode_Voucher());
-        if (voucher == null) {
-            throw new RuntimeException("Voucher không tồn tại với mã: " + dto.getCode_Voucher());
+        if (dto.getCode_Voucher() != null) {
+            Voucher voucher = voucherRepository.findVoucherByCode(dto.getCode_Voucher());
+            if (voucher == null) {
+                throw new RuntimeException("Voucher không tồn tại với mã: " + dto.getCode_Voucher());
+            }
+            // Nếu voucher tồn tại, lấy giá trị giảm giá
+            discountAmount = BigDecimal.valueOf(voucher.getDiscountValue());
+            System.out.println("Discount Amount: " + discountAmount);
+        } else {
+            System.out.println("Không sử dụng voucher.");
         }
 
-        // giá đc giảm
-        BigDecimal discountAmount = BigDecimal.valueOf(voucher.getDiscountValue());
-        System.out.println("Discount Amount: " + discountAmount);
         entity.setDiscount_Amount(discountAmount);
-
         entity.setNote(dto.getNote());
         entity.setPaymentMethod(mapPaymentMethodDTOToEntity(dto.getPaymentMethod()));
         entity.setStatus(1);
@@ -190,11 +223,11 @@ public class OrderService {
         entity.setEdit_Date(LocalDate.now());
 
         POSOrder savedOrder = posOrderRepository.save(entity);
-//
+
         if (dto.getOrderLine() != null) {
             for (OrderLineDTO orderLineDTO : dto.getOrderLine()) {
                 System.out.println("OrderLineDTO: " + orderLineDTO.getVariationID().getID());
-//                addOrderline(orderLineDTO, dto.getID());
+                // addOrderline(orderLineDTO, dto.getID());
             }
         }
         // Lưu vào database
@@ -294,28 +327,7 @@ public class OrderService {
         System.out.println("order line 293: "+ order.getCustomerID().getName());
         return mapOrderEntityToDTO(order);
     }
-
-    public POSOrderDTO mapOrderEntityToDTO(POSOrder entity) {
-        POSOrderDTO dto = new POSOrderDTO();
-        dto.setID(entity.getID());
-        dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
-        // Lấy danh sách OrderLine từ repository và chuyển đổi sang DTO
-        List<OrderLineDTO> orderLineDTOs = orderLineRepository.findAllOrderID(entity.getID())
-                .stream()
-                .map(this::mapOrderLineEntityToDTO) // Chuyển từng OrderLine Entity sang DTO
-                .toList();
-        dto.setOrderLine(orderLineDTOs);
-        dto.setCode_Voucher(entity.getCode_Voucher());
-        dto.setTotal_Amount(entity.getTotal_Amount().toString());
-        dto.setTotal_Payment(entity.getTotal_Payment().toString());
-        dto.setDiscount_Amount(entity.getDiscount_Amount().toString());
-        dto.setNote(entity.getNote());
-        dto.setPaymentMethod(mapPaymentEntityToDTO(entity.getPaymentMethod()));
-        dto.setStatus(entity.getStatus());
-        dto.setType_Oder(entity.getType_Oder());
-        return dto;
-    }
-
+  
     public OrderLineDTO mapOrderLineEntityToDTO(OrderLine entity) {
         return new OrderLineDTO(
                 entity.getID(),

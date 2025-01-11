@@ -94,8 +94,10 @@ public class WebSecurityConfig {
                                         "/brands/get",
                                         "/admin/variation/category/**",
                                         "/admin/variation/result/all",
+                                        "/admin/orders/resultvoucher/**",
+                                        "/admin/orders/findall",
                                         "/admin/warehouse/findall",
-                                        "/admin/customer/result/all",
+                                        "/admin/customer/result/**",
                                         "/admin/result/all",
                                         "/admin/warehouse/result/**",
                                         "/admin/warehouse/update/**",
@@ -115,7 +117,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/", "http://127.0.0.1:5502/", "http://192.168.1.5:8081/", "http://localhost:8081/", "http://192.168.1.133:8081/", "http://127.0.0.1:8081/")); // Cho phép origin từ frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173/","http://localhost:3000/", "http://127.0.0.1:5502/", "http://192.168.1.5:8081/", "http://localhost:8081/", "http://192.168.1.133:8081/", "http://127.0.0.1:8081/")); // Cho phép origin từ frontend
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Các phương thức HTTP được phép
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Các headers cần thiết
         configuration.setAllowCredentials(true); // Cho phép cookie hoặc thông tin xác thực

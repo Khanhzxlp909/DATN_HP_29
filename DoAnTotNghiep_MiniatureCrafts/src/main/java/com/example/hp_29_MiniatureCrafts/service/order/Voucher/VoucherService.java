@@ -28,4 +28,9 @@ public class VoucherService {
         Voucher voucher = voucherRepository.findVoucherByCode(code);
         return new VoucherDTO(voucher);
     }
+
+    public VoucherDTO findVoucherByCodeVoucher(String code) {
+        Voucher voucher = voucherRepository.findVoucherByCodeVoucher(code);
+        return new VoucherDTO(voucher);
+    }
 }
