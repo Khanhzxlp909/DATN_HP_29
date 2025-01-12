@@ -9,9 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 //import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -23,6 +31,32 @@ public class VariationController {
     @Autowired
     private VariationService variationService;
 
+
+    private final String IMAGE_DIR = "src/main/resources/static/images/";
+
+    @PostMapping("images/upload")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            // Kiểm tra xem file có trống không
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body("File is empty");
+            }
+
+            // Tạo tên file duy nhất
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(IMAGE_DIR + fileName);
+
+            // Lưu file
+            Files.write(filePath, file.getBytes());
+
+            // Trả về đường dẫn file
+            String fileUrl = "/images/" + fileName;
+            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully", "url", fileUrl));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @GetMapping("result/all")
     public Page<VariationDTO> home(Pageable pageable) {

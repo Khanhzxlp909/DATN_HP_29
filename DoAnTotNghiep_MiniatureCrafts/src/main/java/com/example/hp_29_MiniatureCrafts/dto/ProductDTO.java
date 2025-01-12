@@ -36,6 +36,12 @@ public class ProductDTO {
     }
 
 
+    public ProductDTO(Long ID, String name, CategoryDTO categoryID) {
+        this.ID = ID;
+        Name = name;
+        CategoryID = categoryID;
+    }
+
     public ProductDTO(Product entity) {
         this.ID = entity.getID();
         Name = entity.getName();

@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("admin/category")
-@CrossOrigin(value = "*")
+////@CrossOrigin(value = "*")
 public class CategoryController {
     @Autowired
     CategoryService categoryService;

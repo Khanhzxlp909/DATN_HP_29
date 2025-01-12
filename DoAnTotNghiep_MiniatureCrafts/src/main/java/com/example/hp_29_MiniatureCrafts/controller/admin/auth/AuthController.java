@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/users/")
-@CrossOrigin(value = "*")
+@RequestMapping("/admin/")
+//@CrossOrigin(value = "*")
 public class AuthController {
 
     // Khai báo các thành phần cần thiết và sử dụng @Autowired để tiêm các thành phần vào lớp Controller này
