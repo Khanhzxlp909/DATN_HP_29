@@ -81,6 +81,9 @@ public class CustomerService {
         customers.setName(customer.getName());
         customers.setAddress(customer.getAddress());
         customers.setPhone(customer.getPhone());
+        customers.setNote(customer.getNote());
+        customers.setCreation_date(customer.getCreation_date());
+        customers.setEdit_Date(customer.getEdit_Date());
         customers.setStatus(true);
 
         return customerRepository.save(customers);

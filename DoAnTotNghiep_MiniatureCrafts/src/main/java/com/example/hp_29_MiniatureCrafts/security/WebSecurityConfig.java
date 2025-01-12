@@ -107,6 +107,7 @@ public class WebSecurityConfig {
                                         "/admin/warehouse/**",
                                         "/admin/variation/images/upload",
                                         "/admin/variation/getproduct",
+                                        "/admin/variation/images/findall",
                                         "/images/**").permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()
                 );

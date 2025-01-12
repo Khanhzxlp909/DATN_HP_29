@@ -1,5 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.controller.admin.variation;
 
+import com.example.hp_29_MiniatureCrafts.dto.ImagesDTO;
 import com.example.hp_29_MiniatureCrafts.dto.ProductDTO;
 import com.example.hp_29_MiniatureCrafts.dto.VariationDTO;
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 
@@ -51,12 +53,34 @@ public class VariationController {
 
             // Trả về đường dẫn file
             String fileUrl = "/images/" + fileName;
-            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully", "url", fileUrl));
+            System.out.println("url images: " + fileName);
+            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully", "url", fileName));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("images/findall")
+    public List<ImagesDTO> findAll() {
+        return variationService.findAll();
+    }
+
+    @PostMapping("images/setproduct")
+    public ResponseEntity<?> setProductImages(@RequestBody ImagesDTO imagesDTO) {
+        try {
+            variationService.saveImages(imagesDTO);
+            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("getproduct")
+    public List<ProductDTO> getProductDTOS() {
+        return variationService.getProducts();
+    }
+
 
     @GetMapping("result/all")
     public Page<VariationDTO> home(Pageable pageable) {
