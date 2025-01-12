@@ -70,6 +70,17 @@ public class OrderService {
         posOrderRepository.save(order);
     }
 
+    public void successOrder(Long orderId) {
+        // Tìm đơn hàng theo ID
+        POSOrder order = posOrderRepository.findByOrderID(orderId);
+
+        // Xóa tất cả OrderLine liên quan đến đơn hàng
+//        orderLineRepository.deleteAll(orderLines)
+        order.setStatus(2);
+        // Xóa đơn hàng
+        posOrderRepository.save(order);
+    }
+
     public List<OrderLineDTO> findOrderLine(Long orderId) {
         List<OrderLine> orderLines = orderLineRepository.findAllOrderID(orderId);
 

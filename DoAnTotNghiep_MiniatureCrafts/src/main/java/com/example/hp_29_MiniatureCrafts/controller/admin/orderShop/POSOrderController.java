@@ -27,6 +27,18 @@ public class POSOrderController {
     @Autowired
     private VoucherService voucherService;
 
+    @GetMapping("/sucressorder/{orderId}")
+    public String successOrder(@PathVariable Long orderId) {
+        try {
+            // Gọi service để hủy đơn hàng
+            orderService.successOrder(orderId);
+            return "xác nhận thành công";
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
     @GetMapping("resultvoucher/{voucher}")
     public VoucherDTO findByVoucher(@PathVariable("voucher") String voucher) {
         return voucherService.findVoucherByCodeVoucher(voucher);

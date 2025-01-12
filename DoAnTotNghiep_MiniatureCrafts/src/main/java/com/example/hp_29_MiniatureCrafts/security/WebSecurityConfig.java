@@ -87,6 +87,8 @@ public class WebSecurityConfig {
                                         "/MiniatureCrafts/history/**",
                                         "/MiniatureCrafts/history/getprd/**",
                                         "/admin/warehouse/**",
+                                        "/admin/orders/**",
+                                        "/admin/orders/history/getprd/**",
                                         "/users/signup",
                                         "/admin/signin",
                                         "/admin/variation/brands/**",
@@ -103,6 +105,7 @@ public class WebSecurityConfig {
                                         "/admin/warehouse/update/**",
                                         "/admin/warehouse/save",
                                         "/admin/warehouse/**",
+                                        "/admin/variation/images/upload",
                                         "/images/**").permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()
                 );
