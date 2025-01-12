@@ -62,9 +62,6 @@ public class OrderService {
             variation.setQuantity(variation.getQuantity() + quantityOrdered);
             variationService.save(variation); // Lưu lại sự thay đổi
         }
-
-        // Xóa tất cả OrderLine liên quan đến đơn hàng
-//        orderLineRepository.deleteAll(orderLines)
         order.setStatus(0);
         // Xóa đơn hàng
         posOrderRepository.save(order);

@@ -154,7 +154,10 @@ public class VariationService {
 
 
     public void delete(Long id) {
-        variationRepository.deleteById(id);
+        Variation variation = variationRepository.findByID(id);
+        variation.setStatus(false);
+        // Xóa đơn hàng
+        variationRepository.save(variation);
     }
 
 
