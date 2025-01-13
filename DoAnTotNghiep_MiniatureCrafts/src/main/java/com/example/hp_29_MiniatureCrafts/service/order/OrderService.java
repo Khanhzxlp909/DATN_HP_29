@@ -523,4 +523,23 @@ public class OrderService {
 //        return posOrderRepository.save(entity);
 //
 //    }
+public POSOrderDTO mapOrderEntityToDTO(POSOrder entity) {
+        POSOrderDTO dto = new POSOrderDTO();
+        dto.setID(entity.getID());
+        dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
+        // Lấy danh sách OrderLine từ repository và chuyển đổi sang DTO
+        List<OrderLineDTO> orderLineDTOs = orderLineRepository.findAllOrderID(entity.getID())
+                .stream()
+                .map(this::mapOrderLineEntityToDTO) // Chuyển từng OrderLine Entity sang DTO
+                .toList();
+        dto.setOrderLine(orderLineDTOs);
+        dto.setCode_Voucher(entity.getCode_Voucher());
+        dto.setDiscount_Amount(entity.getDiscount_Amount().toString());
+        dto.setNote(entity.getNote());
+        dto.setPaymentMethod(mapPaymentEntityToDTO(entity.getPaymentMethod()));
+        dto.setStatus(entity.getStatus());
+        dto.setType_Oder(entity.getType_Oder());
+        return dto;
+    }
+    
 }
