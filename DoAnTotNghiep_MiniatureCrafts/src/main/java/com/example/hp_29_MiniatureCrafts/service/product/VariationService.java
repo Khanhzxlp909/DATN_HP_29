@@ -36,6 +36,35 @@ public class VariationService {
     @Autowired
     ProductRepository productRepository;
 
+    public ImagesDTO saveImages(ImagesDTO imagesDTO) {
+        Images images = new Images();
+        images.setProduct(mapProductDTOtoProduct(imagesDTO.getProduct()));
+        images.setCd_Images(imagesDTO.getCd_Images());
+        return new ImagesDTO(imagesRepository.save(images));
+    }
+
+    public List<ImagesDTO> findAll() {
+        List<Images> images = imagesRepository.findAll();
+        return images.stream().map(dto -> new ImagesDTO(dto)).collect(Collectors.toList());
+    }
+
+    // save truoc, lay id tu respone set va imagedto
+    public ProductDTO saveProduct(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setCategoryID(mapCategoryToEntity(productDTO.getCategoryID()));
+        return new ProductDTO(productRepository.save(product));
+    }
+
+    public ProductDTO updateProduct(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setID(productDTO.getId());
+        product.setName(productDTO.getName());
+        product.setCategoryID(mapCategoryToEntity(productDTO.getCategoryID()));
+        return new ProductDTO(productRepository.save(product));
+    }
+
+
     public List<ProductDTO> getProducts() {
         List<Product> productList = productRepository.findAll();
         return productList.stream().map(product -> new ProductDTO(product)).collect(Collectors.toList());
@@ -162,7 +191,10 @@ public class VariationService {
 
 
     public void delete(Long id) {
-        variationRepository.deleteById(id);
+        Variation variation = variationRepository.findByID(id);
+        variation.setStatus(false);
+        // Xóa đơn hàng
+        variationRepository.save(variation);
     }
 
 

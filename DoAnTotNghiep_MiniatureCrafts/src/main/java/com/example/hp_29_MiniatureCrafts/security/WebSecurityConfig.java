@@ -108,6 +108,8 @@ public class WebSecurityConfig {
                                         "/MiniatureCrafts/history/**",
                                         "/MiniatureCrafts/history/getprd/**",
                                         "/admin/warehouse/**",
+                                        "/admin/orders/**",
+                                        "/admin/orders/history/getprd/**",
                                         "/users/signup",
                                         "/admin/signin",
                                         "/admin/variation/brands/**",
@@ -119,14 +121,19 @@ public class WebSecurityConfig {
                                         "/admin/orders/resultvoucher/**",
                                         "/admin/orders/findall",
                                         "/admin/warehouse/findall",
+                                        "/admin/warehouse/suppiller/get",
                                         "/admin/customer/result/**",
                                         "/admin/result/all",
+                                        "/admin/employee/**",
+                                        "/admin/warehouse/suppiller/**",
                                         "/admin/warehouse/result/**",
                                         "/admin/warehouse/update/**",
                                         "/admin/warehouse/save",
                                         "/admin/warehouse/**",
                                         "/admin/variation/add",
                                         "/admin/variation/images/upload",
+                                        "/admin/variation/getproduct",
+                                        "/admin/variation/images/findall",
                                         "/images/**").permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()
                 );

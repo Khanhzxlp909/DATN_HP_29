@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface VariationRepository extends JpaRepository<Variation, Long> {
+    @Query("select v from Variation v order by v.ID DESC")
     Page<Variation> findAll(Pageable pageable);
+
 
     @Query("SELECT v FROM Variation v WHERE (:minPrice IS NULL OR v.Price >= :minPrice) AND (:maxPrice IS NULL OR v.Price <= :maxPrice)")
     Page<Variation> findByPriceRange(Pageable pageable, @Param("minPrice") Double minPrice, @Param("maxPrice") Double maxPrice);
@@ -23,7 +25,7 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     Page<Variation> findByName(Pageable pageable, @Param("keyword") String keyword);
 
 
-    @Query("select v from Variation v where v.ProductID.ID =:id")
+    @Query("select v from Variation v where v.ID =:id")
     Variation findByID(@Param("id") Long id);
 
     @Query("select v from Variation v ORDER BY v.ID DESC")
@@ -33,10 +35,10 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     Variation findByIdVariation(@Param("idvariation") Long id);
 
 
-    @Query("select v from Variation v where v.BrandID.ID= :id")
+    @Query("select v from Variation v where v.BrandID.ID= :id order by v.ID DESC")
     Page<Variation> findByBrand(Pageable pageable, @Param("id") Long id);
 
-    @Query("select v from Variation v where v.ProductID.CategoryID.ID= :id")
+    @Query("select v from Variation v where v.ProductID.CategoryID.ID= :id order by v.ID DESC")
     Page<Variation> findProductbyCatrgory(Pageable pageable, @Param("id") Long id);
 
 }

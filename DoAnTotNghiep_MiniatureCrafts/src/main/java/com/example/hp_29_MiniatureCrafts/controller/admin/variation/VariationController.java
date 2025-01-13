@@ -1,5 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.controller.admin.variation;
 
+import com.example.hp_29_MiniatureCrafts.dto.ImagesDTO;
 import com.example.hp_29_MiniatureCrafts.dto.ProductDTO;
 import com.example.hp_29_MiniatureCrafts.dto.VariationDTO;
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 //import org.springframework.hateoas.PagedModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +57,54 @@ public class VariationController {
             throw new RuntimeException(e);
         }
     }
+
+    private final String IMAGE_DIR = "src/main/resources/static/images/";
+
+    @PostMapping("images/upload")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            // Kiểm tra xem file có trống không
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body("File is empty");
+            }
+
+            // Tạo tên file duy nhất
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(IMAGE_DIR + fileName);
+
+            // Lưu file
+            Files.write(filePath, file.getBytes());
+
+            // Trả về đường dẫn file
+            String fileUrl = "/images/" + fileName;
+            System.out.println("url images: " + fileName);
+            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully", "url", fileName));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("images/findall")
+    public List<ImagesDTO> findAll() {
+        return variationService.findAll();
+    }
+
+    @PostMapping("images/setproduct")
+    public ResponseEntity<?> setProductImages(@RequestBody ImagesDTO imagesDTO) {
+        try {
+            variationService.saveImages(imagesDTO);
+            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("getproduct")
+    public List<ProductDTO> getProductDTOS() {
+        return variationService.getProducts();
+    }
+
 
     @GetMapping("result/all")
     public Page<VariationDTO> home(Pageable pageable) {

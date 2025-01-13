@@ -19,7 +19,6 @@ public class Variation {
     private Double Price;
     private Integer Quantity;
 
-
     @ManyToOne
     @JoinColumn (name = "BrandID")
     @JsonBackReference

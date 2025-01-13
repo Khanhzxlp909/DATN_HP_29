@@ -9,19 +9,29 @@ public class WareHouseDTO {
     private SupplierDTO Supplier;
     private String Note;
     private Boolean Status;
+    private Double Total_Amount;
     private LocalDate Creation_date;
     private LocalDate Edit_Date;
 
     public WareHouseDTO() {
     }
 
-    public WareHouseDTO(Long ID, String code_Inventory, EmployeeDTO employee,  String note, SupplierDTO supplier,  Boolean status,LocalDate creation_date, LocalDate edit_Date) {
+    public Double getTotal_Amount() {
+        return Total_Amount;
+    }
+
+    public void setTotal_Amount(Double total_Amount) {
+        Total_Amount = total_Amount;
+    }
+
+    public WareHouseDTO(Long ID, String code_Inventory, EmployeeDTO employee, SupplierDTO supplier, String note, Boolean status, Double total_Amount, LocalDate creation_date, LocalDate edit_Date) {
         this.ID = ID;
         Code_Inventory = code_Inventory;
         Employee = employee;
-        Note = note;
         Supplier = supplier;
+        Note = note;
         Status = status;
+        Total_Amount = total_Amount;
         Creation_date = creation_date;
         Edit_Date = edit_Date;
     }

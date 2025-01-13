@@ -11,5 +11,9 @@ public interface OrderRepository extends JpaRepository<POSOrder, Integer> {
     @Query("select o from POSOrder o where o.ID = :id")
     POSOrder findByOrderID(@Param("id") Long id);
 
+//    Page<POSOrder> findAll(Pageable pageable);
+
+    @Query("SELECT p FROM POSOrder p ORDER BY p.ID DESC")
     Page<POSOrder> findAll(Pageable pageable);
+
 }
