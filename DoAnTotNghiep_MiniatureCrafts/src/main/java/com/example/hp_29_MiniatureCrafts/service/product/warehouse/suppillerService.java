@@ -45,7 +45,7 @@ public class suppillerService {
     }
 
     public void deleteSupplier(Integer id) {
-        Supplier supplier = suppillerRepository.findbyID(id);
+        Supplier supplier = suppillerRepository.findByID(id);
         supplier.setStatus(false);
         suppillerRepository.save(supplier);
     }

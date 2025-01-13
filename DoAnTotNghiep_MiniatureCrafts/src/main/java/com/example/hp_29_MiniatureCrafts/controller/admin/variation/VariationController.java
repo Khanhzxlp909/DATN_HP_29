@@ -33,33 +33,6 @@ public class VariationController {
 
 
     private final String IMAGE_DIR = "src/main/resources/static/images/";
-
-    @PostMapping("images/upload")
-    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
-        try {
-            // Kiểm tra xem file có trống không
-            if (file.isEmpty()) {
-                return ResponseEntity.badRequest().body("File is empty");
-            }
-
-            // Tạo tên file duy nhất
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(IMAGE_DIR + fileName);
-
-            // Lưu file
-            Files.write(filePath, file.getBytes());
-
-            // Trả về đường dẫn file
-            String fileUrl = "/images/" + fileName;
-            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully", "url", fileUrl));
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private final String IMAGE_DIR = "src/main/resources/static/images/";
-
     @PostMapping("images/upload")
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
@@ -109,11 +82,6 @@ public class VariationController {
     @GetMapping("result/all")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
-    }
-
-    @GetMapping("getproduct")
-    public List<ProductDTO> getProductDTOS() {
-        return variationService.getProducts();
     }
 
 

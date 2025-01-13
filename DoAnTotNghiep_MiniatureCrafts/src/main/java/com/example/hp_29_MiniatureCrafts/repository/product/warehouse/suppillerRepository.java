@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface suppillerRepository extends JpaRepository<Supplier, Long> {
 
-    Supplier findbyID(Integer id);
+    Supplier findByID(Integer id);
 }
