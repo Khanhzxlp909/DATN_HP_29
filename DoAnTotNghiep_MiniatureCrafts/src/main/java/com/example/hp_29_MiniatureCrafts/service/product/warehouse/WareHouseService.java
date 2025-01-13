@@ -8,9 +8,11 @@ import com.example.hp_29_MiniatureCrafts.entity.Employee;
 import com.example.hp_29_MiniatureCrafts.entity.Supplier;
 import com.example.hp_29_MiniatureCrafts.entity.WareHouse;
 import com.example.hp_29_MiniatureCrafts.repository.product.warehouse.WareHouseRepository;
+import com.example.hp_29_MiniatureCrafts.repository.product.warehouse.suppillerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,6 +23,20 @@ public class WareHouseService {
     @Autowired
     WareHouseRepository wareHouseRepository;
 
+    @Autowired
+    suppillerRepository suppillerRepository;
+
+    public List<SupplierDTO> findAllSupplier() {
+        List<Supplier> supplier = suppillerRepository.findAll();
+        return supplier.stream().map(
+                supplier1 -> {
+                    SupplierDTO dto = mapSuppierToDTO(supplier1);
+
+                    return dto;
+                }
+        ).collect(Collectors.toList());
+    }
+
     public List<WareHouseDTO> findAllWareHouse() {
         List<WareHouse> wareHouses = wareHouseRepository.findAll();
         return wareHouses.stream().map(
@@ -29,9 +45,10 @@ public class WareHouseService {
                             wareHouse.getID(),
                             wareHouse.getCode_Inventory(),
                             MapEmployeetoDTO(wareHouse.getEmployee()),
-                            wareHouse.getNote(),
                             mapSuppierToDTO(wareHouse.getSupplier()),
+                            wareHouse.getNote(),
                             wareHouse.getStatus(),
+                            wareHouse.getTotal_Amount(),
                             wareHouse.getCreation_date(),
                             wareHouse.getEdit_Date()
                     );
@@ -57,9 +74,10 @@ public class WareHouseService {
                             wareHouse.getID(),
                             wareHouse.getCode_Inventory(),
                             MapEmployeetoDTO(wareHouse.getEmployee()),
-                            wareHouse.getNote(),
                             mapSuppierToDTO(wareHouse.getSupplier()),
+                            wareHouse.getNote(),
                             wareHouse.getStatus(),
+                            wareHouse.getTotal_Amount(),
                             wareHouse.getCreation_date(),
                             wareHouse.getEdit_Date()
                     );
@@ -122,10 +140,11 @@ public class WareHouseService {
         wareHouse.setCode_Inventory(UUID.randomUUID().toString());
         wareHouse.setEmployee(MapEmployeeDTOtoEntity(dto.getEmployee()));
         wareHouse.setSupplier(mapSuppierDTOEntity(dto.getSupplier()));
+        wareHouse.setTotal_Amount(0.0);
         wareHouse.setNote(dto.getNote());
         wareHouse.setStatus(dto.getStatus());
-        wareHouse.setCreation_date(dto.getCreation_date());
-        wareHouse.setEdit_Date(dto.getEdit_Date());
+        wareHouse.setCreation_date(LocalDate.now());
+        wareHouse.setEdit_Date(LocalDate.now());
         return wareHouse;
     }
 

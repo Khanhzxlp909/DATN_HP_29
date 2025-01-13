@@ -1,5 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.entity;
 
+import com.example.hp_29_MiniatureCrafts.dto.EmployeeDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -62,6 +63,14 @@ public class Employee {
     }
 
     public Employee() {
+    }
+
+    public Employee(EmployeeDTO dto) {
+        this.ID = dto.getID();
+        this.Name = dto.getName();
+        this.Phone = dto.getPhone();
+        this.Creation_date = dto.getCreation_date();
+        this.Edit_Date = dto.getEdit_Date();
     }
 
     public Employee(Long ID, String name, String phone, LocalDate creation_date, LocalDate edit_Date) {

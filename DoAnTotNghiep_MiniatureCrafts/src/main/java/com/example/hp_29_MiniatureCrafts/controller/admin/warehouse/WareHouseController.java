@@ -1,10 +1,13 @@
 package com.example.hp_29_MiniatureCrafts.controller.admin.warehouse;
 
 
+import com.example.hp_29_MiniatureCrafts.dto.SupplierDTO;
 import com.example.hp_29_MiniatureCrafts.dto.WareHouseDTO;
 import com.example.hp_29_MiniatureCrafts.dto.WareHouseDetailsDTO;
+import com.example.hp_29_MiniatureCrafts.entity.Supplier;
 import com.example.hp_29_MiniatureCrafts.entity.WareHouse;
 import com.example.hp_29_MiniatureCrafts.entity.WareHouseDetails;
+import com.example.hp_29_MiniatureCrafts.repository.product.warehouse.suppillerRepository;
 import com.example.hp_29_MiniatureCrafts.service.product.warehouse.WareHouseDetailService;
 import com.example.hp_29_MiniatureCrafts.service.product.warehouse.WareHouseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,10 @@ public class WareHouseController {
         return wareHouseService.findByID(id);
     }
 
+    @GetMapping("suppiller/get")
+    public List<SupplierDTO> findAllSupplier() {
+        return wareHouseService.findAllSupplier();
+    }
 
     // sau khi tạo ware house thì bên sever gửi lên 1 json body, bên fontend sẽ lưu vào localstore dưới 1 pakagejson tên là warehouse
     // khi add warehouse detail sẽ lấy id ở trong warehouse ra r dùng làm cầu nối

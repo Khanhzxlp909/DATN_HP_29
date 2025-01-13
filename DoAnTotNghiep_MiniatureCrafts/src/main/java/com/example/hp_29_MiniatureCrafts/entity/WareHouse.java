@@ -1,5 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.entity;
 
+import com.example.hp_29_MiniatureCrafts.dto.WareHouseDTO;
 import com.example.hp_29_MiniatureCrafts.entity.Supplier;
 import jakarta.persistence.*;
 
@@ -27,11 +28,37 @@ public class WareHouse {
 
     private Boolean Status;
 
+    private Double Total_Amount;
+
     @Column(name = "Creation_date")
     private LocalDate Creation_date;
 
     @Column(name = "Edit_Date")
     private LocalDate Edit_Date;
+
+    public WareHouse() {
+
+    }
+
+    public WareHouse(Long ID, String code_Inventory, com.example.hp_29_MiniatureCrafts.entity.Employee employee, String note, com.example.hp_29_MiniatureCrafts.entity.Supplier supplier, Boolean status, Double total_Amount, LocalDate creation_date, LocalDate edit_Date) {
+        this.ID = ID;
+        Code_Inventory = code_Inventory;
+        Employee = employee;
+        Note = note;
+        Supplier = supplier;
+        Status = status;
+        Total_Amount = total_Amount;
+        Creation_date = creation_date;
+        Edit_Date = edit_Date;
+    }
+
+    public Double getTotal_Amount() {
+        return Total_Amount;
+    }
+
+    public void setTotal_Amount(Double total_Amount) {
+        Total_Amount = total_Amount;
+    }
 
     // Getters and Setters
     public Long getID() {

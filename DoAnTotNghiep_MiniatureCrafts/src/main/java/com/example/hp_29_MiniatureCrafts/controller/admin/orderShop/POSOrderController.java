@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/admin/orders")
 public class POSOrderController {
@@ -26,18 +25,6 @@ public class POSOrderController {
 
     @Autowired
     private VoucherService voucherService;
-
-    @GetMapping("/sucressorder/{orderId}")
-    public String successOrder(@PathVariable Long orderId) {
-        try {
-            // Gọi service để hủy đơn hàng
-            orderService.successOrder(orderId);
-            return "xác nhận thành công";
-        } catch (RuntimeException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException();
-        }
-    }
 
     @GetMapping("resultvoucher/{voucher}")
     public VoucherDTO findByVoucher(@PathVariable("voucher") String voucher) {
@@ -113,5 +100,6 @@ public class POSOrderController {
             // Trả về lỗi nếu có exception
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
+
     }
 }
