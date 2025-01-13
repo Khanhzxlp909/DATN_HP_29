@@ -4,6 +4,8 @@ import com.example.hp_29_MiniatureCrafts.dto.CategoryDTO;
 import com.example.hp_29_MiniatureCrafts.entity.Category;
 import com.example.hp_29_MiniatureCrafts.service.product.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +17,8 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
     @GetMapping("get")
-    public List<CategoryDTO> getALL() {
-        return categoryService.getALL();
+    public Page<CategoryDTO> getALL(Pageable pageable) {
+        return categoryService.getALLS(pageable);
     }
     @PostMapping("save")
     public Category save(@RequestBody CategoryDTO category) {
@@ -26,7 +28,7 @@ public class CategoryController {
     public Category update(@RequestBody CategoryDTO category) {
         return categoryService.update(category);
     }
-    @PostMapping("delete")
+    @GetMapping("delete/{id}")
     public String delete(@PathVariable("id") Long id) {
         categoryService.delete(id);
         return "done";

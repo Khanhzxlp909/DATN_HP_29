@@ -4,6 +4,8 @@ import com.example.hp_29_MiniatureCrafts.dto.BrandDTO;
 import com.example.hp_29_MiniatureCrafts.entity.Brand;
 import com.example.hp_29_MiniatureCrafts.repository.thuoctinh.BrandsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,13 @@ public class BrandsService {
 
 
         return list.stream().map(brand -> new BrandDTO(brand)).collect(Collectors.toList());
+    }
+
+    public Page<BrandDTO> getALLS(Pageable pageable){
+        Page<Brand> list = brandsRepository.findALL(pageable);
+
+
+        return list.map(brand -> new BrandDTO(brand));
     }
   public Brand add(BrandDTO brandDTO){
    return brandsRepository.save(new Brand(brandDTO));

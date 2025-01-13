@@ -98,6 +98,9 @@ public class AuthController {
                 accountRole
         ));
     }
+
+
+
     // Phương thức để đăng ký người dùng mới
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -149,7 +152,7 @@ public class AuthController {
                         Role userRole = roleRepository.findByName(ERole.USER)
                                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy vai trò USER."));
                         roles.add(userRole);
-                        accountRole = "USER"; // Cập nhật accountRole thành USER
+                        accountRole = "USERS"; // Cập nhật accountRole thành USER
                         break;
                     default:
                         Role customerRole = roleRepository.findByName(ERole.CUSTOMER)

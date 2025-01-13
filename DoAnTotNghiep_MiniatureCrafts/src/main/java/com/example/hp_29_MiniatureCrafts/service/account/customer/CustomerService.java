@@ -6,6 +6,7 @@ import com.example.hp_29_MiniatureCrafts.repository.auth.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ public class CustomerService {
 
     public CustomerDTO findbyPhone(String phone) {
         Customer entity = customerRepository.findByPhone(phone);
-        System.out.println("Customer: "+entity.getName());
+        System.out.println("Customer: " + entity.getName());
         return new CustomerDTO(entity);
     }
 
@@ -57,33 +58,34 @@ public class CustomerService {
     public CustomerDTO editCustomer(Long id) {
 
         Customer entity = customerRepository.findById(id).orElseThrow();
-        System.out.println("Customer: "+entity.getName());
+        System.out.println("Customer: " + entity.getName());
         return new CustomerDTO(entity);
     }
 
     public Customer createCustomer(CustomerDTO customer) {
-        return customerRepository.save(new Customer(
-                customer.getID(),
-                customer.getName(),
-                customer.getAddress(),
-                customer.getPhone(),
-                customer.getNote(),
-                customer.getStatus(),
-                customer.getCreation_date(),
-                customer.getEdit_Date()
-        ));
+        Customer customers = new Customer();
+        customers.setName(customer.getName());
+        customers.setAddress(customer.getAddress());
+        customers.setPhone(customer.getPhone());
+        customers.setNote(customer.getNote());
+        customers.setCreation_date(LocalDate.now());
+        customers.setEdit_Date(LocalDate.now());
+        customers.setStatus(true);
+
+        return customerRepository.save(customers);
     }
 
     public Customer updateCustomer(CustomerDTO customer) {
 
-        Customer customers = new Customer();
+        Customer customers = customerRepository.findById(customer.getID())
+                .orElseThrow(() -> new RuntimeException("Khách hàng không tồn tại"));
         customers.setID(customer.getID());
         customers.setName(customer.getName());
         customers.setAddress(customer.getAddress());
         customers.setPhone(customer.getPhone());
         customers.setNote(customer.getNote());
-        customers.setCreation_date(customer.getCreation_date());
-        customers.setEdit_Date(customer.getEdit_Date());
+//        customers.setCreation_date(customer.getCreation_date());
+        customers.setEdit_Date(LocalDate.now());
         customers.setStatus(true);
 
         return customerRepository.save(customers);
