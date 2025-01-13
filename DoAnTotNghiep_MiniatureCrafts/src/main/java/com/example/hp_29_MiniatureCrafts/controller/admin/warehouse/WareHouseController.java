@@ -10,6 +10,7 @@ import com.example.hp_29_MiniatureCrafts.entity.WareHouseDetails;
 import com.example.hp_29_MiniatureCrafts.repository.product.warehouse.suppillerRepository;
 import com.example.hp_29_MiniatureCrafts.service.product.warehouse.WareHouseDetailService;
 import com.example.hp_29_MiniatureCrafts.service.product.warehouse.WareHouseService;
+import com.example.hp_29_MiniatureCrafts.service.product.warehouse.suppillerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,23 @@ public class WareHouseController {
     @Autowired
     WareHouseDetailService wareHouseDetailService;
 
+    @Autowired
+    suppillerService suppillerService;
+
+    @PostMapping("suppiller/save")
+    public SupplierDTO saveSupplier(@RequestBody SupplierDTO dto) {
+        return suppillerService.saveSupplier(dto);
+    }
+    @PostMapping("suppiller/update")
+    public SupplierDTO updateSuppiller(@RequestBody SupplierDTO dto) {
+        return suppillerService.updateSupplier(dto);
+    }
+    @GetMapping("suppiller/delete/{id}")
+    public String deleteSupplier(@PathVariable("id") Integer id) {
+        suppillerService.deleteSupplier(id);
+        return "success";
+    }
+
     @GetMapping("findall")
     public List<WareHouseDTO> findAll() {
         return wareHouseService.findAllWareHouse();
@@ -41,17 +59,6 @@ public class WareHouseController {
     public List<SupplierDTO> findAllSupplier() {
         return wareHouseService.findAllSupplier();
     }
-
-    // sau khi tạo ware house thì bên sever gửi lên 1 json body, bên fontend sẽ lưu vào localstore dưới 1 pakagejson tên là warehouse
-    // khi add warehouse detail sẽ lấy id ở trong warehouse ra r dùng làm cầu nối
-
-
-//    @PostMapping("result/{id}/save")
-//    public WareHouseDetails saveDetails(@RequestBody WareHouseDetailsDTO wareHouseDetailsDTO) {
-//
-//
-//    }
-
 
     @PostMapping("update/{id}")
     public WareHouse update(@RequestBody WareHouseDTO wareHouseDTO, @PathVariable("id") Long id) {

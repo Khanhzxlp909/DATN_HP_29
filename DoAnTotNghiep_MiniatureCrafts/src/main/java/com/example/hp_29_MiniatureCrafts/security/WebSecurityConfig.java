@@ -103,6 +103,7 @@ public class WebSecurityConfig {
                                         "/admin/customer/result/**",
                                         "/admin/result/all",
                                         "/admin/employee/**",
+                                        "/admin/warehouse/suppiller/**",
                                         "/admin/warehouse/result/**",
                                         "/admin/warehouse/update/**",
                                         "/admin/warehouse/save",
