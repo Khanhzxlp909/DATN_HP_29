@@ -50,6 +50,19 @@ public class POSOrderController {
             throw new RuntimeException();
         }
     }
+
+    @GetMapping("/sucressorder/{orderId}")
+    @Transactional
+    public String sucressorder(@PathVariable Long orderId) {
+        try {
+            // Gọi service để hủy đơn hàng
+            orderService.successOrder(orderId);
+            return "huỷ thành công";
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
     @GetMapping("history/{id}")
     public List<POSOrderDTO> getAllOrderByCustomer(@PathVariable("id") Long id) {
 

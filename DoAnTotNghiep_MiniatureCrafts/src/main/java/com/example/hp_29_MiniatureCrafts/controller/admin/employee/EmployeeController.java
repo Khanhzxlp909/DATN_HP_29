@@ -4,14 +4,12 @@ package com.example.hp_29_MiniatureCrafts.controller.admin.employee;
 import com.example.hp_29_MiniatureCrafts.dto.EmployeeDTO;
 import com.example.hp_29_MiniatureCrafts.service.account.customer.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("admin/employee")
+@RestController
+@RequestMapping(("admin/employee"))
 public class EmployeeController {
 
     @Autowired
