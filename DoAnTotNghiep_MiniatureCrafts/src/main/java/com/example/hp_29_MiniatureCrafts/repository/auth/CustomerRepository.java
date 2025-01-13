@@ -29,4 +29,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
             "OR v.Phone LIKE %:keyword% ")
     List<Customer> findByName(@Param("keyword") String keyword);
 
+    @Query(value = "select c from Customer c order by c.ID desc")
+    List<Customer> findAll();
+
+
 }

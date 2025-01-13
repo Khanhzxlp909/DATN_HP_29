@@ -14,4 +14,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(value = "Select e from Employee e where e.ID = :userID")
     Employee findEmployeeByUsers(@Param("userID") Long usersID);
 
+    @Query (value = "Select e from Employee e order by e.ID desc")
+    List<Employee> findAll(@Param("userID") Long userID);
+
 }
