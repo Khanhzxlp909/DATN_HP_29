@@ -1,7 +1,13 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
 package com.example.hp_29_MiniatureCrafts.dto;
 
 import com.example.hp_29_MiniatureCrafts.entity.Brand;
-
+/**
+ *
+ * @author Giohuok
+ */
 public class BrandDTO {
     private Long ID;
     private String Name;

@@ -1,7 +1,10 @@
 package com.example.hp_29_MiniatureCrafts.dto;
 
 import com.example.hp_29_MiniatureCrafts.entity.Category;
-
+/**
+ *
+ * @author ASUS
+ */
 public class CategoryDTO {
     private Long ID;
     private String Name;

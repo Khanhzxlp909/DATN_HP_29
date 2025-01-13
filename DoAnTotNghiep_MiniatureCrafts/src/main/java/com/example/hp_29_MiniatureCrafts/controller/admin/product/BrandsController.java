@@ -1,3 +1,6 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
 package com.example.hp_29_MiniatureCrafts.controller.admin.product;
 
 
@@ -8,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
+/**
+ *
+ * @author Giohuok
+ */
 @RestController
 @RequestMapping("admin/brands")
 //@CrossOrigin(value = "*")

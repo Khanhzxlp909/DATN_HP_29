@@ -1,8 +1,17 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
 package com.example.hp_29_MiniatureCrafts.entity;
 
 import com.example.hp_29_MiniatureCrafts.dto.CategoryDTO;
 import jakarta.persistence.*;
 
+/**
+ *
+ * @author ASUS
+ */
 @Entity
 @Table(name = "Category")
 public class Category {

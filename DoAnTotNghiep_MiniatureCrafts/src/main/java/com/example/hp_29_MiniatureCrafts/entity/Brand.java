@@ -1,8 +1,15 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
 package com.example.hp_29_MiniatureCrafts.entity;
+
 
 import com.example.hp_29_MiniatureCrafts.dto.BrandDTO;
 import jakarta.persistence.*;
-
+/**
+ *
+ * @author Giohuok
+ */
 @Entity
 @Table(name = "Brand")
 public class Brand {
