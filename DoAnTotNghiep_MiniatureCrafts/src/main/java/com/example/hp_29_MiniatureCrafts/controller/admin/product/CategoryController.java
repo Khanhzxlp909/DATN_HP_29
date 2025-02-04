@@ -19,6 +19,7 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     CategoryService categoryService;
+
     @GetMapping("get")
     public Page<CategoryDTO> getALL(Pageable pageable) {
         return categoryService.getALLS(pageable);
@@ -40,5 +41,4 @@ public class CategoryController {
     public List<CategoryDTO> search(@PathVariable("name") String query) {
         return categoryService.search(query);
     }
-
 }

@@ -24,6 +24,20 @@ public class Supplier {
     @Column(name = "Edit_Date")
     private LocalDate Edit_Date;
 
+    public Supplier() {
+    }
+
+    public Supplier(Integer ID, String name, String phone, String address, String note, Boolean status, LocalDate creation_date, LocalDate edit_Date) {
+        this.ID = ID;
+        Name = name;
+        Phone = phone;
+        Address = address;
+        Note = note;
+        Status = status;
+        Creation_date = creation_date;
+        Edit_Date = edit_Date;
+    }
+
     // Getters and Setters
     public Integer getID() {
         return ID;

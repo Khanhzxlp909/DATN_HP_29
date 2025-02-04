@@ -92,7 +92,7 @@ public class POSOrderController {
         try {
             // Tạo POSOrder
             System.out.println("totalamount : " + posOrderDTO.getTotal_Amount());
-            POSOrder order = orderService.orderInShop(posOrderDTO);
+            POSOrder order = orderService.orderInPOS(posOrderDTO);
 
             // Lấy ID của POSOrder vừa được lưu
             Long orderId = order.getID();

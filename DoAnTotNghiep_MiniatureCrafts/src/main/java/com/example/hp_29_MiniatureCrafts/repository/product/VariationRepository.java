@@ -11,6 +11,12 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     @Query("select v from Variation v order by v.ID DESC")
     Page<Variation> findAll(Pageable pageable);
 
+    @Query("SELECT v FROM Variation v ORDER BY v.Sold DESC")
+    Page<Variation> top6BestSeller(Pageable pageable);
+
+    @Query("SELECT v FROM Variation v WHERE v.Status = true ORDER BY v.ID DESC")
+    Page<Variation> getVariationByStatus(Pageable pageable);
+
 
     @Query("SELECT v FROM Variation v WHERE (:minPrice IS NULL OR v.Price >= :minPrice) AND (:maxPrice IS NULL OR v.Price <= :maxPrice)")
     Page<Variation> findByPriceRange(Pageable pageable, @Param("minPrice") Double minPrice, @Param("maxPrice") Double maxPrice);
