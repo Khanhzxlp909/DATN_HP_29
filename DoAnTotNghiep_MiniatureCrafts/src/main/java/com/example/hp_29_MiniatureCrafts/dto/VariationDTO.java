@@ -1,6 +1,10 @@
 package com.example.hp_29_MiniatureCrafts.dto;
 
+import com.example.hp_29_MiniatureCrafts.entity.Supplier;
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.util.List;
 
@@ -15,12 +19,14 @@ public class VariationDTO {
     private Double Weight;
     private Boolean Status;
     private String Note;
+    private Integer Sold;
+    private SupplierDTO Supplier;
     private List<ImagesDTO> ImagesDTO;
 
     public VariationDTO() {
     }
 
-    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status,String note,List<ImagesDTO> images) {
+    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status,String note,Integer Sold, SupplierDTO Supplier,List<ImagesDTO> images) {
         this.ID = ID;
         ProductID = productID;
         this.SKU = SKU;
@@ -31,6 +37,8 @@ public class VariationDTO {
         Weight = weight;
         Status = status;
         Note = note;
+        this.Sold = Sold;
+        this.Supplier = Supplier;
         ImagesDTO = images;
     }
 
@@ -61,6 +69,8 @@ public class VariationDTO {
         Weight = variationID.getWeight();
         Status = variationID.getStatus();
         Note = variationID.getNote();
+        this.Sold = variationID.getSold();
+        this.Supplier = new SupplierDTO(variationID.getSupplier());
     }
 
     // Getters and Setters
@@ -109,6 +119,22 @@ public class VariationDTO {
 
     public BrandDTO getBrandID() {
         return BrandID;
+    }
+
+    public Integer getSold() {
+        return Sold;
+    }
+
+    public void setSold(Integer sold) {
+        Sold = sold;
+    }
+
+    public SupplierDTO getSupplier() {
+        return Supplier;
+    }
+
+    public void setSupplier(SupplierDTO supplier) {
+        Supplier = supplier;
     }
 
     public void setBrandID(BrandDTO brandID) {

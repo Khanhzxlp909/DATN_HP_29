@@ -353,7 +353,12 @@ public class OrderService {
                     orderLine.setMarterial(variation.getMaterial());
                     orderLine.setUnit_Price(variation.getPrice());
                     orderLine.setQuantity(requestedQuantity);
-                    orderLine.setPrice(requestedQuantity * variation.getPrice());
+                    try {
+                        orderLine.setPrice(requestedQuantity * variation.getPrice());
+                    } catch (ArithmeticException e) {
+                        System.out.println("Giá trị không hợp lệ: " + (requestedQuantity * variation.getPrice()));
+                        throw e; // Ném lại ngoại lệ để xử lý ở cấp cao hơn
+                    }
                     orderLine.setStatus(true);
                     orderLine.setCreation_date(LocalDate.now());
                     orderLine.setEdit_Date(LocalDate.now());

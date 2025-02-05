@@ -230,6 +230,85 @@ public class VariationService {
             dto.setWeight(variation.getWeight());
             dto.setStatus(variation.getStatus());
             dto.setNote(variation.getNote());
+            dto.setSold(variation.getSold());
+            dto.setSupplier(mapSupplierToSupplierDTO(variation.getSupplier()));
+            return dto;
+        });
+    }// lấy sản phaarm và phân trang
+
+
+    public Page<VariationDTO> getVariationsBystatus(Pageable pageable) {
+
+        // Truy vấn các Variations theo Status và phân trang
+        Page<Variation> variations = variationRepository.getVariationByStatus(pageable);
+
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
+        return variations.map(variation -> {
+            VariationDTO dto = new VariationDTO();
+            dto.setID(variation.getID());
+            dto.setSKU(variation.getSKU());
+            dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
+                    mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                    getImageByProduct(variation.getProductID().getID())
+            ));
+
+            // chuyển đổi giá từ biến thể qua double
+            double price = variation.getPrice();
+            System.out.println(price);
+            // chuyển đổi từ double sang dạng string và đưa ra dưới dạng giá + VND
+            dto.setPrice(formatter.format(price));
+
+            dto.setBrandID(mapBrandToBrandDTO(variation.getBrandID()));
+
+            dto.setQuantity(variation.getQuantity());
+
+            dto.setMaterial(variation.getMaterial());
+            dto.setWeight(variation.getWeight());
+            dto.setStatus(variation.getStatus());
+            dto.setNote(variation.getNote());
+            dto.setSold(variation.getSold());
+            dto.setSupplier(mapSupplierToSupplierDTO(variation.getSupplier()));
+            return dto;
+        });
+    }
+
+    public Page<VariationDTO> getVariationsByBestseller(Pageable pageable) {
+
+        // Truy vấn các Variations theo Status và phân trang
+        Page<Variation> variations = variationRepository.top6BestSeller(pageable);
+
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
+        return variations.map(variation -> {
+            VariationDTO dto = new VariationDTO();
+            dto.setID(variation.getID());
+            dto.setSKU(variation.getSKU());
+            dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
+                    mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                    getImageByProduct(variation.getProductID().getID())
+            ));
+
+            // chuyển đổi giá từ biến thể qua double
+            double price = variation.getPrice();
+            System.out.println(price);
+            // chuyển đổi từ double sang dạng string và đưa ra dưới dạng giá + VND
+            dto.setPrice(formatter.format(price));
+
+            dto.setBrandID(mapBrandToBrandDTO(variation.getBrandID()));
+
+            dto.setQuantity(variation.getQuantity());
+
+            dto.setMaterial(variation.getMaterial());
+            dto.setWeight(variation.getWeight());
+            dto.setStatus(variation.getStatus());
+            dto.setNote(variation.getNote());
+            dto.setSold(variation.getSold());
+            dto.setSupplier(mapSupplierToSupplierDTO(variation.getSupplier()));
             return dto;
         });
     }
@@ -266,6 +345,8 @@ public class VariationService {
             dto.setWeight(variation.getWeight());
             dto.setStatus(variation.getStatus());
             dto.setNote(variation.getNote());
+            dto.setSold(variation.getSold());
+            dto.setSupplier(mapSupplierToSupplierDTO(variation.getSupplier()));
             return dto;
         });
     }
@@ -287,6 +368,30 @@ public class VariationService {
                 mapCategoryToDTO(entity.getCategoryID()),
                 getImageByProduct(entity.getID())
 
+        );
+    }
+    public static Supplier mapSupplierDTOToSupplier(SupplierDTO entity) {
+        return new Supplier(
+                entity.getId(),
+                entity.getName(),
+                entity.getAddress(),
+                entity.getPhone(),
+                entity.getNote(),
+                entity.getStatus(),
+                entity.getCreationDate(),
+                entity.getEditDate()
+        );
+    }
+    public static SupplierDTO mapSupplierToSupplierDTO(Supplier entity) {
+        return new SupplierDTO(
+                entity.getID(),
+                entity.getName(),
+                entity.getAddress(),
+                entity.getPhone(),
+                entity.getNote(),
+                entity.getStatus(),
+                entity.getCreation_date(),
+                entity.getEdit_Date()
         );
     }
 
@@ -322,10 +427,13 @@ public class VariationService {
                 dto.getMaterial(),
                 dto.getWeight(),
                 dto.getStatus(),
-                dto.getNote()
-
+                dto.getNote(),
+                dto.getSold(),
+                mapSupplierDTOToSupplier(dto.getSupplier())
         );
     }
+
+
 
     // Chuyển từ Variation entity sang VariationDTO
     public VariationDTO mapVariationToVariationDTO(Variation entity) {
@@ -342,6 +450,8 @@ public class VariationService {
                 entity.getWeight(),
                 entity.getStatus(),
                 entity.getNote(),
+                entity.getSold(),
+                mapSupplierToSupplierDTO(entity.getSupplier()),
                 getImageByProduct(entity.getProductID().getID())
 
         );

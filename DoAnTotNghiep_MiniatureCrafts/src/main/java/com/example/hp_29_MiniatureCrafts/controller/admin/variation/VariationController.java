@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 //import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,30 +35,42 @@ public class VariationController {
 
 
     private final String IMAGE_DIR = "src/main/resources/static/images/";
+
     @PostMapping("images/upload")
-    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadImage(@RequestParam("file") List<MultipartFile> listfile) {
         try {
-            // Kiểm tra xem file có trống không
-            if (file.isEmpty()) {
-                return ResponseEntity.badRequest().body("File is empty");
+            // Kiểm tra danh sách file có rỗng không
+            if (listfile.isEmpty()) {
+                return ResponseEntity.badRequest().body("No files were uploaded");
             }
 
-            // Tạo tên file duy nhất
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(IMAGE_DIR + fileName);
+            List<String> fileUrls = new ArrayList<>();
 
-            // Lưu file
-            Files.write(filePath, file.getBytes());
+            for (MultipartFile file : listfile) {
+                if (file.isEmpty()) {
+                    return ResponseEntity.badRequest().body("File is empty");
+                }
 
-            // Trả về đường dẫn file
-            String fileUrl = "/images/" + fileName;
-            System.out.println("url images: " + fileName);
-            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully", "url", fileName));
+                // Tạo tên file duy nhất
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                Path filePath = Paths.get(IMAGE_DIR + fileName);
 
+                // Lưu file
+                Files.write(filePath, file.getBytes());
+
+                // Trả về đường dẫn file
+                String fileUrl = "/images/" + fileName;
+                fileUrls.add(fileUrl);
+
+                System.out.println("Uploaded image URL: " + fileUrl);
+            }
+
+            return ResponseEntity.ok().body(Map.of("message", "Files uploaded successfully", "urls", fileUrls));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while uploading files");
         }
     }
+
 
     @GetMapping("images/findall")
     public List<ImagesDTO> findAll() {
@@ -82,6 +96,11 @@ public class VariationController {
     @GetMapping("result/all")
     public Page<VariationDTO> home(Pageable pageable) {
         return variationService.getAll(pageable);
+    }
+
+    @GetMapping("get/all")
+    public Page<VariationDTO> getByFormOrder(Pageable pageable) {
+        return variationService.getVariationsBystatus(pageable);
     }
 
 

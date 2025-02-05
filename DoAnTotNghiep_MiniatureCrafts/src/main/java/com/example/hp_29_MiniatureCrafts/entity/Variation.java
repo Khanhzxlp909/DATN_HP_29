@@ -28,11 +28,31 @@ public class Variation {
     private Double Weight;
     private Boolean Status;
     private String Note;
+    private Integer Sold;
+
+    @ManyToOne
+    @JoinColumn(name = "Supplier")
+    @JsonBackReference
+    private Supplier Supplier;
 
 
+    public Integer getSold() {
+        return Sold;
+    }
 
+    public void setSold(Integer sold) {
+        Sold = sold;
+    }
 
-    public Variation(Long ID, Product productID, String SKU, Double price, Integer quantity, Brand brandID, String material, Double weight, Boolean status, String note) {
+    public com.example.hp_29_MiniatureCrafts.entity.Supplier getSupplier() {
+        return Supplier;
+    }
+
+    public void setSupplier(com.example.hp_29_MiniatureCrafts.entity.Supplier supplier) {
+        Supplier = supplier;
+    }
+
+    public Variation(Long ID, Product productID, String SKU, Double price, Integer quantity, Brand brandID, String material, Double weight, Boolean status, String note, Integer Sold, Supplier Supplier) {
         this.ID = ID;
         ProductID = productID;
         this.SKU = SKU;
@@ -43,6 +63,8 @@ public class Variation {
         Weight = weight;
         Status = status;
         Note = note;
+        this.Supplier = Supplier;
+        this.Sold = Sold;
     }
 
     public Variation() {

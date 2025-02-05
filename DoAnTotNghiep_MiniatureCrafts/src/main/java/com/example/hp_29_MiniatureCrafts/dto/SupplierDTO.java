@@ -1,5 +1,7 @@
 package com.example.hp_29_MiniatureCrafts.dto;
 
+import com.example.hp_29_MiniatureCrafts.entity.Supplier;
+
 import java.time.LocalDate;
 
 public class SupplierDTO {
@@ -79,6 +81,17 @@ public class SupplierDTO {
     }
 
     public SupplierDTO() {
+    }
+
+    public SupplierDTO(Supplier supplier) {
+        this.id = supplier.getID();
+        this.name = supplier.getName();
+        this.phone = supplier.getPhone();
+        this.address = supplier.getAddress();
+        this.note = supplier.getNote();
+        this.status = supplier.getStatus();
+        this.creationDate = supplier.getCreation_date();
+        this.editDate = supplier.getEdit_Date();
     }
 
     public SupplierDTO(Integer id, String name, String phone, String address, String note, Boolean status, LocalDate creationDate, LocalDate editDate) {
