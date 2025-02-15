@@ -140,6 +140,7 @@ public class WebSecurityConfig {
                                         "/admin/variation/images/upload",
                                         "/admin/variation/getproduct",
                                         "/admin/variation/images/findall",
+                                        "api/v1/cart/findall/**",
                                         "/images/**").permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()
                 );

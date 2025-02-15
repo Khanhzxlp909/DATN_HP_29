@@ -16,6 +16,6 @@ public interface CartRepository extends JpaRepository<CartItem, Long> {
     @Query(value = "select c from CartItem c where c.Status = 1 and c.customer_id.ID=: cus_id")
     Page<CartItem> findAllCart(Pageable pageable, @Param("cus_id") Long cus_id);
 
-    @Query(value = "select c from CartItem c where c.variation_id = :var_id and c.customer_id.ID=: cus_id")
+    @Query("SELECT c FROM CartItem c WHERE c.variation_id.ID = :var_id AND c.customer_id.ID = :cus_id")
     List<CartItem> findAllCartByUserAndVariation(@Param("cus_id") Long cus_id, @Param("var_id") Long var_id);
 }
