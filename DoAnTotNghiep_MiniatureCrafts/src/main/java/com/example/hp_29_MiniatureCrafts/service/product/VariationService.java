@@ -121,7 +121,8 @@ public class VariationService {
         entity.setMaterial(dto.getMaterial());
         entity.setWeight(dto.getWeight());
         entity.setStatus(dto.getStatus());
-
+        entity.setSold(0);
+        entity.setSupplier(mapSupplierDTOToSupplier(dto.getSupplier()));
         return variationRepository.save(entity);
     }
 
@@ -131,7 +132,7 @@ public class VariationService {
 
     //update sarn pham
     public Variation update(VariationDTO varDTO) {
-        Variation variation = new Variation();
+        Variation variation = variationRepository.findByID(varDTO.getID());
 
         // Chuyển từ ProductDTO sang Product entity
         Product product = new Product();
@@ -163,7 +164,8 @@ public class VariationService {
         variation.setMaterial(varDTO.getMaterial());
         variation.setWeight(varDTO.getWeight());
         variation.setStatus(varDTO.getStatus());
-
+        variation.setSold(varDTO.getSold());
+        variation.setSupplier(mapSupplierDTOToSupplier(varDTO.getSupplier()));
         return variationRepository.save(variation);
     }
 
@@ -241,6 +243,44 @@ public class VariationService {
 
         // Truy vấn các Variations theo Status và phân trang
         Page<Variation> variations = variationRepository.getVariationByStatus(pageable);
+
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang
+        return variations.map(variation -> {
+            VariationDTO dto = new VariationDTO();
+            dto.setID(variation.getID());
+            dto.setSKU(variation.getSKU());
+            dto.setProductID(new ProductDTO(
+                    variation.getProductID().getID(),
+                    variation.getProductID().getName(),
+                    mapCategoryToDTO(variation.getProductID().getCategoryID()),
+                    getImageByProduct(variation.getProductID().getID())
+            ));
+
+            // chuyển đổi giá từ biến thể qua double
+            double price = variation.getPrice();
+            System.out.println(price);
+            // chuyển đổi từ double sang dạng string và đưa ra dưới dạng giá + VND
+            dto.setPrice(formatter.format(price));
+
+            dto.setBrandID(mapBrandToBrandDTO(variation.getBrandID()));
+
+            dto.setQuantity(variation.getQuantity());
+
+            dto.setMaterial(variation.getMaterial());
+            dto.setWeight(variation.getWeight());
+            dto.setStatus(variation.getStatus());
+            dto.setNote(variation.getNote());
+            dto.setSold(variation.getSold());
+            dto.setSupplier(mapSupplierToSupplierDTO(variation.getSupplier()));
+            return dto;
+        });
+    }
+
+    public Page<VariationDTO> getVariationsBySupplier(Pageable pageable, Long idsupplier) {
+
+        // Truy vấn các Variations theo Status và phân trang
+        Page<Variation> variations = variationRepository.getVariationBySupplier(pageable, idsupplier);
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         // Chuyển đổi từ Variation sang VariationDTO và duy trì phân trang

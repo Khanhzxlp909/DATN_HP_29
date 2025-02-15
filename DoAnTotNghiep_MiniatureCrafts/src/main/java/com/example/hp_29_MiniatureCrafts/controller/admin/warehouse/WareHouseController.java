@@ -51,7 +51,7 @@ public class WareHouseController {
     }
 
     @GetMapping("result/{id}")
-    public List<WareHouseDTO> findById(@PathVariable("id") Long id) {
+    public WareHouseDTO findById(@PathVariable("id") Long id) {
         return wareHouseService.findByID(id);
     }
 

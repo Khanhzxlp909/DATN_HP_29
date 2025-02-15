@@ -66,25 +66,20 @@ public class WareHouseService {
         return wareHouseRepository.save(mapWareHouseDTOtoEntity(dto));
     }
 
-    public List<WareHouseDTO> findByID(Long id) {
-        Optional<WareHouse> wareHouses = wareHouseRepository.findById(id);
-        return wareHouses.stream().map(
-                wareHouse -> {
-                    WareHouseDTO dto = new WareHouseDTO(
-                            wareHouse.getID(),
-                            wareHouse.getCode_Inventory(),
-                            MapEmployeetoDTO(wareHouse.getEmployee()),
-                            mapSuppierToDTO(wareHouse.getSupplier()),
-                            wareHouse.getNote(),
-                            wareHouse.getStatus(),
-                            wareHouse.getTotal_Amount(),
-                            wareHouse.getCreation_date(),
-                            wareHouse.getEdit_Date()
-                    );
-                    return dto;
-                }
-        ).collect(Collectors.toList());
-
+    public WareHouseDTO findByID(Long id) {
+        WareHouse wareHouse = wareHouseRepository.findById(id).orElseThrow();
+        WareHouseDTO dto = new WareHouseDTO(
+                wareHouse.getID(),
+                wareHouse.getCode_Inventory(),
+                MapEmployeetoDTO(wareHouse.getEmployee()),
+                mapSuppierToDTO(wareHouse.getSupplier()),
+                wareHouse.getNote(),
+                wareHouse.getStatus(),
+                wareHouse.getTotal_Amount(),
+                wareHouse.getCreation_date(),
+                wareHouse.getEdit_Date()
+        );
+        return dto;
     }
 
     public String deleteWareHouse(Long id) {

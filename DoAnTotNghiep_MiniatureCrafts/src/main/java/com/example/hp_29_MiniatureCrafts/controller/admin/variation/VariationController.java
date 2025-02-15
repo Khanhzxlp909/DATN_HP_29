@@ -103,6 +103,11 @@ public class VariationController {
         return variationService.getVariationsBystatus(pageable);
     }
 
+    @GetMapping("warehouse/supiller/{id}")
+    public Page<VariationDTO> getByWarehouse(Pageable pageable, @PathVariable("id") Long id) {
+        return variationService.getVariationsBySupplier(pageable, id);
+    }
+
 
     @GetMapping("result/{name}")
     public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {

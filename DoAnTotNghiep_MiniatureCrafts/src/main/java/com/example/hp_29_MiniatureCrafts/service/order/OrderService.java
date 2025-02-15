@@ -409,7 +409,7 @@ public class OrderService {
     }
 
 
-    private Customer mapCustomerDTOToEntity(CustomerDTO dto) {
+    public Customer mapCustomerDTOToEntity(CustomerDTO dto) {
         return new Customer(
                 dto.getID(),
                 dto.getName(),
@@ -422,7 +422,7 @@ public class OrderService {
         );
     }
 
-    private CustomerDTO mapCustomerEntityToDTO(Customer entity) {
+    public CustomerDTO mapCustomerEntityToDTO(Customer entity) {
         return new CustomerDTO(
                 entity.getID(),
                 entity.getName(),
@@ -457,7 +457,7 @@ public class OrderService {
 
 
     // Chuyển PaymentMethod entity sang DTO
-    private PaymentMethodDTO mapPaymentEntityToDTO(PaymentMethod entity) {
+    public PaymentMethodDTO mapPaymentEntityToDTO(PaymentMethod entity) {
         PaymentMethodDTO dto = new PaymentMethodDTO();
         dto.setID(entity.getID());
         dto.setType(entity.getType());
@@ -468,7 +468,7 @@ public class OrderService {
 
 
     // Chuyển PaymentMethod entity sang DTO
-    private PaymentMethod mapPaymentMethodDTOToEntity(PaymentMethodDTO dto) {
+    public PaymentMethod mapPaymentMethodDTOToEntity(PaymentMethodDTO dto) {
         PaymentMethod entity = new PaymentMethod();
         entity.setID(dto.getID());
         entity.setType(dto.getType());
@@ -483,50 +483,5 @@ public class OrderService {
         Number number = formatter.parse(currency);
         return number.doubleValue();
     }
-
-
-    //    public POSOrder addSHOP(POSOrderDTO dto) {
-//
-//        POSOrder entity = new POSOrder();
-//        entity.setID(dto.getID());
-//
-//        // chuyển thể từ Customer DTO sang customer
-//        Customer customer = mapCustomerDTOToEntity(dto.getCustomerID());
-//        System.out.println("Customer ID: " + customer.getID());
-//
-//        // gán customer vào customerID
-//        entity.setCustomerID(customer);
-//
-//
-//        entity.setCode_Voucher(dto.getCode_Voucher());
-//
-//        Voucher voucher = voucherRepository.findVoucherByCode(dto.getCode_Voucher());
-//        // giá đc giảm
-//        BigDecimal discountAmount = BigDecimal.valueOf(voucher.getDiscountValue());
-//        System.out.println("Discount Amount: " + discountAmount);
-//        entity.setDiscount_Amount(discountAmount);
-//
-//
-//        PaymentMethod payment = mapPaymentMethodDTOToEntity(dto.getPaymentMethod());
-//        entity.setPaymentMethod(payment);
-//
-//        LocalDate today = LocalDate.now();
-//        entity.setCreation_date(today);
-//
-//        entity.setNote(dto.getNote());
-//
-//        entity.setType_Oder(1);
-//
-//        // json body bao gồm:
-//        //customerID.ID
-//        //status
-//        //type_Oder
-//        //creation_date
-//        //paymentMethod.id
-//        //code_Voucher
-//        //note
-//        return posOrderRepository.save(entity);
-//
-//    }
 
 }
