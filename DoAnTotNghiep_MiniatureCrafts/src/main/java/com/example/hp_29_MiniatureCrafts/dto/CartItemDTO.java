@@ -39,11 +39,11 @@ public class CartItemDTO {
         this.variation_id = variation_id;
     }
 
-    public int getQuality() {
+    public int getQuantity() {
         return quality;
     }
 
-    public void setQuality(int quality) {
+    public void setQuantity(int quality) {
         this.quality = quality;
     }
 

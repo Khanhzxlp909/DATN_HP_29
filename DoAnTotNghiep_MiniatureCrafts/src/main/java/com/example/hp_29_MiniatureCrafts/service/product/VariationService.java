@@ -613,6 +613,8 @@ public class VariationService {
         dto.setWeight(variation.getWeight());
         dto.setStatus(variation.getStatus());
         dto.setNote(variation.getNote());
+        dto.setSold(variation.getSold());
+        dto.setSupplier(mapSupplierToSupplierDTO(variation.getSupplier()));
         return dto;
     }
 

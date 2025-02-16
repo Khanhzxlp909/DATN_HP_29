@@ -2,6 +2,7 @@ package com.example.hp_29_MiniatureCrafts.controller.users.home;
 
 
 import com.example.hp_29_MiniatureCrafts.dto.CartItemDTO;
+import com.example.hp_29_MiniatureCrafts.entity.Variation;
 import com.example.hp_29_MiniatureCrafts.service.order.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,22 +18,36 @@ import java.util.List;
 public class CartController {
 
     @Autowired
-    CartService cartService;
+    CartService cartServices;
 
-    @GetMapping("findall/{customer_id}")
-    public Page<CartItemDTO> findAll(Pageable pageable, @PathVariable("customer_id") Long customer_id) {
-        return cartService.findAll(pageable, customer_id);
+    @GetMapping("/findall/{customer_id}")
+    public List<CartItemDTO> findAll(Pageable pageable, @PathVariable("customer_id") Long customer_id) {
+        return cartServices.findAll(pageable, customer_id);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<?> saveCart(@RequestBody List<CartItemDTO> cartItemDTOs) {
+    @PostMapping("/addtocart")
+    public ResponseEntity<?> saveCart(@RequestBody CartItemDTO cartItemDTO) {
+
         try {
-            cartService.save(cartItemDTOs);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Cart items saved successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error saving cart items: " + e.getMessage());
+            return cartServices.addToCart(cartItemDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+    @PostMapping("/editquantity/{cartItemId}/{newQuantity}")
+    public ResponseEntity<?> editCart(@PathVariable("cartItemId") Long cartItemId ,@PathVariable("newQuantity") int newQuantity) {
 
+        try {
+            return cartServices.updateQuantity(cartItemId,newQuantity);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/remove/{cartItemId}")
+    public ResponseEntity<String> delete(@PathVariable("cartItemId") Long cartItemId) {
+        cartServices.deleteCartItem(cartItemId);
+        return new ResponseEntity<>("Cart item deleted successfully", HttpStatus.OK);
+    }
 }
