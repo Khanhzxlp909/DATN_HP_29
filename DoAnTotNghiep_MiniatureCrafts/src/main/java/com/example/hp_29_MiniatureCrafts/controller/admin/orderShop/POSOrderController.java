@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/admin/orders")
 public class POSOrderController {
@@ -63,10 +64,11 @@ public class POSOrderController {
             throw new RuntimeException();
         }
     }
-    @GetMapping("history/{id}")
-    public List<POSOrderDTO> getAllOrderByCustomer(@PathVariable("id") Long id) {
 
-        List<POSOrderDTO> orders = orderService.getAllOrdersbyCustomer(id);
+    @GetMapping("history/{id}")
+    public Page<POSOrderDTO> getAllOrderByCustomer(Pageable pageable, @PathVariable("id") Long id) {
+
+        Page<POSOrderDTO> orders = orderService.getAllOrdersbyCustomer(pageable, id);
 
         // Lặp qua từng đơn hàng và gắn danh sách OrderLineDTO vào đối tượng POSOrderDTO
         orders.forEach(order -> {
@@ -86,32 +88,29 @@ public class POSOrderController {
         return orders;
 
     }
+
     @PostMapping("/newOrder")
 //    @Transactional
     public ResponseEntity<?> createOrder(@RequestBody POSOrderDTO posOrderDTO) {
         try {
             // Tạo POSOrder
             System.out.println("totalamount : " + posOrderDTO.getTotal_Amount());
+
             POSOrder order = orderService.orderInPOS(posOrderDTO);
 
             // Lấy ID của POSOrder vừa được lưu
             Long orderId = order.getID();
             System.out.println("ID ORDER: " + orderId);
 
-            // Thêm danh sách OrderLine từ DTO
-            for (OrderLineDTO orderLineDTO : posOrderDTO.getOrderLine()) {
-                OrderLine savedOrderLine = orderService.addOrderline(orderLineDTO, orderId);
-                System.out.println("variation id : " + savedOrderLine.getVariationID().getID());
-                System.out.println("Saved OrderLine: " + savedOrderLine);
-            }
-
             // Chuyển đổi POSOrder entity sang DTO để trả về
             POSOrderDTO responseDTO = orderService.mapOrderEntityToDTO(order);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+
         } catch (RuntimeException ex) {
             // Trả về lỗi nếu có exception
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+
         }
 
     }

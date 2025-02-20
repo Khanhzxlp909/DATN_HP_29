@@ -13,7 +13,7 @@ public interface OrderRepository extends JpaRepository<POSOrder, Integer> {
 
 //    Page<POSOrder> findAll(Pageable pageable);
 
-    @Query("SELECT p FROM POSOrder p ORDER BY p.ID DESC")
-    Page<POSOrder> findAll(Pageable pageable);
+    @Query("SELECT p FROM POSOrder p where p.CustomerID.ID = :id and p.Status = 1 ORDER BY p.ID DESC")
+    Page<POSOrder> findAllBYDesc(Pageable pageable, @Param("id") Long customer_id);
 
 }

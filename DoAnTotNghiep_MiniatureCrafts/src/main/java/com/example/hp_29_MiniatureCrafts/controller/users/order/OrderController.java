@@ -9,6 +9,8 @@ import com.example.hp_29_MiniatureCrafts.service.order.OrderService;
 import com.example.hp_29_MiniatureCrafts.service.order.Voucher.VoucherService;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,9 +47,9 @@ public class OrderController {
     }
 
     @GetMapping("history/{id}")
-    public List<POSOrderDTO> getAllOrder(@PathVariable("id") Long id) {
+    public Page<POSOrderDTO> getAllOrderByCustomer(Pageable pageable, @PathVariable("id") Long id) {
 
-        List<POSOrderDTO> orders = orderService.getAllOrdersbyCustomer(id);
+        Page<POSOrderDTO> orders = orderService.getAllOrdersbyCustomer(pageable, id);
 
         // Lặp qua từng đơn hàng và gắn danh sách OrderLineDTO vào đối tượng POSOrderDTO
         orders.forEach(order -> {
@@ -91,13 +93,6 @@ public class OrderController {
             // Lấy ID của POSOrder vừa được lưu
             Long orderId = order.getID();
             System.out.println("ID ORDER: " + orderId);
-
-            // Thêm danh sách OrderLine từ DTO
-            for (OrderLineDTO orderLineDTO : posOrderDTO.getOrderLine()) {
-                OrderLine savedOrderLine = orderService.addOrderline(orderLineDTO, orderId);
-                System.out.println("variation id : " + savedOrderLine.getVariationID().getID());
-                System.out.println("Saved OrderLine: " + savedOrderLine);
-            }
 
             // Chuyển đổi POSOrder entity sang DTO để trả về
             POSOrderDTO responseDTO = orderService.mapOrderEntityToDTO(order);

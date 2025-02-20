@@ -37,9 +37,12 @@ public class VariationService {
     ProductRepository productRepository;
 
     public ImagesDTO saveImages(ImagesDTO imagesDTO) {
+        Product product = productRepository.findById(imagesDTO.getProduct().getId()).orElseThrow();
+
         Images images = new Images();
-        images.setProduct(mapProductDTOtoProduct(imagesDTO.getProduct()));
+        images.setProduct(product);
         images.setCd_Images(imagesDTO.getCd_Images());
+        images.setSet_Default(imagesDTO.getSet_Default());
         return new ImagesDTO(imagesRepository.save(images));
     }
 

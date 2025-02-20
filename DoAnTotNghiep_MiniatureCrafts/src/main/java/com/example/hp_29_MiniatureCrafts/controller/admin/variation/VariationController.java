@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,39 +39,56 @@ public class VariationController {
     private final String IMAGE_DIR = "src/main/resources/static/images/";
 
     @PostMapping("images/upload")
-    public ResponseEntity<?> uploadImage(@RequestParam("file") List<MultipartFile> listfile) {
+    public ResponseEntity<?> uploadImage(@RequestParam("file") List<MultipartFile> listFiles) {
+        String IMAGE_DIR = "src/main/resources/static/images/"; // Cấu hình thư mục lưu ảnh
+
         try {
-            // Kiểm tra danh sách file có rỗng không
-            if (listfile.isEmpty()) {
-                return ResponseEntity.badRequest().body("No files were uploaded");
+            if (listFiles.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("message", "No files were uploaded"));
             }
 
             List<String> fileUrls = new ArrayList<>();
 
-            for (MultipartFile file : listfile) {
+            for (MultipartFile file : listFiles) {
                 if (file.isEmpty()) {
-                    return ResponseEntity.badRequest().body("File is empty");
+                    return ResponseEntity.badRequest().body(Map.of("message", "One of the files is empty"));
                 }
 
-                // Tạo tên file duy nhất
-                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                // Kiểm tra định dạng file hợp lệ
+                String originalFileName = file.getOriginalFilename();
+                if (originalFileName == null || !originalFileName.matches(".*\\.(png|jpg|jpeg|gif|webp)$")) {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Invalid file type. Only images are allowed"));
+                }
+
+                // Đặt tên file duy nhất
+                String fileName = System.currentTimeMillis() + "_" + originalFileName;
                 Path filePath = Paths.get(IMAGE_DIR + fileName);
 
-                // Lưu file
-                Files.write(filePath, file.getBytes());
+                // Đảm bảo thư mục tồn tại
+                Files.createDirectories(filePath.getParent());
 
-                // Trả về đường dẫn file
+                // Lưu file an toàn hơn
+                try (InputStream inputStream = file.getInputStream()) {
+                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                // Đường dẫn file trả về
                 String fileUrl = "/images/" + fileName;
-                fileUrls.add(fileUrl);
+                fileUrls.add(fileName);
 
                 System.out.println("Uploaded image URL: " + fileUrl);
             }
 
-            return ResponseEntity.ok().body(Map.of("message", "Files uploaded successfully", "urls", fileUrls));
+            return ResponseEntity.ok().body(Map.of(
+                    "message", "Files uploaded successfully",
+                    "urls", fileUrls
+            ));
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while uploading files");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error while uploading files"));
         }
     }
+
 
 
     @GetMapping("images/findall")
@@ -78,14 +97,18 @@ public class VariationController {
     }
 
     @PostMapping("images/setproduct")
-    public ResponseEntity<?> setProductImages(@RequestBody ImagesDTO imagesDTO) {
+    public ResponseEntity<?> setProductImages(@RequestBody List<ImagesDTO> imagesDTOList) {
         try {
-            variationService.saveImages(imagesDTO);
-            return ResponseEntity.ok().body(Map.of("message", "File uploaded successfully"));
+            for (ImagesDTO imagesDTO : imagesDTOList) {
+                variationService.saveImages(imagesDTO); // Lưu từng ảnh vào DB
+            }
+            return ResponseEntity.ok().body(Map.of("message", "Files uploaded successfully"));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while saving images", e);
         }
     }
+
+
 
     @GetMapping("getproduct")
     public List<ProductDTO> getProductDTOS() {

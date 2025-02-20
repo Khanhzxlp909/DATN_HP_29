@@ -51,10 +51,10 @@ public class CartService {
         int availableQuantity = variation.getQuantity();
         int requestedQuantity = cartItemDTO.getQuantity();
 
-        if (requestedQuantity > availableQuantity) {
-//            throw new RuntimeException("Số lượng trong kho không đủ cho sản phẩm: " + variation.getProductID().getName());
+        if (requestedQuantity > availableQuantity || availableQuantity == 0) {
             return ResponseEntity.badRequest().body("Not enough quantity: " + variation.getProductID().getName());
         }
+
         //gan du lieu cho cart
         CartItem entity = new CartItem();
         entity.setCustomer_id(orderService.mapCustomerDTOToEntity(cartItemDTO.getCustomer_id()));
