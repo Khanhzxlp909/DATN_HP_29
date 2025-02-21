@@ -17,8 +17,10 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -137,9 +139,23 @@ public class OrderService {
             dto.setType_Oder(entity.getType_Oder());
             dto.setNote(entity.getNote());
             dto.setStatus(entity.getStatus());
-            return dto; // Trả về dto trong lambda
 
+            // 💡 Gán statusText dựa vào trạng thái
+            dto.setStatusText(mapStatusToText(entity.getStatus()));
+
+            return dto; // Trả về DTO
         });
+    }
+
+    private String mapStatusToText(int status) {
+        Map<Integer, String> statusMap = new HashMap<>();
+        statusMap.put(0, "Huỷ đơn");
+        statusMap.put(1, "Chờ xác nhận");
+        statusMap.put(2, "Đã xác nhận");
+        statusMap.put(3, "Đang giao hàng");
+        statusMap.put(4, "Đã giao hàng thành công");
+
+        return statusMap.getOrDefault(status, "Không xác định"); // Giá trị mặc định nếu trạng thái không hợp lệ
     }
 
 

@@ -3,7 +3,9 @@ package com.example.hp_29_MiniatureCrafts.dto;
 import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class POSOrderDTO {
     private Long ID;
@@ -19,6 +21,7 @@ public class POSOrderDTO {
     private String Note;
     private Integer Status;
     private List<OrderLineDTO> orderLine;
+    private String statusText; // Trạng thái dạng chuỗi
 
     public POSOrderDTO(POSOrder oder) {
         this.ID = oder.getID();
@@ -155,6 +158,16 @@ public class POSOrderDTO {
         this.orderLine = orderLine;
     }
 
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
+    }
+
+    public String getStatusText() {
+        return statusText;
+    }
+
     public POSOrderDTO() {
     }
+
+
 }
