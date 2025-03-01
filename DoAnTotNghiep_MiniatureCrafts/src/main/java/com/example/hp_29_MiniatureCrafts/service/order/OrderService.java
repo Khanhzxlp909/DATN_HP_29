@@ -80,6 +80,17 @@ public class OrderService {
         posOrderRepository.save(order);
     }
 
+    public void completeOrder(Long orderId) {
+        // Tìm đơn hàng theo ID
+        POSOrder order = posOrderRepository.findByOrderID(orderId);
+
+        // Xóa tất cả OrderLine liên quan đến đơn hàng
+//        orderLineRepository.deleteAll(orderLines)
+        order.setStatus(3);
+        // Xóa đơn hàng
+        posOrderRepository.save(order);
+    }
+
     public List<OrderLineDTO> findOrderLine(Long orderId) {
         List<OrderLine> orderLines = orderLineRepository.findAllOrderID(orderId);
 
@@ -97,6 +108,7 @@ public class OrderService {
             POSOrderDTO dto = new POSOrderDTO();
             dto.setID(entity.getID());
             dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
+            dto.setAddress(entity.getAddress());
             dto.setCode_Voucher(entity.getCode_Voucher());
             dto.setTotal_Amount(entity.getTotal_Amount() != null ? entity.getTotal_Amount().toString() : "0");
             dto.setDiscount_Amount(entity.getDiscount_Amount() != null ? entity.getDiscount_Amount().toString() : "0");
@@ -118,12 +130,13 @@ public class OrderService {
     }
 
     public Page<POSOrderDTO> findAllOrder(Pageable pageable) {
-        Page<POSOrder> posOrders = posOrderRepository.findAll(pageable);
+        Page<POSOrder> posOrders = posOrderRepository.findAllDESC(pageable);
 
         return posOrders.map(entity -> {
             POSOrderDTO dto = new POSOrderDTO();
             dto.setID(entity.getID());
             dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
+            dto.setAddress(entity.getAddress());
             dto.setCode_Voucher(entity.getCode_Voucher());
             dto.setTotal_Amount(entity.getTotal_Amount() != null ? entity.getTotal_Amount().toString() : "0");
             dto.setDiscount_Amount(entity.getDiscount_Amount() != null ? entity.getDiscount_Amount().toString() : "0");
@@ -149,13 +162,12 @@ public class OrderService {
 
     private String mapStatusToText(int status) {
         Map<Integer, String> statusMap = new HashMap<>();
-        statusMap.put(0, "Huỷ đơn");
+        statusMap.put(0, "Đã hủy");
         statusMap.put(1, "Chờ xác nhận");
-        statusMap.put(2, "Đã xác nhận");
-        statusMap.put(3, "Đang giao hàng");
-        statusMap.put(4, "Đã giao hàng thành công");
+        statusMap.put(2, "Đang giao hàng");
+        statusMap.put(3, "Đã giao hàng thành công");
 
-        return statusMap.getOrDefault(status, "Không xác định"); // Giá trị mặc định nếu trạng thái không hợp lệ
+        return statusMap.getOrDefault(status, "Không xác định"); // Mặc định nếu không có trong danh sách
     }
 
 
@@ -176,7 +188,7 @@ public class OrderService {
             // Chuyển đổi CustomerDTO sang Entity
             Customer customer = mapCustomerDTOToEntity(posOrderDTO.getCustomerID());
             order.setCustomerID(customer);
-
+            order.setAddress(posOrderDTO.getAddress());
             // Kiểm tra và gán Voucher
             String voucherCode = posOrderDTO.getCode_Voucher();
             Voucher voucher = voucherRepository.findVoucherByCode(voucherCode);
@@ -204,9 +216,6 @@ public class OrderService {
         }
     }
 
-
-    //
-//    @Transactional
     public OrderLine addOrderline(OrderLineDTO orderLineDTO, Long orderId) {
         OrderLine orderLine = new OrderLine();
 
@@ -258,7 +267,7 @@ public class OrderService {
             // Mapping từ DTO sang Entity
             Customer customer = mapCustomerDTOToEntity(dto.getCustomerID());
             entity.setCustomerID(customer);
-
+            entity.setAddress(dto.getAddress());
             // Kiểm tra và gán Voucher nếu tồn tại
             String voucherCode = dto.getCode_Voucher();
             if (voucherCode != null && !voucherCode.isEmpty()) {
@@ -346,7 +355,7 @@ public class OrderService {
             // Mapping từ DTO sang Entity
             Customer customer = mapCustomerDTOToEntity(dto.getCustomerID());
             entity.setCustomerID(customer);
-
+            entity.setAddress(dto.getAddress());
             // Kiểm tra và gán Voucher nếu tồn tại
             String voucherCode = dto.getCode_Voucher();
             if (voucherCode != null && !voucherCode.isEmpty()) {
@@ -491,6 +500,7 @@ public class OrderService {
         POSOrderDTO dto = new POSOrderDTO();
         dto.setID(entity.getID());
         dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
+        dto.setAddress(entity.getAddress());
         // Lấy danh sách OrderLine từ repository và chuyển đổi sang DTO
         List<OrderLineDTO> orderLineDTOs = orderLineRepository.findAllOrderID(entity.getID())
                 .stream()

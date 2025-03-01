@@ -48,6 +48,19 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/completeOrder/{orderId}")
+    @Transactional
+    public String completeOrder(@PathVariable Long orderId) {
+        try {
+            // Gọi service để hủy đơn hàng
+            orderService.completeOrder(orderId);
+            return "Giao hàng thành công";
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
     @GetMapping("history/{id}")
     public Page<POSOrderDTO> getAllOrderByCustomer(Pageable pageable, @PathVariable("id") Long id) {
         // Lấy danh sách đơn hàng theo khách hàng
@@ -68,11 +81,10 @@ public class OrderController {
 
     private String mapStatusToText(int status) {
         Map<Integer, String> statusMap = new HashMap<>();
-        statusMap.put(0, "Huỷ đơn");
+        statusMap.put(0, "Đã hủy");
         statusMap.put(1, "Chờ xác nhận");
-        statusMap.put(2, "Đã xác nhận");
-        statusMap.put(3, "Đang giao hàng");
-        statusMap.put(4, "Đã giao hàng thành công");
+        statusMap.put(2, "Đang giao hàng");
+        statusMap.put(3, "Đã giao hàng thành công");
 
         return statusMap.getOrDefault(status, "Không xác định"); // Mặc định nếu không có trong danh sách
     }

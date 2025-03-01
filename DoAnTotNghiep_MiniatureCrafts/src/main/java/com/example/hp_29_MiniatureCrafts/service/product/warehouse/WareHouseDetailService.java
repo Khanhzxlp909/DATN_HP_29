@@ -34,29 +34,37 @@ public class WareHouseDetailService {
     WareHouseDetailRepository wareHouseDetailRepository;
 
     // Thêm mới WareHouseDetails
-    public WareHouseDetails addWareHouseDetail(WareHouseDetailsDTO dto) {
-        // Lấy Variation từ DTO
-        Variation variation = variationService.findByIDEntity(dto.getVariation().getID());
-        if (variation == null) {
-            throw new RuntimeException("Variation không tồn tại!");
-        }
+    public void addWareHouseDetail(List<WareHouseDetailsDTO> dto, Long id_import) {
 
-        // Cập nhật số lượng Variation
-        variation.setQuantity(variation.getQuantity() + dto.getQuantity());
-        variationService.save(variation);
-
-//         Lưu WareHouseDetails
-        WareHouseDetails entity = mapWHDTtoEntity(dto);
         try {
-            WareHouseDetails savedEntity = wareHouseDetailRepository.save(entity);
-            System.out.println("Lưu thành công: " + savedEntity);
-            return savedEntity;
+            for (WareHouseDetailsDTO wareHouseDetailsDTO : dto) {
+
+                Variation variation = variationService.findByIDEntity(wareHouseDetailsDTO.getVariation().getID());
+                if (variation == null) {
+                    throw new RuntimeException("Variation không tồn tại!");
+                }
+
+                // Cập nhật số lượng Variation
+                variation.setQuantity(variation.getQuantity() + wareHouseDetailsDTO.getQuantity());
+                variationService.save(variation);
+
+                WareHouseDetails entity = new WareHouseDetails();
+                entity.setImport(id_import);
+                entity.setVariation(variation);
+                entity.setQuantity(wareHouseDetailsDTO.getQuantity());
+                entity.setPrice(wareHouseDetailsDTO.getPrice());
+                entity.setTotal_Amount(wareHouseDetailsDTO.getQuantity() * wareHouseDetailsDTO.getPrice());
+                entity.setNote(wareHouseDetailsDTO.getNote());
+                entity.setStatus(wareHouseDetailsDTO.getStatus());
+
+                wareHouseDetailRepository.save(entity);
+
+            }
         } catch (Exception e) {
             System.err.println("Lỗi khi lưu WareHouseDetails: " + e.getMessage());
             e.printStackTrace();
             throw e;
         }
-
     }
 
     public WareHouseDetailsDTO updateWareHouseDetail(Integer id, WareHouseDetailsDTO dto) {
@@ -68,9 +76,9 @@ public class WareHouseDetailService {
         }
 
         // Lấy Variation liên quan
-        Long idvari = existingDetail.getVariation().getID();
-        System.out.println("variation id: "+ idvari);
-        Variation variation = variationRepository.findByIdVariation(idvari);
+        Long idvariation = existingDetail.getVariation().getID();
+        System.out.println("variation id: " + idvariation);
+        Variation variation = variationRepository.findByIdVariation(idvariation);
         if (variation == null) {
             throw new EntityNotFoundException("Không tìm thấy Variation!");
         }

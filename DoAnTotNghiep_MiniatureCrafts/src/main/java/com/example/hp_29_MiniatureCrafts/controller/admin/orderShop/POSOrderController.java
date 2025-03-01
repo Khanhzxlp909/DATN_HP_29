@@ -87,11 +87,10 @@ public class POSOrderController {
 
     private String mapStatusToText(int status) {
         Map<Integer, String> statusMap = new HashMap<>();
-        statusMap.put(0, "Huỷ đơn");
+        statusMap.put(0, "Đã hủy");
         statusMap.put(1, "Chờ xác nhận");
-        statusMap.put(2, "Đã xác nhận");
-        statusMap.put(3, "Đang giao hàng");
-        statusMap.put(4, "Đã giao hàng thành công");
+        statusMap.put(2, "Đang giao hàng");
+        statusMap.put(3, "Đã giao hàng thành công");
 
         return statusMap.getOrDefault(status, "Không xác định"); // Mặc định nếu không có trong danh sách
     }

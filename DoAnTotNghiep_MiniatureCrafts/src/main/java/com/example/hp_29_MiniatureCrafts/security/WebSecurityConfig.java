@@ -145,6 +145,7 @@ public class WebSecurityConfig {
                                         "/api/v1/cart/findall/**",
                                         "/api/v1/cart/addtocart",
                                         "/api/v1/cart/remove/**",
+                                        "/api/v1/cart/removeall/**",
                                         "/api/v1/cart/editquantity/**",
                                         "/images/**").permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()

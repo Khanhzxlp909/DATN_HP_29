@@ -50,4 +50,9 @@ public class CartController {
         cartServices.deleteCartItem(cartItemId);
         return new ResponseEntity<>("Cart item deleted successfully", HttpStatus.OK);
     }
+    @GetMapping("/removeall/{customer_id}")
+    public ResponseEntity<String> removeAllCart(@PathVariable("customer_id") Long customer_id) {
+        cartServices.clearCartByCustomer(customer_id);
+        return new ResponseEntity<>("Cart item deleted successfully", HttpStatus.OK);
+    }
 }

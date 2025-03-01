@@ -24,9 +24,6 @@ public class CartService {
     private OrderService orderService;
 
 
-    //user them vao gio hang thi cart se khoa so luong
-    //
-
     public List<CartItemDTO> findAll(Pageable pageable, Long customerId) {
         List<CartItem> cartItems = cartRepository.findByCustomerId(customerId);
         return cartItems.stream().map(this::mapEntityToDTO).toList();
@@ -38,6 +35,10 @@ public class CartService {
 //        cartItem.setQuantity(newQuantity);
 //        return mapEntityToDTO(cartRepository.save(cartItem));
 //    }
+
+    public void clearCartByCustomer(Long customerId) {
+        cartRepository.deleteByCustomerId(customerId);
+    }
 
     public ResponseEntity<String> addToCart(CartItemDTO cartItemDTO) {
         Long customerId = cartItemDTO.getCustomer_id().getID();

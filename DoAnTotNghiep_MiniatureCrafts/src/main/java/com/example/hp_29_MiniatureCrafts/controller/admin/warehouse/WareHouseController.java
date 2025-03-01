@@ -92,14 +92,16 @@ public class WareHouseController {
 
 
     @PostMapping("/{warehouse}/add/whdt")
-    public WareHouseDetails addWareHouseDetail(@PathVariable("warehouse") Long idWarehouse, @RequestBody WareHouseDetailsDTO wareHouseDetailsDTO) {
-        if (wareHouseDetailsDTO.getVariation() == null) {
-            throw new RuntimeException("Variation không thể là null!");
+    public String addWareHouseDetail(@PathVariable("warehouse") Long idWarehouse, @RequestBody List<WareHouseDetailsDTO> wareHouseDetailsDTO) {
+
+        try {
+            wareHouseDetailService.addWareHouseDetail(wareHouseDetailsDTO, idWarehouse);
+            return "Thêm mới thành công!";
+        } catch (Exception e) {
+            System.err.println("Lỗi khi thêm mới WareHouseDetails: " + e.getMessage());
+            e.printStackTrace();
+            return "Thêm mới thất bại!";
         }
-        System.out.println("Line 85:  Price: "+wareHouseDetailsDTO.getPrice());;
-        System.out.println("Received wareHouseDetailsDTO: " + wareHouseDetailsDTO.getVariation().getID());
-        System.out.println("ID WAREHOUSE: " + idWarehouse);
-        return wareHouseDetailService.addWareHouseDetail(wareHouseDetailsDTO);
     }
 
     @GetMapping("/{warehouse}/getall/whdt")

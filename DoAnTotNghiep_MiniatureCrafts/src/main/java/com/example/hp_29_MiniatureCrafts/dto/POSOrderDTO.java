@@ -10,6 +10,7 @@ import java.util.Map;
 public class POSOrderDTO {
     private Long ID;
     private CustomerDTO customerID;
+    private String Address;
     private String Code_Voucher;
     private String Total_Amount;
     private String Discount_Amount;
@@ -26,6 +27,7 @@ public class POSOrderDTO {
     public POSOrderDTO(POSOrder oder) {
         this.ID = oder.getID();
         this.customerID = new CustomerDTO(oder.getCustomerID());
+        this.Address = oder.getAddress();
         Code_Voucher = oder.getCode_Voucher();
         Total_Amount = oder.getTotal_Amount().toString();
         Discount_Amount = oder.getDiscount_Amount().toString();
@@ -38,9 +40,10 @@ public class POSOrderDTO {
         Status = oder.getStatus();
     }
 
-    public POSOrderDTO(Long ID, CustomerDTO customerID, String code_Voucher, String total_Amount, String discount_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Integer status, List<OrderLineDTO> orderlineDTO) {
+    public POSOrderDTO(Long ID, CustomerDTO customerID, String address, String code_Voucher, String total_Amount, String discount_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Integer status, List<OrderLineDTO> orderLine, String statusText) {
         this.ID = ID;
         this.customerID = customerID;
+        Address = address;
         Code_Voucher = code_Voucher;
         Total_Amount = total_Amount;
         Discount_Amount = discount_Amount;
@@ -51,7 +54,17 @@ public class POSOrderDTO {
         Type_Oder = type_Oder;
         Note = note;
         Status = status;
-        orderLine = orderlineDTO;
+        this.orderLine = orderLine;
+        this.statusText = statusText;
+    }
+
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
     }
 
     public Long getID() {

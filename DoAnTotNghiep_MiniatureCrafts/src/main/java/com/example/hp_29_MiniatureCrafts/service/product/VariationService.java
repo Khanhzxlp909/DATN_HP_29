@@ -155,7 +155,7 @@ public class VariationService {
         //tryền DTO vào entity
         variation.setID(varDTO.getID());
         variation.setProductID(product);
-        variation.setSKU(UUID.randomUUID().toString());
+        variation.setSKU(variation.getSKU());
 
         String currency = varDTO.getPrice();
         double amount = parsePrice(currency);
@@ -167,7 +167,7 @@ public class VariationService {
         variation.setMaterial(varDTO.getMaterial());
         variation.setWeight(varDTO.getWeight());
         variation.setStatus(varDTO.getStatus());
-        variation.setSold(varDTO.getSold());
+        variation.setSold(variation.getSold());
         variation.setSupplier(mapSupplierDTOToSupplier(varDTO.getSupplier()));
         return variationRepository.save(variation);
     }

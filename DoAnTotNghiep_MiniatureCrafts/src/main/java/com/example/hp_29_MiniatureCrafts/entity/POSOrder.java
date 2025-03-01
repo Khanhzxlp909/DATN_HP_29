@@ -17,6 +17,9 @@ public class POSOrder {
     @JoinColumn(name = "CustomerID")
     private Customer CustomerID;
 
+    @Column(name = "Address", length = 50)
+    private String Address;
+
     @Column(name = "Code_Voucher", length = 50)
     private String Code_Voucher;
 
@@ -51,21 +54,29 @@ public class POSOrder {
     public POSOrder() {
     }
 
-    public POSOrder(Long ID, Customer customerID, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.hp_29_MiniatureCrafts.entity.PaymentMethod paymentMethod, String note, Integer status, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder) {
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
+    }
+
+    public POSOrder(Long ID, Customer customerID, String address, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.hp_29_MiniatureCrafts.entity.PaymentMethod paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Integer status) {
         this.ID = ID;
         CustomerID = customerID;
+        Address = address;
         Code_Voucher = code_Voucher;
         Total_Amount = total_Amount;
         Discount_Amount = discount_Amount;
         Total_Payment = total_Payment;
         PaymentMethod = paymentMethod;
-        Note = note;
-        Status = status;
         Creation_date = creation_date;
         Edit_Date = edit_Date;
         Type_Oder = type_Oder;
+        Note = note;
+        Status = status;
     }
-
 
     public Customer getCustomerID() {
         return CustomerID;
