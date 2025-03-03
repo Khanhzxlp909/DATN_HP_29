@@ -199,6 +199,20 @@ public class HomeController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping("check-password")
+    public ResponseEntity<?> checkPassword(@RequestBody LoginRequest account) {
+        Account account1 = accountService.checkPassword(account.getUsername(), account.getPassword());
+        System.out.println("username log 205: "+ account.getUsername());
+        System.out.println("password log 206: "+ account.getPassword());
+        if (account1 != null) {
+            return ResponseEntity.ok(account1);
+        } else {
+            RuntimeException ex = new RuntimeException();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+
     @PostMapping("/registerinfo")
     public ResponseEntity<?> registerInfo(@Valid @RequestBody CustomerDTO registerInfo) {
         // Kiểm tra xem username đã tồn tại trong hệ thống chưa
@@ -271,7 +285,7 @@ public class HomeController {
     }
 
     @PostMapping("changepassword/{username}")
-    public Account changePassword(@PathVariable("username") String username,@RequestBody Account account) {
+    public Account changePassword(@PathVariable("username") String username, @RequestBody Account account) {
         return accountService.changePassword(username, account.getPassword());
     }
 

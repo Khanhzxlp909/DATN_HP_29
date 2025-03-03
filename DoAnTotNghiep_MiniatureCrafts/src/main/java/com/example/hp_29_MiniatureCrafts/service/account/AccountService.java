@@ -16,7 +16,19 @@ public class AccountService {
     PasswordEncoder encoder;
 
     public Account updateAccount(Account account){
+        Account acc = accountRepository.findByUsername(account.getUsername());
         return accountRepository.save(account);
+    }
+
+    public Account checkPassword(String username, String password) {
+        System.out.println("username log 24: " + username);
+        System.out.println("password log 25: " + password);
+        Account account = accountRepository.findByUsername(username);
+        System.out.println("Account log 27: " + account.getPassword());
+        if (account != null && encoder.matches(password, account.getPassword())) { // Dùng matches để kiểm tra
+            return account;
+        }
+        throw new RuntimeException("Password is incorrect");
     }
 
     public Account changePassword(String username, String newPassword) {
