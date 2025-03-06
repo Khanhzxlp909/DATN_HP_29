@@ -47,7 +47,19 @@ public class OrderService {
     @Autowired
     ProductRepository productRepository;
 
-    //    @Transactional
+    public POSOrderDTO findOrderById(Long orderId) {
+        // Tìm đơn hàng theo ID
+        POSOrder order = posOrderRepository.findByOrderID(orderId);
+
+        // Kiểm tra xem đơn hàng có tồn tại không
+        if (order == null) {
+            throw new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId);
+        }
+
+        // Chuyển đổi từ POSOrder sang POSOrderDTO
+        return mapOrderEntityToDTOBysendEmail(order);
+    }
+
     public void cancelOrder(Long orderId) {
         // Tìm đơn hàng theo ID
         POSOrder order = posOrderRepository.findByOrderID(orderId);
@@ -511,6 +523,29 @@ public class OrderService {
         dto.setDiscount_Amount(entity.getDiscount_Amount().toString());
         dto.setNote(entity.getNote());
         dto.setPaymentMethod(mapPaymentEntityToDTO(entity.getPaymentMethod()));
+        dto.setStatus(entity.getStatus());
+        dto.setType_Oder(entity.getType_Oder());
+        return dto;
+    }
+
+    public POSOrderDTO mapOrderEntityToDTOBysendEmail(POSOrder entity) {
+        POSOrderDTO dto = new POSOrderDTO();
+        dto.setID(entity.getID());
+        dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
+        dto.setAddress(entity.getAddress());
+        // Lấy danh sách OrderLine từ repository và chuyển đổi sang DTO
+        List<OrderLineDTO> orderLineDTOs = orderLineRepository.findAllOrderID(entity.getID())
+                .stream()
+                .map(this::mapOrderLineEntityToDTO) // Chuyển từng OrderLine Entity sang DTO
+                .toList();
+        dto.setOrderLine(orderLineDTOs);
+        dto.setCode_Voucher(entity.getCode_Voucher());
+        dto.setDiscount_Amount(entity.getDiscount_Amount().toString());
+        dto.setNote(entity.getNote());
+        dto.setPaymentMethod(mapPaymentEntityToDTO(entity.getPaymentMethod()));
+        dto.setCreation_date(entity.getCreation_date());
+        dto.setEdit_Date(entity.getEdit_Date());
+        dto.setTotal_Payment(entity.getTotal_Payment().toString());
         dto.setStatus(entity.getStatus());
         dto.setType_Oder(entity.getType_Oder());
         return dto;

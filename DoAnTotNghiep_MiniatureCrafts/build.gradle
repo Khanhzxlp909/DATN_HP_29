@@ -33,6 +33,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-gson:0.12.6'  // Hoặc thay bằng jjwt-jackson nếu không dùng Gson
+//cấu hình smtp
+    implementation 'org.springframework.boot:spring-boot-starter-mail:3.4.3'
 
 // Spring Security - Giữ các thư viện bảo mật mới nhất
     implementation 'org.springframework.security:spring-security-config:6.3.3'
