@@ -148,6 +148,8 @@ public class WebSecurityConfig {
                                         "/api/v1/cart/removeall/**",
                                         "/api/v1/cart/editquantity/**",
                                         "/MiniatureCrafts/send-email/**",
+                                        "/admin/introduces/findall",
+                                        "/MiniatureCrafts/contact/send",
                                         "/images/**").permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()
                 );

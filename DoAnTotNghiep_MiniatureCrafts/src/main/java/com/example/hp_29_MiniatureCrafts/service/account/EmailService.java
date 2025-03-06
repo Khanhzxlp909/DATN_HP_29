@@ -1,5 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.service.account;
 
+import com.example.hp_29_MiniatureCrafts.dto.ContactRequest;
 import com.example.hp_29_MiniatureCrafts.dto.OrderLineDTO;
 import com.example.hp_29_MiniatureCrafts.entity.Account;
 import com.example.hp_29_MiniatureCrafts.repository.auth.AccountRepository;
@@ -23,7 +24,6 @@ public class EmailService {
 
     @Autowired
     AccountRepository accountRepository;
-
 
     public void sendOrderEmailByUser(String to,
                                String customerName,
@@ -242,4 +242,39 @@ public class EmailService {
         }
     }
 
+    public void contactToAdmin(ContactRequest request) throws MessagingException {
+        List<Account> admins = accountRepository.findByRolesAdmin();
+
+        if (admins.isEmpty()) {
+            throw new MessagingException("Không tìm thấy admin để gửi email!");
+        }
+
+        for (Account admin : admins) {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(admin.getEmail());
+            helper.setSubject("📩 Thông báo liên hệ từ khách hàng");
+
+            String emailContent = String.format("""
+                <html>
+                <body>
+                    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+                        <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+                            <h2 style="text-align: center; color: #2c3e50;">📢 Thông tin liên hệ</h2>
+                            <p><strong>👤 Họ và tên:</strong> %s</p>
+                            <p><strong>📧 Email:</strong> %s</p>
+                            <p><strong>📞 Số điện thoại:</strong> %s</p>
+                            <p><strong>📝 Nội dung:</strong> %s</p>
+                            <p style="text-align: center; color: #7f8c8d;">📬 Vui lòng phản hồi lại sớm nhất có thể.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            """, request.getFullName(), request.getEmail(), request.getPhone(), request.getContent());
+
+            helper.setText(emailContent, true);
+            mailSender.send(message);
+        }
+    }
 }
