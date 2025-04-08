@@ -18,4 +18,7 @@ public interface BrandsRepository extends JpaRepository<Brand, Long> {
     @Query(value = "select b from Brand b order by b.ID desc")
     Page<Brand> findALL(Pageable pageable);
 
+
+    @Query(value = "select b from Brand b where b.Status = true order by b.ID desc")
+    Page<Brand> findAll(Pageable pageable);
 }

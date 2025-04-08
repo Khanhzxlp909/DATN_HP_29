@@ -24,6 +24,11 @@ public class CategoryController {
     public Page<CategoryDTO> getALL(Pageable pageable) {
         return categoryService.getALLS(pageable);
     }
+
+    @GetMapping("getcategory")
+    public Page<CategoryDTO> findAll(Pageable pageable) {
+        return categoryService.getAllByStatus(pageable);
+    }
     @PostMapping("save")
     public Category save(@RequestBody CategoryDTO category) {
         return categoryService.add(category);

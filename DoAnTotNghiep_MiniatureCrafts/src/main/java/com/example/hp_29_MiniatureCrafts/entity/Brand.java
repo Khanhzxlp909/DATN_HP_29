@@ -16,11 +16,9 @@ public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;  // ID tự tăng
-
     private String Name;
     private String Note;
     private Boolean Status;
-
 
     public Brand(BrandDTO brandDTO) {
         this.ID = brandDTO.getID();

@@ -1,33 +1,27 @@
-package com.example.hp_29_MiniatureCrafts.dto;
-
-import lombok.Getter;
-import lombok.Setter;
+package com.example.hp_29_MiniatureCrafts.entity;
 
 
-public class ContactRequest {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
+@Entity
+public class Contact {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
     private String fullName;
     private String email;
     private String phone;
     private String content;
 
-    public ContactRequest() {
-    }
     public Integer getId() {
         return Id;
     }
 
     public void setId(Integer id) {
         Id = id;
-    }
-
-    public ContactRequest(Integer id, String fullName, String email, String phone, String content) {
-        Id = id;
-        this.fullName = fullName;
-        this.email = email;
-        this.phone = phone;
-        this.content = content;
     }
 
     public String getFullName() {
@@ -62,10 +56,15 @@ public class ContactRequest {
         this.content = content;
     }
 
-    public ContactRequest(String fullName, String email, String phone, String content) {
+    public Contact(Integer id, String fullName, String email, String phone, String content) {
+        Id = id;
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
         this.content = content;
     }
+
+    public Contact() {
+    }
 }
+

@@ -8,11 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/MiniatureCrafts/contact")
 public class ContactController {
     @Autowired
     EmailService emailService;
+
+    @GetMapping("findall")
+    public List<ContactRequest> contact() {
+        return emailService.findAll();
+    }
 
     @PostMapping("/send")
     public ResponseEntity<String> sendContactEmail(@RequestBody ContactRequest request) {
@@ -22,6 +29,12 @@ public class ContactController {
         } catch (MessagingException e) {
             return ResponseEntity.status(500).body("Lỗi gửi email: " + e.getMessage());
         }
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable("id") Integer id) {
+        emailService.deleteContact(id);
+        return "done";
     }
 
 }

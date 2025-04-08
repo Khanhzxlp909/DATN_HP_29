@@ -94,7 +94,9 @@ public class CustomerService {
     public boolean deleteCustomer(Long id) {
         try {
             Customer customer = customerRepository.findById(id).orElseThrow();
-            customerRepository.delete(customer);
+
+            customer.setStatus(false);
+            customerRepository.save(customer);
         } catch (Exception e) {
             throw new RuntimeException();
         }

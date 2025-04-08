@@ -28,6 +28,11 @@ public class BrandsController {
         return brandsService.getALLS(pageable);
     }
 
+    @GetMapping("getbrands")
+    public Page<BrandDTO> findAll(Pageable pageable) {
+        return brandsService.getAllByStatus(pageable);
+    }
+
     @PostMapping("save")
     public Brand save(@RequestBody BrandDTO brand) {
         return brandsService.add(brand);

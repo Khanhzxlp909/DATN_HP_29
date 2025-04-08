@@ -1,7 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 public class News {
@@ -10,9 +9,23 @@ public class News {
     private Integer id;
 
     private String title;
+    @Column(columnDefinition = "NVARCHAR(200)")
+    private String summary;
 
     @Column(columnDefinition = "NVARCHAR(MAX)")
     private String content;
+
+    private String img;
+
+
+    public News(Integer id, String title, String summary, String content, String img) {
+        this.id = id;
+        this.title = title;
+        this.summary = summary;
+        this.content = content;
+        this.img = img;
+    }
+
 
     public Integer getId() {
         return id;
@@ -49,12 +62,13 @@ public class News {
     public News() {
     }
 
-    public News(Integer id, String title, String content, String img) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.img = img;
+    public String getSummary() {
+        return summary;
     }
 
-    private String img;
+    public void setSummary(String sumary) {
+        this.summary = sumary;
+    }
+
+
 }

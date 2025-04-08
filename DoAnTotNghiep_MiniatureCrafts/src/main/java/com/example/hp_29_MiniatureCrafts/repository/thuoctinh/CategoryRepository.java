@@ -19,4 +19,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query(value = "select c from Category c order by c.ID desc")
     Page<Category> findAll(Pageable pageable);
+
+    @Query(value = "select c from Category c where c.Status = true order by c.ID desc  ")
+    Page<Category> findAllByStatus(Pageable pageable);
 }

@@ -3,8 +3,17 @@ package com.example.hp_29_MiniatureCrafts.dto;
 public class NewsDTO {
     private Integer id;
     private String title;
+    private String summary;
     private String content;
     private String img;
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
 
     public Integer getId() {
         return id;
@@ -41,9 +50,10 @@ public class NewsDTO {
     public NewsDTO() {
     }
 
-    public NewsDTO(Integer id, String title, String content, String img) {
+    public NewsDTO(Integer id, String title, String sumary, String content, String img) {
         this.id = id;
         this.title = title;
+        this.summary = sumary;
         this.content = content;
         this.img = img;
     }

@@ -37,6 +37,17 @@ public class WareHouseService {
         ).collect(Collectors.toList());
     }
 
+    public List<SupplierDTO> findAllSupplierByStatus() {
+        List<Supplier> supplier = suppillerRepository.findAllByStatus();
+        return supplier.stream().map(
+                supplier1 -> {
+                    SupplierDTO dto = mapSuppierToDTO(supplier1);
+
+                    return dto;
+                }
+        ).collect(Collectors.toList());
+    }
+
     public List<WareHouseDTO> findAllWareHouse() {
         List<WareHouse> wareHouses = wareHouseRepository.findAll();
         return wareHouses.stream().map(

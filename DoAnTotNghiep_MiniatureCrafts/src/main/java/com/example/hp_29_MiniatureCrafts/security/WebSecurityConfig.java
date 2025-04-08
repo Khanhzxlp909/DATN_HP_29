@@ -92,7 +92,10 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/MiniatureCrafts/signin",
+                        auth.requestMatchers(
+                                        "/api/vnpay/**",
+                                        "/upload/images/**",
+                                        "/MiniatureCrafts/signin",
                                         "/MiniatureCrafts/signup",
                                         "/MiniatureCrafts/registerinfo",
                                         "/MiniatureCrafts/home",
@@ -128,6 +131,8 @@ public class WebSecurityConfig {
                                         "/admin/customer/result/**",
                                         "/admin/customer/edit/**",
                                         "/admin/category/get",
+                                        "/admin/category/get",
+                                        "/admin/product/findAll",
                                         "/admin/brands/get",
                                         "/admin/result/all",
                                         "/admin/employee/**",
@@ -142,6 +147,7 @@ public class WebSecurityConfig {
                                         "/admin/variation/images/findall",
                                         "/admin/variation/getproduct",
                                         "/admin/variation/images/findall",
+                                        "/admin/news/findall",
                                         "/api/v1/cart/findall/**",
                                         "/api/v1/cart/addtocart",
                                         "/api/v1/cart/remove/**",
@@ -149,8 +155,8 @@ public class WebSecurityConfig {
                                         "/api/v1/cart/editquantity/**",
                                         "/MiniatureCrafts/send-email/**",
                                         "/admin/introduces/findall",
-                                        "/MiniatureCrafts/contact/send",
-                                        "/images/**").permitAll() // Cho phép tất cả các yêu cầu
+                                        "/MiniatureCrafts/contact/send"
+                                ).permitAll() // Cho phép tất cả các yêu cầu
                                 .anyRequest().authenticated()
                 );
 
@@ -164,7 +170,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://192.168.1.11:8082/","http://127.0.0.1:5502/","http://localhost:5174/","http://localhost:5173/","http://localhost:3000/", "http://localhost:8081/","http://localhost:8082/" )); // Cho phép origin từ frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://192.168.1.11:8082/", "http://127.0.0.1:5502/", "http://localhost:5174/", "http://localhost:5173/", "http://localhost:3000/", "http://localhost:8081/", "http://localhost:8082/")); // Cho phép origin từ frontend
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Các phương thức HTTP được phép
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Các headers cần thiết
         configuration.setAllowCredentials(true); // Cho phép cookie hoặc thông tin xác thực

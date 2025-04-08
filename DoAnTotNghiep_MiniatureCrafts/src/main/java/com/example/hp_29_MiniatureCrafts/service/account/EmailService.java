@@ -3,7 +3,9 @@ package com.example.hp_29_MiniatureCrafts.service.account;
 import com.example.hp_29_MiniatureCrafts.dto.ContactRequest;
 import com.example.hp_29_MiniatureCrafts.dto.OrderLineDTO;
 import com.example.hp_29_MiniatureCrafts.entity.Account;
+import com.example.hp_29_MiniatureCrafts.entity.Contact;
 import com.example.hp_29_MiniatureCrafts.repository.auth.AccountRepository;
+import com.example.hp_29_MiniatureCrafts.repository.auth.ContactRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 public class EmailService {
@@ -24,6 +27,9 @@ public class EmailService {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    ContactRepository contactRepository;
 
     public void sendOrderEmailByUser(String to,
                                String customerName,
@@ -242,12 +248,24 @@ public class EmailService {
         }
     }
 
+    public void deleteContact(Integer id){
+        contactRepository.deleteById(id);
+    }
+
     public void contactToAdmin(ContactRequest request) throws MessagingException {
         List<Account> admins = accountRepository.findByRolesAdmin();
 
         if (admins.isEmpty()) {
             throw new MessagingException("Không tìm thấy admin để gửi email!");
         }
+
+        Contact contact = new Contact();
+        contact.setFullName(request.getFullName());
+        contact.setEmail(request.getEmail());
+        contact.setPhone(request.getPhone());
+        contact.setContent(request.getContent());
+
+        contactRepository.save(contact);
 
         for (Account admin : admins) {
             MimeMessage message = mailSender.createMimeMessage();
@@ -276,5 +294,22 @@ public class EmailService {
             helper.setText(emailContent, true);
             mailSender.send(message);
         }
+
+
     }
+
+    public List<ContactRequest> findAll(){
+        List<Contact> list = contactRepository.findAll();
+
+        return list.stream().map(contact -> {
+            ContactRequest contactRequest = new ContactRequest();
+            contactRequest.setId(contact.getId());
+            contactRequest.setFullName(contact.getFullName());
+            contactRequest.setEmail(contact.getEmail());
+            contactRequest.setPhone(contact.getPhone());
+            contactRequest.setContent(contact.getContent());
+            return contactRequest;
+        }).collect(Collectors.toList());
+    }
+
 }

@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +43,22 @@ public class VariationService {
         return new ImagesDTO(imagesRepository.save(images));
     }
 
+    public ImagesDTO findById(String cd_images) {
+
+        Images i = imagesRepository.findByCd_Images(cd_images);
+
+        Product product = productRepository.findById(i.getProduct().getID()).orElseThrow();
+        ImagesDTO imagesDTO = new ImagesDTO();
+        imagesDTO.setProduct(mapProductToProductDTO(product));
+        imagesDTO.setCd_Images(imagesDTO.getCd_Images());
+        imagesDTO.setSet_Default(imagesDTO.getSet_Default());
+        return imagesDTO;
+    }
+
+    public void deleteImages(String cd_images) {
+        imagesRepository.deleteByCd_Images(cd_images);
+    }
+
     public List<ImagesDTO> findAll() {
         List<Images> images = imagesRepository.findAll();
         return images.stream().map(dto -> new ImagesDTO(dto)).collect(Collectors.toList());
@@ -54,18 +67,34 @@ public class VariationService {
     // save truoc, lay id tu respone set va imagedto
     public ProductDTO saveProduct(ProductDTO productDTO) {
         Product product = new Product();
-        product.setName(productDTO.getName());
-        product.setCategoryID(mapCategoryToEntity(productDTO.getCategoryID()));
-        return new ProductDTO(productRepository.save(product));
-    }
-
-    public ProductDTO updateProduct(ProductDTO productDTO) {
-        Product product = new Product();
         product.setID(productDTO.getId());
         product.setName(productDTO.getName());
         product.setCategoryID(mapCategoryToEntity(productDTO.getCategoryID()));
         return new ProductDTO(productRepository.save(product));
     }
+
+    public Product updateProduct(ProductDTO product) {
+        Optional<Product> existingProduct = productRepository.findById(product.getId());
+        if (existingProduct.isPresent()) {
+            // Cập nhật dữ liệu
+            Product updatedProduct = existingProduct.get();
+            updatedProduct.setName(product.getName());
+            updatedProduct.setCategoryID(mapCategoryToEntity(product.getCategoryID()));
+            // Cập nhật các trường khác nếu cần
+            return productRepository.save(updatedProduct);
+        } else {
+            // Nếu không tìm thấy sản phẩm, có thể trả về lỗi hoặc tạo mới
+            throw new RuntimeException("Không tìm thấy sản phẩm để cập nhật");
+        }
+    }
+
+//    public ProductDTO updateProduct(ProductDTO productDTO) {
+//        Product product = new Product();
+//        product.setID(productDTO.getId());
+//        product.setName(productDTO.getName());
+//        product.setCategoryID(mapCategoryToEntity(productDTO.getCategoryID()));
+//        return new ProductDTO(productRepository.save(product));
+//    }
 
 
     public List<ProductDTO> getProducts() {

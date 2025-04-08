@@ -38,6 +38,11 @@ public class CategoryService {
         return list.map(category -> new CategoryDTO(category));
     }
 
+    public Page<CategoryDTO> getAllByStatus(Pageable pageable) {
+        Page<Category> list = categoryRepository.findAllByStatus(pageable);
+        return list.map(category -> new CategoryDTO(category));
+    }
+
     public List<CategoryDTO> getALL() {
         List<Category> list = categoryRepository.findAll();
         return list.stream().map(category -> new CategoryDTO(category)).toList();

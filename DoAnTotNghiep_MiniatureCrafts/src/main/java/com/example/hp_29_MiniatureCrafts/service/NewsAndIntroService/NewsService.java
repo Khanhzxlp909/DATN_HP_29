@@ -16,20 +16,20 @@ public class NewsService {
 
     public List<NewsDTO> getAllNews() {
         return newsRepository.findAll().stream()
-                .map(news -> new NewsDTO(news.getId(), news.getTitle(), news.getContent(), news.getImg()))
+                .map(news -> new NewsDTO(news.getId(), news.getTitle(), news.getSummary(), news.getContent(), news.getImg()))
                 .collect(Collectors.toList());
     }
 
     public NewsDTO getNewsById(Integer id) {
         return newsRepository.findById(id)
-                .map(news -> new NewsDTO(news.getId(), news.getTitle(), news.getContent(), news.getImg()))
+                .map(news -> new NewsDTO(news.getId(), news.getTitle(), news.getSummary(), news.getContent(), news.getImg()))
                 .orElse(null);
     }
 
     public NewsDTO saveNews(NewsDTO newsDTO) {
-        News news = new News(newsDTO.getId(), newsDTO.getTitle(), newsDTO.getContent(), newsDTO.getImg());
+        News news = new News(newsDTO.getId(), newsDTO.getTitle(), newsDTO.getSummary(), newsDTO.getContent(), newsDTO.getImg());
         news = newsRepository.save(news);
-        return new NewsDTO(news.getId(), news.getTitle(), news.getContent(), news.getImg());
+        return new NewsDTO(news.getId(), news.getTitle(), news.getSummary(), news.getContent(), news.getImg());
     }
 
     public void deleteNews(Integer id) {

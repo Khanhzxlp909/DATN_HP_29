@@ -31,6 +31,11 @@ public class BrandsService {
     public Page<BrandDTO> getALLS(Pageable pageable) {
         Page<Brand> list = brandsRepository.findALL(pageable);
 
+        return list.map(brand -> new BrandDTO(brand));
+    }
+
+    public Page<BrandDTO> getAllByStatus(Pageable pageable) {
+        Page<Brand> list = brandsRepository.findAll(pageable);
 
         return list.map(brand -> new BrandDTO(brand));
     }
@@ -45,8 +50,10 @@ public class BrandsService {
 
     public void delete(Long id) {
         Brand brand = brandsRepository.findById(id).get();
-        brandsRepository.delete(brand);
-        ;
+
+        brand.setStatus(false);
+
+        brandsRepository.save(brand);
 
     }
 

@@ -10,7 +10,7 @@ import java.util.Date;
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ID;  // ID tự tăng
+    private Long ID;  // ID tự tăng
 
     private String Name;
     private String Phone;
@@ -27,7 +27,7 @@ public class Supplier {
     public Supplier() {
     }
 
-    public Supplier(Integer ID, String name, String phone, String address, String note, Boolean status, LocalDate creation_date, LocalDate edit_Date) {
+    public Supplier(Long ID, String name, String phone, String address, String note, Boolean status, LocalDate creation_date, LocalDate edit_Date) {
         this.ID = ID;
         Name = name;
         Phone = phone;
@@ -39,11 +39,11 @@ public class Supplier {
     }
 
     // Getters and Setters
-    public Integer getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

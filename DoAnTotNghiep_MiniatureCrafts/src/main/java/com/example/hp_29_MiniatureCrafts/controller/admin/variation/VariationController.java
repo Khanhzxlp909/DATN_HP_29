@@ -4,7 +4,6 @@ import com.example.hp_29_MiniatureCrafts.dto.ImagesDTO;
 import com.example.hp_29_MiniatureCrafts.dto.ProductDTO;
 import com.example.hp_29_MiniatureCrafts.dto.VariationDTO;
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
-import com.example.hp_29_MiniatureCrafts.service.product.CategoryService;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,11 +35,40 @@ public class VariationController {
     private VariationService variationService;
 
 
-    private final String IMAGE_DIR = "src/main/resources/static/images/";
+    private final String IMAGE_DIR = "D:/DoAnTotNghiep/DATN_HP_29/DoAnTotNghiep_MiniatureCrafts/upload/images/";
+
+    @PostMapping("images/delete")
+    public ResponseEntity<?> deleteImages(@RequestBody List<String> cd_images) {
+        try {
+            List<String> deletedImages = new ArrayList<>();
+            List<String> notFoundImages = new ArrayList<>();
+
+            for (String cdImage : cd_images) {
+
+                // Xóa file ảnh trong thư mục
+                Path filePath = Paths.get(IMAGE_DIR + cdImage);
+                Files.deleteIfExists(filePath);
+
+                // Xóa ảnh trong database
+                variationService.deleteImages(cdImage);
+                deletedImages.add(cdImage);
+            }
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "Images processed",
+                    "deletedImages", deletedImages,
+                    "notFoundImages", notFoundImages
+            ));
+        } catch (Exception e) {
+            e.printStackTrace(); // In ra lỗi trong console
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error deleting images", "error", e.getMessage()));
+        }
+    }
 
     @PostMapping("images/upload")
     public ResponseEntity<?> uploadImage(@RequestParam("file") List<MultipartFile> listFiles) {
-        String IMAGE_DIR = "src/main/resources/static/images/"; // Cấu hình thư mục lưu ảnh
+        String IMAGE_DIR = "D:/DoAnTotNghiep/DATN_HP_29/DoAnTotNghiep_MiniatureCrafts/upload/images/"; // Cấu hình thư mục lưu ảnh
 
         try {
             if (listFiles.isEmpty()) {
@@ -88,8 +116,6 @@ public class VariationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error while uploading files"));
         }
     }
-
-
 
     @GetMapping("images/findall")
     public List<ImagesDTO> findAll() {

@@ -31,6 +31,17 @@ public class WareHouseController {
     @Autowired
     suppillerService suppillerService;
 
+    //crud supplier
+    @GetMapping("suppiller/get")
+    public List<SupplierDTO> findAllSupplier() {
+        return wareHouseService.findAllSupplierByStatus();
+    }
+
+    @GetMapping("suppiller/findall")
+    public List<SupplierDTO> findAllSuppliers() {
+        return wareHouseService.findAllSupplier();
+    }
+
     @PostMapping("suppiller/save")
     public SupplierDTO saveSupplier(@RequestBody SupplierDTO dto) {
         return suppillerService.saveSupplier(dto);
@@ -55,10 +66,7 @@ public class WareHouseController {
         return wareHouseService.findByID(id);
     }
 
-    @GetMapping("suppiller/get")
-    public List<SupplierDTO> findAllSupplier() {
-        return wareHouseService.findAllSupplier();
-    }
+
 
     @PostMapping("update/{id}")
     public WareHouse update(@RequestBody WareHouseDTO wareHouseDTO, @PathVariable("id") Long id) {

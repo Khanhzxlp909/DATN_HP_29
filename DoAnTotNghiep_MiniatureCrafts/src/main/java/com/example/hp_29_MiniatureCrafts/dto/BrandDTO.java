@@ -30,7 +30,6 @@ public class BrandDTO {
         this.Name = brand.getName();
         this.Note = brand.getNote();
         this.Status = brand.getStatus();
-
     }
 
     public String getNote() {
@@ -40,9 +39,6 @@ public class BrandDTO {
     public void setNote(String note) {
         Note = note;
     }
-
-
-
 
     // Getters and Setters
     public Long getID() {
