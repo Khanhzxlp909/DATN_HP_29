@@ -3,12 +3,12 @@ package com.example.hp_29_MiniatureCrafts.payload.response;
 import java.util.List;
 
 public class JwtResponse {
-    private String token;
-    private Long id;
-    private String username;
-    private String email;
+    private final String token;
+    private final Long id;
+    private final String username;
+    private final String email;
     private String roles;
-    private Object userInfo;  // Lưu thông tin Employee hoặc Customer
+    private final Object userInfo;  // Lưu thông tin Employee hoặc Customer
 
     public JwtResponse(String token, Long id, String username, String email, Object userInfo,String roles) {
         this.token = token;

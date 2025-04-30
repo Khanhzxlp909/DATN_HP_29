@@ -1,9 +1,8 @@
-package com.example.hp_29_MiniatureCrafts.controller.admin.orderShop;
+package com.example.hp_29_MiniatureCrafts.controller.admin.orderPOS;
 
 import com.example.hp_29_MiniatureCrafts.dto.OrderLineDTO;
 import com.example.hp_29_MiniatureCrafts.dto.POSOrderDTO;
 import com.example.hp_29_MiniatureCrafts.dto.VoucherDTO;
-import com.example.hp_29_MiniatureCrafts.entity.OrderLine;
 import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
 import com.example.hp_29_MiniatureCrafts.service.order.OrderService;
 import com.example.hp_29_MiniatureCrafts.service.order.Voucher.VoucherService;
@@ -18,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Controller xử lý các thao tác liên quan đến đơn hàng POS tại trang admin
+ */
 @RestController
 @RequestMapping("/admin/orders")
 public class POSOrderController {
@@ -29,23 +30,56 @@ public class POSOrderController {
     @Autowired
     private VoucherService voucherService;
 
+    /**
+     * API để tạo đơn trả hàng
+     *
+     * @param dto thông tin đơn hàng trả về
+     * @return POSOrder đã tạo
+     */
+    @PostMapping("return/{id}")
+    public ResponseEntity<POSOrder> createReturnOrder(@PathVariable("id") Long id,@RequestBody POSOrderDTO dto) {
+        try {
+
+            POSOrder savedOrder = orderService.createReturn(dto);
+            orderService.completeReturnOrder(id);
+            return ResponseEntity.ok(savedOrder);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    /**
+     * Tìm kiếm voucher theo mã voucher
+     *
+     * @param voucher mã voucher cần tìm
+     * @return thông tin voucher tương ứng nếu có
+     */
     @GetMapping("resultvoucher/{voucher}")
     public VoucherDTO findByVoucher(@PathVariable("voucher") String voucher) {
         return voucherService.findVoucherByCodeVoucher(voucher);
     }
 
+    /**
+     * Lấy danh sách sản phẩm (OrderLine) trong một đơn hàng cụ thể
+     *
+     * @param orderid ID của đơn hàng
+     * @return danh sách sản phẩm thuộc đơn hàng
+     */
     @GetMapping("history/getprd/{orderid}")
     public List<OrderLineDTO> getOrderHistory(@PathVariable("orderid") Long orderid) {
-        // Lấy danh sách các POSOrderDTO từ service
-//        List<POSOrderDTO> orders = orderService.getAllOrders(customerid);
         return orderService.getOrdersLine(orderid);
     }
 
+    /**
+     * Hủy một đơn hàng theo ID
+     *
+     * @param orderId ID của đơn hàng cần hủy
+     * @return thông báo kết quả hủy
+     */
     @GetMapping("/cancelOrder/{orderId}")
     @Transactional
     public String cancelOrder(@PathVariable Long orderId) {
         try {
-            // Gọi service để hủy đơn hàng
             orderService.cancelOrder(orderId);
             return "huỷ thành công";
         } catch (RuntimeException ex) {
@@ -54,11 +88,16 @@ public class POSOrderController {
         }
     }
 
+    /**
+     * Xác nhận hoàn thành một đơn hàng theo ID
+     *
+     * @param orderId ID của đơn hàng cần xác nhận
+     * @return thông báo xác nhận thành công
+     */
     @GetMapping("/sucressorder/{orderId}")
     @Transactional
     public String sucressorder(@PathVariable Long orderId) {
         try {
-            // Gọi service để hủy đơn hàng
             orderService.successOrder(orderId);
             return "huỷ thành công";
         } catch (RuntimeException ex) {
@@ -67,64 +106,68 @@ public class POSOrderController {
         }
     }
 
+    /**
+     * Lấy lịch sử đơn hàng của một khách hàng cụ thể (kèm theo thông tin sản phẩm và trạng thái)
+     *
+     * @param pageable phân trang
+     * @param id       ID của khách hàng
+     * @return danh sách đơn hàng đã được gắn statusText
+     */
     @GetMapping("history/{id}")
     public Page<POSOrderDTO> getAllOrderByCustomer(Pageable pageable, @PathVariable("id") Long id) {
-        // Lấy danh sách đơn hàng theo khách hàng
         Page<POSOrderDTO> orders = orderService.getAllOrdersbyCustomer(pageable, id);
 
-        // Duyệt qua từng đơn hàng và gắn thêm thuộc tính "statusText"
         orders.forEach(order -> {
-            // Lấy danh sách OrderLineDTO cho từng đơn hàng
             List<OrderLineDTO> orderLines = orderService.getOrdersLine(order.getID());
             order.setOrderLine(orderLines);
-
-            // Chuyển đổi status thành chuỗi và gán vào DTO
             order.setStatusText(mapStatusToText(order.getStatus()));
         });
 
-        return orders; // Trả về danh sách đã có statusText
+        return orders;
     }
 
+    /**
+     * Chuyển đổi mã trạng thái đơn hàng thành chuỗi hiển thị
+     *
+     * @param status mã trạng thái
+     * @return chuỗi mô tả tương ứng
+     */
     private String mapStatusToText(int status) {
         Map<Integer, String> statusMap = new HashMap<>();
         statusMap.put(0, "Đã hủy");
         statusMap.put(1, "Chờ xác nhận");
         statusMap.put(2, "Đang giao hàng");
         statusMap.put(3, "Đã giao hàng thành công");
+        statusMap.put(4, "Trả hàng");
 
-        return statusMap.getOrDefault(status, "Không xác định"); // Mặc định nếu không có trong danh sách
+        return statusMap.getOrDefault(status, "Không xác định");
     }
 
+    /**
+     * Lấy danh sách toàn bộ đơn hàng (phân trang)
+     *
+     * @param pageable thông tin phân trang
+     * @return danh sách POSOrderDTO
+     */
     @GetMapping("findall")
     public Page<POSOrderDTO> getAllOrder(Pageable pageable) {
-        Page<POSOrderDTO> orders = orderService.findAllOrder(pageable);
-        return orders;
-
+        return orderService.findAllOrder(pageable);
     }
 
+    /**
+     * Tạo mới một đơn hàng POS
+     *
+     * @param posOrderDTO thông tin đơn hàng cần tạo
+     * @return DTO của đơn hàng đã tạo hoặc lỗi nếu có
+     */
     @PostMapping("/newOrder")
-//    @Transactional
     public ResponseEntity<?> createOrder(@RequestBody POSOrderDTO posOrderDTO) {
         try {
-            // Tạo POSOrder
-            System.out.println("totalamount : " + posOrderDTO.getTotal_Amount());
-
             POSOrder order = orderService.orderInPOS(posOrderDTO);
-
-            // Lấy ID của POSOrder vừa được lưu
-            Long orderId = order.getID();
-            System.out.println("ID ORDER: " + orderId);
-
-            // Chuyển đổi POSOrder entity sang DTO để trả về
             POSOrderDTO responseDTO = orderService.mapOrderEntityToDTO(order);
-
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
-
         } catch (RuntimeException ex) {
-            // Trả về lỗi nếu có exception
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-
         }
-
     }
 }

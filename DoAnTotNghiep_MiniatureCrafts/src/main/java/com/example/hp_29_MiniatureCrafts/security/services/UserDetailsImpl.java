@@ -17,14 +17,14 @@ public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsImpl.class);
 
-    private Long id;
-    private Object users;  // Lưu danh sách Employee hoặc Customer
-    private String username;
-    private String email;
-    private String accountRole;  // Vai trò tài khoản
+    private final Long id;
+    private final Object users;  // Lưu danh sách Employee hoặc Customer
+    private final String username;
+    private final String email;
+    private final String accountRole;  // Vai trò tài khoản
     @JsonIgnore
-    private String password;
-    private Collection<? extends GrantedAuthority> authorities;
+    private final String password;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     // Constructor nhận danh sách employees hoặc customers
     public UserDetailsImpl(Long id, Object users, String username, String email, String password, String accountRole,

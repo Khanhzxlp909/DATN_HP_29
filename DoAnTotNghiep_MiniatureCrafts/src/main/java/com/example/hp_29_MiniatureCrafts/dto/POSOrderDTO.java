@@ -2,10 +2,8 @@ package com.example.hp_29_MiniatureCrafts.dto;
 
 import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
 
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public class POSOrderDTO {
     private Long ID;
@@ -16,8 +14,8 @@ public class POSOrderDTO {
     private String Discount_Amount;
     private String Total_Payment;
     private PaymentMethodDTO PaymentMethod;
-    private LocalDate Creation_date;
-    private LocalDate Edit_Date;
+    private LocalDateTime Order_Time;
+    private LocalDateTime Payment_Time;
     private Integer Type_Oder;
     private String Note;
     private Integer Status;
@@ -33,14 +31,14 @@ public class POSOrderDTO {
         Discount_Amount = oder.getDiscount_Amount().toString();
         Total_Payment = oder.getTotal_Payment().toString();
         PaymentMethod = new PaymentMethodDTO(oder.getPaymentMethod());
-        Creation_date = oder.getCreation_date();
-        Edit_Date = oder.getEdit_Date();
+        Order_Time = oder.getOrder_Time();
+        Payment_Time = oder.getPayment_Time();
         Type_Oder = oder.getType_Oder();
         Note = oder.getNote();
         Status = oder.getStatus();
     }
 
-    public POSOrderDTO(Long ID, CustomerDTO customerID, String address, String code_Voucher, String total_Amount, String discount_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Integer status, List<OrderLineDTO> orderLine, String statusText) {
+    public POSOrderDTO(Long ID, CustomerDTO customerID, String address, String code_Voucher, String total_Amount, String discount_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDateTime orderTime, LocalDateTime edit_Date, Integer type_Oder, String note, Integer status, List<OrderLineDTO> orderLine, String statusText) {
         this.ID = ID;
         this.customerID = customerID;
         Address = address;
@@ -49,8 +47,8 @@ public class POSOrderDTO {
         Discount_Amount = discount_Amount;
         Total_Payment = total_Payment;
         PaymentMethod = paymentMethod;
-        Creation_date = creation_date;
-        Edit_Date = edit_Date;
+        Order_Time = orderTime;
+        Payment_Time = edit_Date;
         Type_Oder = type_Oder;
         Note = note;
         Status = status;
@@ -123,20 +121,20 @@ public class POSOrderDTO {
         PaymentMethod = paymentMethod;
     }
 
-    public LocalDate getCreation_date() {
-        return Creation_date;
+    public LocalDateTime getOrder_Time() {
+        return Order_Time;
     }
 
-    public void setCreation_date(LocalDate creation_date) {
-        Creation_date = creation_date;
+    public void setOrder_Time(LocalDateTime order_Time) {
+        Order_Time = order_Time;
     }
 
-    public LocalDate getEdit_Date() {
-        return Edit_Date;
+    public LocalDateTime getPayment_Time() {
+        return Payment_Time;
     }
 
-    public void setEdit_Date(LocalDate edit_Date) {
-        Edit_Date = edit_Date;
+    public void setPayment_Time(LocalDateTime payment_Time) {
+        Payment_Time = payment_Time;
     }
 
     public Integer getType_Oder() {

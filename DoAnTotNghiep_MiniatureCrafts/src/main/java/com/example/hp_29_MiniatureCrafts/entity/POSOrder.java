@@ -3,7 +3,7 @@ package com.example.hp_29_MiniatureCrafts.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "POSOder")
@@ -36,11 +36,11 @@ public class POSOrder {
     @JoinColumn(name = "PaymentMethod")
     private PaymentMethod PaymentMethod;
 
-    @Column(name = "Creation_date")
-    private LocalDate Creation_date;
+    @Column(name = "Order_Time")
+    private LocalDateTime Order_Time;
 
-    @Column(name = "Edit_Date")
-    private LocalDate Edit_Date;
+    @Column(name = "Payment_Time")
+    private LocalDateTime Payment_Time;
 
     @Column(name = "Type_Oder")
     private Integer Type_Oder;
@@ -62,7 +62,7 @@ public class POSOrder {
         Address = address;
     }
 
-    public POSOrder(Long ID, Customer customerID, String address, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.hp_29_MiniatureCrafts.entity.PaymentMethod paymentMethod, LocalDate creation_date, LocalDate edit_Date, Integer type_Oder, String note, Integer status) {
+    public POSOrder(Long ID, Customer customerID, String address, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.hp_29_MiniatureCrafts.entity.PaymentMethod paymentMethod, LocalDateTime creation_date, LocalDateTime edit_Date, Integer type_Oder, String note, Integer status) {
         this.ID = ID;
         CustomerID = customerID;
         Address = address;
@@ -71,8 +71,8 @@ public class POSOrder {
         Discount_Amount = discount_Amount;
         Total_Payment = total_Payment;
         PaymentMethod = paymentMethod;
-        Creation_date = creation_date;
-        Edit_Date = edit_Date;
+        Order_Time = creation_date;
+        Payment_Time = edit_Date;
         Type_Oder = type_Oder;
         Note = note;
         Status = status;
@@ -94,12 +94,12 @@ public class POSOrder {
         this.ID = ID;
     }
 
-    public LocalDate getCreation_date() {
-        return Creation_date;
+    public LocalDateTime getOrder_Time() {
+        return Order_Time;
     }
 
-    public void setCreation_date(LocalDate creation_date) {
-        Creation_date = creation_date;
+    public void setOrder_Time(LocalDateTime creation_date) {
+        Order_Time = creation_date;
     }
 
     public String getCode_Voucher() {
@@ -158,12 +158,12 @@ public class POSOrder {
         Status = status;
     }
 
-    public LocalDate getEdit_Date() {
-        return Edit_Date;
+    public LocalDateTime getPayment_Time() {
+        return Payment_Time;
     }
 
-    public void setEdit_Date(LocalDate edit_Date) {
-        Edit_Date = edit_Date;
+    public void setPayment_Time(LocalDateTime edit_Date) {
+        Payment_Time = edit_Date;
     }
 
     public Integer getType_Oder() {

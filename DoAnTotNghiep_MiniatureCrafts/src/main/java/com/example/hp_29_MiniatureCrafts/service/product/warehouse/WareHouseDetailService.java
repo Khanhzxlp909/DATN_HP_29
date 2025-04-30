@@ -178,7 +178,7 @@ public class WareHouseDetailService {
 
         // Ánh xạ ProductID từ DTO sang Entity (cần lấy thông tin Product từ ProductDTO)
         if (dto.getProductID() != null) {
-            entity.setProductID(staticvariationService.mapProductDTOtoProduct(dto.getProductID()));  // Lấy Product từ ProductDTO
+            entity.setProductID(VariationService.mapProductDTOtoProduct(dto.getProductID()));  // Lấy Product từ ProductDTO
         }
 
         entity.setSKU(dto.getSKU());
@@ -187,7 +187,7 @@ public class WareHouseDetailService {
 
         // Ánh xạ BrandID từ DTO sang Entity
         if (dto.getBrandID() != null) {
-            entity.setBrandID(staticvariationService.mapBrandDTOtoBrand(dto.getBrandID()));  // Lấy Brand từ BrandDTO
+            entity.setBrandID(VariationService.mapBrandDTOtoBrand(dto.getBrandID()));  // Lấy Brand từ BrandDTO
         }
 
         entity.setMaterial(dto.getMaterial());
@@ -217,7 +217,7 @@ public class WareHouseDetailService {
 
         // Ánh xạ Brand từ Entity sang BrandDTO
         if (entity.getBrandID() != null) {
-            dto.setBrandID(staticvariationService.mapBrandToBrandDTO(entity.getBrandID()));  // Lấy BrandDTO từ Brand
+            dto.setBrandID(VariationService.mapBrandToBrandDTO(entity.getBrandID()));  // Lấy BrandDTO từ Brand
         }
 
         dto.setMaterial(entity.getMaterial());
