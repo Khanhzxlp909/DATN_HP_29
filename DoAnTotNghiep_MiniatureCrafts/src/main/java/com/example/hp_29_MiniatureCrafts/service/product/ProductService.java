@@ -24,24 +24,33 @@ public class ProductService {
     @Autowired
     VariationService variationService;
 
-    // dùng find by product để get ra list ảnh, sau đó map sang dto và gán list ảnh này vào imagesDTOS của product
+    // dùng find by product để get ra list ảnh, sau đó map sang dto và gán list ảnh này vào images của product
     public List<ProductDTO> getAllProduct() {
-        List<Product> products = productRepository.findAll(); // Lấy danh sách sản phẩm từ DB
+        List<Product> products = productRepository.findAll();
         List<ProductDTO> productDTOList = new ArrayList<>();
 
         for (Product product : products) {
-            ProductDTO productDTO = new ProductDTO(product); // Chuyển đổi Product -> DTO
+            ProductDTO productDTO = new ProductDTO(product);
 
-            // Lấy danh sách ảnh từ DB theo Product
-            List<Images> imagesList = imagesRepository.findByProduct(product.getID());
+            // 1. Ảnh trực tiếp thuộc sản phẩm
+            List<Images> directImages = imagesRepository.findByModelAndProductID("Product", product.getID());
 
-            // Chuyển đổi danh sách ảnh sang DTO
-            List<ImagesDTO> imagesDTOList = mapImagestoDTO(imagesList);
+            // 2. Ảnh thuộc các variation của sản phẩm
+            List<Long> variationIDs = variationService.getVariationIDsByProductID(product.getID());
+            List<Images> variationImages = new ArrayList<>();
+            for (Long varId : variationIDs) {
+                variationImages.addAll(imagesRepository.findByModelAndProductID("Variation", varId));
+            }
 
-            // Gán danh sách ảnh vào sản phẩm DTO
-            productDTO.setImagesDTOS(imagesDTOList);
+            // 3. Gộp tất cả ảnh
+            List<Images> allImages = new ArrayList<>();
+            allImages.addAll(directImages);
+            allImages.addAll(variationImages);
 
-            // Thêm vào danh sách kết quả
+            // 4. Map ảnh sang DTO
+            List<ImagesDTO> imagesDTOList = mapImagestoDTO(allImages);
+            productDTO.setImages(imagesDTOList);
+
             productDTOList.add(productDTO);
         }
 
@@ -49,21 +58,25 @@ public class ProductService {
     }
 
 
+
     public List<ImagesDTO> mapImagestoDTO(List<Images> imagesList) {
         List<ImagesDTO> imagesDTOList = new ArrayList<>();
 
         for (Images image : imagesList) {
             ImagesDTO dto = new ImagesDTO();
-            dto.setID(image.getID()); // Lấy ID ảnh
-            dto.setProduct(new ProductDTO(image.getProduct())); // Chuyển đổi Product thành DTO
-            dto.setCd_Images(image.getCd_Images()); // Lấy đường dẫn ảnh
-            dto.setSet_Default(image.getSet_Default()); // Cờ đánh dấu ảnh mặc định
 
-            imagesDTOList.add(dto); // Thêm vào danh sách kết quả
+            dto.setID(image.getID());
+            dto.setCd_Images(image.getCd_Images());
+            dto.setSet_Default(image.getSet_Default());
+            dto.setModel(image.getModel());
+            dto.setProductID(image.getProductID());
+
+            imagesDTOList.add(dto);
         }
 
         return imagesDTOList;
     }
+
 
 
 }

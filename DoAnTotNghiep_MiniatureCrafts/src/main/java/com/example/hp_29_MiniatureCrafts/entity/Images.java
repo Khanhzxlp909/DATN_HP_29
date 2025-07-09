@@ -9,24 +9,25 @@ public class Images {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
-
-    @ManyToOne
-    @JoinColumn(name = "ProductID", nullable = false) // Đặt tên cột là Product_ID
-    private Product Product;
-
-
+    private String Model;
+    private Long ProductID;
     private String Cd_Images;
     private Boolean Set_Default;
-    public Images(Integer ID, Product product, String cd_Images, Boolean set_Default) {
+
+
+    public Images(Integer ID, String model, Long productID, String cd_Images, Boolean set_Default) {
         this.ID = ID;
-        Product = product;
+        Model = model;
+        ProductID = productID;
         Cd_Images = cd_Images;
         Set_Default = set_Default;
     }
 
+
     public Images(ImagesDTO dto) {
         this.ID = dto.getID();
-        this.Product = new Product(dto.getProduct());
+        this.Model = dto.getModel();
+        this.ProductID = dto.getProductID();
         this.Cd_Images = dto.getCd_Images();
         this.Set_Default = dto.getSet_Default();
     }
@@ -34,8 +35,6 @@ public class Images {
     public Images() {
     }
 
-
-    // Getters and Setters
     public Integer getID() {
         return ID;
     }
@@ -44,12 +43,20 @@ public class Images {
         this.ID = ID;
     }
 
-    public Product getProduct() {
-        return Product;
+    public String getModel() {
+        return Model;
     }
 
-    public void setProduct(Product product) {
-        Product = product;
+    public void setModel(String model) {
+        Model = model;
+    }
+
+    public Long getProductID() {
+        return ProductID;
+    }
+
+    public void setProductID(Long productID) {
+        ProductID = productID;
     }
 
     public String getCd_Images() {

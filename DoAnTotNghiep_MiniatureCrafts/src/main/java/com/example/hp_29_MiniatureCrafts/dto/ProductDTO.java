@@ -1,7 +1,5 @@
 package com.example.hp_29_MiniatureCrafts.dto;
 
-import com.example.hp_29_MiniatureCrafts.entity.Category;
-import com.example.hp_29_MiniatureCrafts.entity.Images;
 import com.example.hp_29_MiniatureCrafts.entity.Product;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,41 +9,30 @@ public class ProductDTO {
     private Long ID;
     private String Name;
     private CategoryDTO CategoryID;
-    private List<ImagesDTO> imagesDTOS;
+    private BrandDTO BrandID;
+    private List<ImagesDTO> images;
 
-    public ProductDTO(Long id, String name, CategoryDTO categoryID, List<ImagesDTO> imagesDTOS) {
+    public ProductDTO(Long id, String name, CategoryDTO categoryID, BrandDTO brandID, List<ImagesDTO> images) {
         this.ID = id;
         this.Name = name;
         CategoryID = categoryID;
-        this.imagesDTOS = imagesDTOS;
-    }
-
-    public Long getID() {
-        return ID;
-    }
-
-    public List<ImagesDTO> getImagesDTOS() {
-        return imagesDTOS;
-    }
-
-    public void setImagesDTOS(List<ImagesDTO> imagesDTOS) {
-        this.imagesDTOS = imagesDTOS;
-    }
-
-    public ProductDTO() {
-    }
-
-
-    public ProductDTO(Long ID, String name, CategoryDTO categoryID) {
-        this.ID = ID;
-        Name = name;
-        CategoryID = categoryID;
+        BrandID = brandID;
+        this.images = images;
     }
 
     public ProductDTO(Product entity) {
         this.ID = entity.getID();
         Name = entity.getName();
         CategoryID = new CategoryDTO(entity.getCategoryID());
+        BrandID = new BrandDTO(entity.getBrandID());
+    }
+
+    public ProductDTO(Product entity, List<ImagesDTO> images) {
+        this.ID = entity.getID();
+        this.Name = entity.getName();
+        this.CategoryID = new CategoryDTO(entity.getCategoryID());
+        this.BrandID = new BrandDTO(entity.getBrandID());
+        this.images = images;
     }
 
     public ProductDTO(Long id) {
@@ -53,7 +40,7 @@ public class ProductDTO {
     }
 
     @JsonProperty("id")
-    public Long getId() {
+    public Long getID() {
         return ID;
     }
 
@@ -67,6 +54,7 @@ public class ProductDTO {
         return CategoryID;
     }
 
+
     public void setID(Long ID) {
         this.ID = ID;
     }
@@ -77,5 +65,22 @@ public class ProductDTO {
 
     public void setCategoryID(CategoryDTO categoryID) {
         CategoryID = categoryID;
+    }
+
+    @JsonProperty("brandID")
+    public BrandDTO getBrandID() {
+        return BrandID;
+    }
+
+    public void setBrandID(BrandDTO brandID) {
+        BrandID = brandID;
+    }
+
+    public List<ImagesDTO> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImagesDTO> images) {
+        this.images = images;
     }
 }

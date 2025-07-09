@@ -1,96 +1,88 @@
 package com.example.hp_29_MiniatureCrafts.dto;
 
-import com.example.hp_29_MiniatureCrafts.entity.Supplier;
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 import java.util.List;
 
 public class VariationDTO {
     private Long ID;
     private ProductDTO ProductID;
+    private String Name;
     private String SKU;
-    private String Price;
+    private Double Price;
     private Integer Quantity;
-    private BrandDTO BrandID;
+    private String Color;
     private String Material;
-    private Double Weight;
+    private String Size;
     private Boolean Status;
-    private String Note;
+    private String Description;
     private Integer Sold;
-    private SupplierDTO Supplier;
-    private List<ImagesDTO> ImagesDTO;
+    private ImagesDTO images;
 
     public VariationDTO() {
-    }
-
-    public VariationDTO(Long ID, ProductDTO productID, String SKU, String price, Integer quantity, BrandDTO brandID, String material, Double weight, Boolean status,String note,Integer Sold, SupplierDTO Supplier,List<ImagesDTO> images) {
-        this.ID = ID;
-        ProductID = productID;
-        this.SKU = SKU;
-        Price = price;
-        Quantity = quantity;
-        BrandID = brandID;
-        Material = material;
-        Weight = weight;
-        Status = status;
-        Note = note;
-        this.Sold = Sold;
-        this.Supplier = Supplier;
-        ImagesDTO = images;
-    }
-
-    public List<com.example.hp_29_MiniatureCrafts.dto.ImagesDTO> getImagesDTO() {
-        return ImagesDTO;
-    }
-
-    public void setImagesDTO(List<com.example.hp_29_MiniatureCrafts.dto.ImagesDTO> imagesDTO) {
-        ImagesDTO = imagesDTO;
-    }
-
-    public String getNote() {
-        return Note;
-    }
-
-    public void setNote(String note) {
-        Note = note;
     }
 
     public VariationDTO(Variation variationID) {
         this.ID = variationID.getID();
         ProductID = new ProductDTO(variationID.getProductID());
+        this.Name = variationID.getName();
         this.SKU = variationID.getSKU();
-        Price = variationID.getPrice().toString();
+        Price = variationID.getPrice();
         Quantity = variationID.getQuantity();
-        BrandID = new BrandDTO(variationID.getBrandID());
         Material = variationID.getMaterial();
-        Weight = variationID.getWeight();
+        Size = variationID.getSize();
         Status = variationID.getStatus();
-        Note = variationID.getNote();
+        Description = variationID.getDescription();
         this.Sold = variationID.getSold();
-        this.Supplier = new SupplierDTO(variationID.getSupplier());
     }
 
-    // Getters and Setters
-    public Long getID() {
 
+    public VariationDTO(Long ID, ProductDTO productID, String name, String SKU, Double price, Integer quantity, String color, String material, String size, String description, Integer sold, Boolean status, ImagesDTO imagesDTO) {
+        this.ID = ID;
+        ProductID = productID;
+        Name = name;
+        this.SKU = SKU;
+        Price = price;
+        Quantity = quantity;
+        Color = color;
+        Material = material;
+        Size = size;
+        Description = description;
+        Sold = sold;
+        images = imagesDTO;
+        Status = status;
+    }
+
+    public ImagesDTO getImagesDTO() {
+        return images;
+    }
+
+    public void setImagesDTO(ImagesDTO imagesDTO) {
+        images = imagesDTO;
+    }
+
+    public Long getID() {
         return ID;
     }
 
     public void setID(Long ID) {
-
         this.ID = ID;
     }
 
     public ProductDTO getProductID() {
-
         return ProductID;
     }
 
     public void setProductID(ProductDTO productID) {
         ProductID = productID;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
     }
 
     public String getSKU() {
@@ -101,11 +93,11 @@ public class VariationDTO {
         this.SKU = SKU;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return Price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         Price = price;
     }
 
@@ -117,28 +109,12 @@ public class VariationDTO {
         Quantity = quantity;
     }
 
-    public BrandDTO getBrandID() {
-        return BrandID;
+    public String getColor() {
+        return Color;
     }
 
-    public Integer getSold() {
-        return Sold;
-    }
-
-    public void setSold(Integer sold) {
-        Sold = sold;
-    }
-
-    public SupplierDTO getSupplier() {
-        return Supplier;
-    }
-
-    public void setSupplier(SupplierDTO supplier) {
-        Supplier = supplier;
-    }
-
-    public void setBrandID(BrandDTO brandID) {
-        BrandID = brandID;
+    public void setColor(String color) {
+        Color = color;
     }
 
     public String getMaterial() {
@@ -149,12 +125,12 @@ public class VariationDTO {
         Material = material;
     }
 
-    public Double getWeight() {
-        return Weight;
+    public String getSize() {
+        return Size;
     }
 
-    public void setWeight(Double weight) {
-        Weight = weight;
+    public void setSize(String size) {
+        Size = size;
     }
 
     public Boolean getStatus() {
@@ -163,5 +139,21 @@ public class VariationDTO {
 
     public void setStatus(Boolean status) {
         Status = status;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
+    public Integer getSold() {
+        return Sold;
+    }
+
+    public void setSold(Integer sold) {
+        Sold = sold;
     }
 }

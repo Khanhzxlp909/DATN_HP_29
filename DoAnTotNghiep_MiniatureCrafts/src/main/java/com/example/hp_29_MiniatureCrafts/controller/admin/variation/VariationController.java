@@ -134,6 +134,18 @@ public class VariationController {
         }
     }
 
+    @PostMapping("images/setvariation")
+    public ResponseEntity<?> setVariationImages(@RequestBody List<ImagesDTO> imagesDTOList) {
+        try {
+            for (ImagesDTO imagesDTO : imagesDTOList) {
+                variationService.saveImages(imagesDTO); // Lưu từng ảnh vào DB
+            }
+            return ResponseEntity.ok().body(Map.of("message", "Files uploaded successfully"));
+        } catch (Exception e) {
+            throw new RuntimeException("Error while saving images", e);
+        }
+    }
+
 
 
     @GetMapping("getproduct")
@@ -152,12 +164,6 @@ public class VariationController {
         return variationService.getVariationsBystatus(pageable);
     }
 
-    @GetMapping("warehouse/supiller/{id}")
-    public Page<VariationDTO> getByWarehouse(Pageable pageable, @PathVariable("id") Long id) {
-        return variationService.getVariationsBySupplier(pageable, id);
-    }
-
-
     @GetMapping("result/{name}")
     public Page<VariationDTO> findByName(Pageable pageable, @PathVariable("name") String name) {
         return variationService.findByName(pageable, name);
@@ -166,11 +172,6 @@ public class VariationController {
     @GetMapping("category/{category}")
     public Page<VariationDTO> filterCategory(Pageable pageable, @PathVariable("category") Long category) {
         return variationService.getProductByCategory(pageable, category);
-    }
-
-    @GetMapping("brands/{brands}")
-    public Page<VariationDTO> filterBrands(Pageable pageable, @PathVariable("brands") Long brands) {
-        return variationService.getVariationByBrands(pageable, brands);
     }
 
     @PostMapping("add")

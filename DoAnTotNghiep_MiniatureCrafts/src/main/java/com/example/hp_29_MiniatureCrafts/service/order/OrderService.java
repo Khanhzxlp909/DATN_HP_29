@@ -7,6 +7,7 @@ import com.example.hp_29_MiniatureCrafts.repository.order.OrderRepository;
 import com.example.hp_29_MiniatureCrafts.repository.order.PaymentMethodRepository;
 import com.example.hp_29_MiniatureCrafts.repository.order.voucher.VoucherRepository;
 import com.example.hp_29_MiniatureCrafts.repository.product.ProductRepository;
+import com.example.hp_29_MiniatureCrafts.repository.product.VariationRepository;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,9 @@ public class OrderService {
     VariationService variationService;
 
     @Autowired
+    private VariationRepository variationRepository;
+
+    @Autowired
     ProductRepository productRepository;
 
     public POSOrderDTO findOrderById(Long orderId) {
@@ -72,7 +76,7 @@ public class OrderService {
             orderLineRepository.save(orderLine);
             // Cập nhật số lượng cho Variation
             variation.setQuantity(variation.getQuantity() + quantityOrdered);
-            variationService.save(variation); // Lưu lại sự thay đổi
+            variationRepository.save(variation); // Lưu lại sự thay đổi
         }
         order.setStatus(0);
         // Xóa đơn hàng
@@ -106,9 +110,7 @@ public class OrderService {
         List<OrderLine> orderLines = orderLineRepository.findAllOrderID(orderId);
 
         // Chuyển đổi từ OrderLine sang OrderLineDTO
-        return orderLines.stream()
-                .map(this::mapOrderLineEntityToDTO)
-                .collect(Collectors.toList());
+        return orderLines.stream().map(this::mapOrderLineEntityToDTO).collect(Collectors.toList());
     }
 
 
@@ -124,12 +126,7 @@ public class OrderService {
             dto.setTotal_Amount(entity.getTotal_Amount() != null ? entity.getTotal_Amount().toString() : "0");
             dto.setDiscount_Amount(entity.getDiscount_Amount() != null ? entity.getDiscount_Amount().toString() : "0");
             dto.setTotal_Payment(entity.getTotal_Payment() != null ? entity.getTotal_Payment().toString() : "0");
-            dto.setPaymentMethod(new PaymentMethodDTO(
-                    entity.getPaymentMethod().getID(),
-                    entity.getPaymentMethod().getType(),
-                    entity.getPaymentMethod().getNote(),
-                    entity.getPaymentMethod().getStatus()
-            ));
+            dto.setPaymentMethod(new PaymentMethodDTO(entity.getPaymentMethod().getID(), entity.getPaymentMethod().getType(), entity.getPaymentMethod().getNote(), entity.getPaymentMethod().getStatus()));
             dto.setOrder_Time(entity.getOrder_Time());
             dto.setPayment_Time(entity.getPayment_Time());
             dto.setType_Oder(entity.getType_Oder());
@@ -152,12 +149,7 @@ public class OrderService {
             dto.setTotal_Amount(entity.getTotal_Amount() != null ? entity.getTotal_Amount().toString() : "0");
             dto.setDiscount_Amount(entity.getDiscount_Amount() != null ? entity.getDiscount_Amount().toString() : "0");
             dto.setTotal_Payment(entity.getTotal_Payment() != null ? entity.getTotal_Payment().toString() : "0");
-            dto.setPaymentMethod(new PaymentMethodDTO(
-                    entity.getPaymentMethod().getID(),
-                    entity.getPaymentMethod().getType(),
-                    entity.getPaymentMethod().getNote(),
-                    entity.getPaymentMethod().getStatus()
-            ));
+            dto.setPaymentMethod(new PaymentMethodDTO(entity.getPaymentMethod().getID(), entity.getPaymentMethod().getType(), entity.getPaymentMethod().getNote(), entity.getPaymentMethod().getStatus()));
             dto.setOrder_Time(entity.getOrder_Time());
             dto.setPayment_Time(entity.getPayment_Time());
             dto.setType_Oder(entity.getType_Oder());
@@ -206,33 +198,26 @@ public class OrderService {
             // Tạo VariationDTO đầy đủ
             VariationDTO variationDTO = new VariationDTO();
             variationDTO.setID(variation.getID());
-            variationDTO.setSKU(variation.getSKU());
-
-            // Format giá
-            NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-            variationDTO.setPrice(formatter.format(variation.getPrice()));
-
-            variationDTO.setQuantity(variation.getQuantity());
-            variationDTO.setMaterial(variation.getMaterial());
-            variationDTO.setWeight(variation.getWeight());
-            variationDTO.setStatus(variation.getStatus());
-            variationDTO.setNote(variation.getNote());
-            variationDTO.setSold(variation.getSold());
 
             // Gán ProductDTO + ảnh
-            ProductDTO productDTO = new ProductDTO(
-                    variation.getProductID().getID(),
-                    variation.getProductID().getName(),
-                    variationService.mapCategoryToDTO(variation.getProductID().getCategoryID()),
-                    variationService.getImageByProduct(variation.getProductID().getID()) // ảnh từ product
+            ProductDTO productDTO = new ProductDTO(variation.getProductID().getID(), variation.getProductID().getName(), variationService.mapCategoryToDTO(variation.getProductID().getCategoryID()), variationService.mapBrandToDTO(variation.getProductID().getBrandID()), variationService.getProductImages("Product", variation.getProductID().getID()) // ảnh từ product
             );
             variationDTO.setProductID(productDTO);
+            // Gán các thuộc tính khác của VariationDTO
+            variationDTO.setSKU(variation.getSKU());
+            variationDTO.setName(variation.getName());
+            variationDTO.setPrice(variation.getPrice());
 
-            // Brand
-            variationDTO.setBrandID(variationService.mapBrandToBrandDTO(variation.getBrandID()));
+            variationDTO.setQuantity(variation.getQuantity());
+            variationDTO.setColor(variation.getColor());
+            variationDTO.setMaterial(variation.getMaterial());
+            variationDTO.setSize(variation.getSize());
 
-            // Supplier
-            variationDTO.setSupplier(variationService.mapSupplierToSupplierDTO(variation.getSupplier()));
+
+            variationDTO.setDescription(variation.getDescription());
+            variationDTO.setSold(variation.getSold());
+            variationDTO.setStatus(variation.getStatus());
+
 
             // Gán variationDTO vào OrderLineDTO
             dto.setVariationID(variationDTO);
@@ -263,8 +248,7 @@ public class OrderService {
             // Gán PaymentMethod
             PaymentMethodDTO paymentMethodDTO = posOrderDTO.getPaymentMethod();
 
-            PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodDTO.getID())
-                    .orElseThrow(() -> new RuntimeException("PaymentMethod không tồn tại với ID: " + paymentMethodDTO.getID()));
+            PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodDTO.getID()).orElseThrow(() -> new RuntimeException("PaymentMethod không tồn tại với ID: " + paymentMethodDTO.getID()));
             order.setPaymentMethod(paymentMethod);
 
             // Cập nhật các trường khác
@@ -299,7 +283,7 @@ public class OrderService {
 
         // Cập nhật số lượng trong kho
         variation.setQuantity(availableQuantity - requestedQuantity);
-        variationService.save(variation); // Giả sử bạn có hàm save() trong service để cập nhật database
+        variationRepository.save(variation); // Giả sử bạn có hàm save() trong service để cập nhật database
 
         // Mapping các thông tin còn lại
         orderLine.setVariationID(variation);
@@ -380,7 +364,7 @@ public class OrderService {
 
                     // Cập nhật số lượng tồn kho
                     variation.setQuantity(availableQuantity - requestedQuantity);
-                    variationService.save(variation);
+                    variationRepository.save(variation);
 
                     // Mapping thông tin OrderLine
                     orderLine.setVariationID(variation);
@@ -471,8 +455,8 @@ public class OrderService {
 
             int returnQuantity = lineDTO.getQuantity();
             variation.setQuantity(variation.getQuantity() + returnQuantity);
-            variation.setSold(variation.getSold()- returnQuantity);
-            variationService.save(variation);
+            variation.setSold(variation.getSold() - returnQuantity);
+            variationRepository.save(variation);
 
             OrderLine line = buildOrderLine(lineDTO, savedOrder, variation, returnQuantity);
             orderLineRepository.save(line);
@@ -562,7 +546,7 @@ public class OrderService {
 
                     // Cập nhật số lượng tồn kho
                     variation.setQuantity(availableQuantity - requestedQuantity);
-                    variationService.save(variation);
+                    variationRepository.save(variation);
 
                     // Mapping thông tin OrderLine
                     orderLine.setVariationID(variation);
@@ -593,62 +577,20 @@ public class OrderService {
     }
 
     public OrderLineDTO mapOrderLineEntityToDTO(OrderLine entity) {
-        return new OrderLineDTO(
-                entity.getID(),
-                entity.getOderID(),
-                variationService.mapVariationToVariationDTO(entity.getVariationID()),
-                entity.getVariationName(),
-                entity.getMarterial(),
-                entity.getQuantity(),
-                entity.getUnit_Price(),
-                entity.getPrice(),
-                entity.getCreation_date(),
-                entity.getEdit_Date(),
-                entity.getStatus()
-        );
+        return new OrderLineDTO(entity.getID(), entity.getOderID(), variationService.mapVariationToDTO(entity.getVariationID()), entity.getVariationName(), entity.getMarterial(), entity.getQuantity(), entity.getUnit_Price(), entity.getPrice(), entity.getCreation_date(), entity.getEdit_Date(), entity.getStatus());
     }
 
     public OrderLine mapOrderLineDTOToEntity(OrderLineDTO dto) {
-        return new OrderLine(
-                dto.getID(),
-                dto.getOderID(),
-                VariationService.mapVariationDTOtoVariation(dto.getVariationID()),
-                dto.getVariationName(),
-                dto.getMarterial(),
-                dto.getQuantity(),
-                dto.getUnit_Price(),
-                dto.getPrice(),
-                dto.getCreation_date(),
-                dto.getEdit_Date(),
-                dto.getStatus()
-        );
+        return new OrderLine(dto.getID(), dto.getOderID(), VariationService.mapVariationDTOtoVariation(dto.getVariationID()), dto.getVariationName(), dto.getMarterial(), dto.getQuantity(), dto.getUnit_Price(), dto.getPrice(), dto.getCreation_date(), dto.getEdit_Date(), dto.getStatus());
     }
 
 
     public Customer mapCustomerDTOToEntity(CustomerDTO dto) {
-        return new Customer(
-                dto.getID(),
-                dto.getName(),
-                dto.getAddress(),
-                dto.getPhone(),
-                dto.getNote(),
-                dto.getStatus(),
-                dto.getCreation_date(),
-                dto.getEdit_Date()
-        );
+        return new Customer(dto.getID(), dto.getName(), dto.getAddress(), dto.getPhone(), dto.getNote(), dto.getStatus(), dto.getCreation_date(), dto.getEdit_Date());
     }
 
     public CustomerDTO mapCustomerEntityToDTO(Customer entity) {
-        return new CustomerDTO(
-                entity.getID(),
-                entity.getName(),
-                entity.getAddress(),
-                entity.getPhone(),
-                entity.getNote(),
-                entity.getStatus(),
-                entity.getCreation_date(),
-                entity.getEdit_Date()
-        );
+        return new CustomerDTO(entity.getID(), entity.getName(), entity.getAddress(), entity.getPhone(), entity.getNote(), entity.getStatus(), entity.getCreation_date(), entity.getEdit_Date());
     }
 
 
@@ -658,9 +600,7 @@ public class OrderService {
         dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
         dto.setAddress(entity.getAddress());
         // Lấy danh sách OrderLine từ repository và chuyển đổi sang DTO
-        List<OrderLineDTO> orderLineDTOs = orderLineRepository.findAllOrderID(entity.getID())
-                .stream()
-                .map(this::mapOrderLineEntityToDTO) // Chuyển từng OrderLine Entity sang DTO
+        List<OrderLineDTO> orderLineDTOs = orderLineRepository.findAllOrderID(entity.getID()).stream().map(this::mapOrderLineEntityToDTO) // Chuyển từng OrderLine Entity sang DTO
                 .toList();
         dto.setOrderLine(orderLineDTOs);
         dto.setCode_Voucher(entity.getCode_Voucher());
@@ -678,9 +618,7 @@ public class OrderService {
         dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
         dto.setAddress(entity.getAddress());
         // Lấy danh sách OrderLine từ repository và chuyển đổi sang DTO
-        List<OrderLineDTO> orderLineDTOs = orderLineRepository.findAllOrderID(entity.getID())
-                .stream()
-                .map(this::mapOrderLineEntityToDTO) // Chuyển từng OrderLine Entity sang DTO
+        List<OrderLineDTO> orderLineDTOs = orderLineRepository.findAllOrderID(entity.getID()).stream().map(this::mapOrderLineEntityToDTO) // Chuyển từng OrderLine Entity sang DTO
                 .toList();
         dto.setOrderLine(orderLineDTOs);
         dto.setCode_Voucher(entity.getCode_Voucher());

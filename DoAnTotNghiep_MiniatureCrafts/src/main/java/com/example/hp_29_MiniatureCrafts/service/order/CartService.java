@@ -117,7 +117,7 @@ public class CartService {
         CartItemDTO cartItemDTO = new CartItemDTO();
         cartItemDTO.setId(cartItem.getId());
         cartItemDTO.setQuantity(cartItem.getQuantity());
-        cartItemDTO.setVariation_id(variationService.mapVariationToVariationDTO(cartItem.getVariation_id()));
+        cartItemDTO.setVariation_id(variationService.mapVariationToDTO(cartItem.getVariation_id()));
         cartItemDTO.setCustomer_id(orderService.mapCustomerEntityToDTO(cartItem.getCustomer_id()));
         return cartItemDTO;
     }

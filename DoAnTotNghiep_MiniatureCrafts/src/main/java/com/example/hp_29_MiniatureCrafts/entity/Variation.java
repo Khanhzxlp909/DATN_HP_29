@@ -14,70 +14,22 @@ public class Variation {
     @JoinColumn(name = "ProductID")
     @JsonBackReference
     private Product ProductID;  // Liên kết với Product
+    private String  Name;  // Liên kết với Product
 
     private String SKU;
     private Double Price;
     private Integer Quantity;
-
-    @ManyToOne
-    @JoinColumn (name = "BrandID")
-    @JsonBackReference
-    private Brand BrandID;  // Liên kết với Brand
-
+    private String Color;
     private String Material;
-    private Double Weight;
-    private Boolean Status;
-    private String Note;
+    private String Size;
+    private String Description;
     private Integer Sold;
+    private Boolean Status;
 
-    @ManyToOne
-    @JoinColumn(name = "Supplier")
-    @JsonBackReference
-    private Supplier Supplier;
-
-
-    public Integer getSold() {
-        return Sold;
-    }
-
-    public void setSold(Integer sold) {
-        Sold = sold;
-    }
-
-    public com.example.hp_29_MiniatureCrafts.entity.Supplier getSupplier() {
-        return Supplier;
-    }
-
-    public void setSupplier(com.example.hp_29_MiniatureCrafts.entity.Supplier supplier) {
-        Supplier = supplier;
-    }
-
-    public Variation(Long ID, Product productID, String SKU, Double price, Integer quantity, Brand brandID, String material, Double weight, Boolean status, String note, Integer Sold, Supplier Supplier) {
-        this.ID = ID;
-        ProductID = productID;
-        this.SKU = SKU;
-        Price = price;
-        Quantity = quantity;
-        BrandID = brandID;
-        Material = material;
-        Weight = weight;
-        Status = status;
-        Note = note;
-        this.Supplier = Supplier;
-        this.Sold = Sold;
-    }
 
     public Variation() {
-
-    }
-    public String getNote() {
-        return Note;
     }
 
-    public void setNote(String note) {
-        Note = note;
-    }
-    // Getters and Setters
     public Long getID() {
         return ID;
     }
@@ -92,6 +44,14 @@ public class Variation {
 
     public void setProductID(Product productID) {
         ProductID = productID;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
     }
 
     public String getSKU() {
@@ -118,12 +78,12 @@ public class Variation {
         Quantity = quantity;
     }
 
-    public Brand getBrandID() {
-        return  BrandID;
+    public String getColor() {
+        return Color;
     }
 
-    public void setBrandID(Brand brandID) {
-        BrandID = brandID;
+    public void setColor(String color) {
+        Color = color;
     }
 
     public String getMaterial() {
@@ -134,12 +94,12 @@ public class Variation {
         Material = material;
     }
 
-    public Double getWeight() {
-        return Weight;
+    public String getSize() {
+        return Size;
     }
 
-    public void setWeight(Double weight) {
-        Weight = weight;
+    public void setSize(String size) {
+        Size = size;
     }
 
     public Boolean getStatus() {
@@ -147,6 +107,37 @@ public class Variation {
     }
 
     public void setStatus(Boolean status) {
+        Status = status;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
+    public Integer getSold() {
+        return Sold;
+    }
+
+    public void setSold(Integer sold) {
+        Sold = sold;
+    }
+
+    public Variation(Long ID, Product productID, String name, String SKU, Double price, Integer quantity, String color, String material, String size,  String description, Integer sold, Boolean status) {
+        this.ID = ID;
+        ProductID = productID;
+        Name = name;
+        this.SKU = SKU;
+        Price = price;
+        Quantity = quantity;
+        Color = color;
+        Material = material;
+        Size = size;
+        Description = description;
+        Sold = sold;
         Status = status;
     }
 }

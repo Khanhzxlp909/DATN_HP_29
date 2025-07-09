@@ -5,21 +5,39 @@ import com.example.hp_29_MiniatureCrafts.entity.Product;
 
 public class ImagesDTO {
     private Integer ID;
-    private ProductDTO Product;
+    private String Model;
+    private Long ProductID;
     private String Cd_Images;
     private Boolean Set_Default;
 
     public ImagesDTO() {
     }
 
-    public ImagesDTO(Integer ID, ProductDTO product, String cd_Images, Boolean set_Default) {
+    public ImagesDTO(Integer ID, String model, Long productID, String cd_Images, Boolean set_Default) {
         this.ID = ID;
-        Product = product;
+        Model = model;
+        ProductID = productID;
         Cd_Images = cd_Images;
         Set_Default = set_Default;
     }
 
-    // Getters and Setters
+    public ImagesDTO(Images entity) {
+        this.ID = entity.getID();
+        this.Model = entity.getModel();
+        this.ProductID = entity.getProductID();
+        this.Cd_Images = entity.getCd_Images();
+        this.Set_Default = entity.getSet_Default();
+    }
+
+
+    public Long getProductID() {
+        return ProductID;
+    }
+
+    public void setProductID(Long productID) {
+        ProductID = productID;
+    }
+
     public Integer getID() {
         return ID;
     }
@@ -28,19 +46,12 @@ public class ImagesDTO {
         this.ID = ID;
     }
 
-    public ProductDTO getProduct() {
-        return Product;
+    public String getModel() {
+        return Model;
     }
 
-    public ImagesDTO(Images entity) {
-        this.ID = entity.getID();
-        this.Product = new ProductDTO(entity.getProduct());
-        this.Cd_Images = entity.getCd_Images();
-        this.Set_Default = entity.getSet_Default();
-    }
-
-    public void setProduct(ProductDTO product) {
-        Product = product;
+    public void setModel(String model) {
+        Model = model;
     }
 
     public String getCd_Images() {
@@ -58,4 +69,6 @@ public class ImagesDTO {
     public void setSet_Default(Boolean set_Default) {
         Set_Default = set_Default;
     }
+
+
 }

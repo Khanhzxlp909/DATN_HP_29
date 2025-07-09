@@ -13,10 +13,15 @@ import java.util.List;
 @Repository
 public interface ImagesRepository extends JpaRepository<Images, Integer> {
 
-    // dùng find by product để get ra list ảnh, sau đó map sang dto và gán list ảnh này vào imagesDTOS của product
+    // dùng find by product để get ra list ảnh, sau đó map sang dto và gán list ảnh này vào images của product
 
-    @Query(value = "select i from Images i where i.Product.ID= :idproduct")
-    List<Images> findByProduct(@Param("idproduct") Long idproduct);
+    @Query("SELECT i FROM Images i WHERE i.Model = :model AND i.ProductID = :productID")
+    List<Images> findByModelAndProductID(@Param("model") String model,
+                                         @Param("productID") Long productID);
+
+    @Query("SELECT i FROM Images i WHERE i.Model = :model AND i.ProductID = :productID")
+    Images findImageByModelAndProductID(@Param("model") String model,
+                                         @Param("productID") Long productID);
 
     @Modifying
     @Transactional

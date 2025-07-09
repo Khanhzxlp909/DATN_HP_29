@@ -1,11 +1,15 @@
 package com.example.hp_29_MiniatureCrafts.repository.product;
 
+import com.example.hp_29_MiniatureCrafts.entity.Product;
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface VariationRepository extends JpaRepository<Variation, Long> {
     @Query("select v from Variation v order by v.ID DESC")
@@ -17,10 +21,6 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     @Query("SELECT v FROM Variation v WHERE v.Status = true ORDER BY v.ID DESC")
     Page<Variation> getVariationByStatus(Pageable pageable);
 
-    @Query("SELECT v FROM Variation v WHERE v.Supplier.ID = :idsupplier")
-    Page<Variation> getVariationBySupplier(Pageable pageable, @Param("idsupplier") Long idsupplier);
-
-
     @Query("SELECT v FROM Variation v WHERE (:minPrice IS NULL OR v.Price >= :minPrice) AND (:maxPrice IS NULL OR v.Price <= :maxPrice)")
     Page<Variation> findByPriceRange(Pageable pageable, @Param("minPrice") Double minPrice, @Param("maxPrice") Double maxPrice);
 
@@ -28,9 +28,8 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     @Query("SELECT v FROM Variation v WHERE " +
             "v.ProductID.Name LIKE %:keyword% " +
             "OR v.ProductID.CategoryID.Name LIKE %:keyword% " +
-            "OR v.Note LIKE %:keyword% " +
-            "OR v.Material LIKE %:keyword% " +
-            "OR v.BrandID.Name LIKE %:keyword%")
+            "OR v.Description LIKE %:keyword% " +
+            "OR v.Material LIKE %:keyword% ")
     Page<Variation> findByName(Pageable pageable, @Param("keyword") String keyword);
 
 
@@ -43,11 +42,12 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     @Query("select v from Variation v where v.ID= :idvariation")
     Variation findByIdVariation(@Param("idvariation") Long id);
 
-
-    @Query("select v from Variation v where v.BrandID.ID= :id order by v.ID DESC")
-    Page<Variation> findByBrand(Pageable pageable, @Param("id") Long id);
+//
+    @Query("select v from Variation v where v.ProductID.ID= :id order by v.ID DESC")
+    List<Variation> findByProductID(@Param("id") Long id);
 
     @Query("select v from Variation v where v.ProductID.CategoryID.ID= :id order by v.ID DESC")
     Page<Variation> findProductbyCatrgory(Pageable pageable, @Param("id") Long id);
+
 
 }

@@ -311,12 +311,6 @@ public class HomeController {
         return variationService.getProductByCategory(pageable, category);
     }
 
-    @GetMapping("brands/{brands}")
-    public Page<VariationDTO> filterBrands(Pageable pageable, @PathVariable("brands") Long brands) {
-        return variationService.getVariationByBrands(pageable, brands);
-    }
-
-
     @GetMapping("categories")
     public List<CategoryDTO> getALL() {
         return categoryService.getALL();
