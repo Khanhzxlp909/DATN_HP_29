@@ -9,9 +9,7 @@ public class POSOrderDTO {
     private Long ID;
     private CustomerDTO customerID;
     private String Address;
-    private String Code_Voucher;
     private String Total_Amount;
-    private String Discount_Amount;
     private String Total_Payment;
     private PaymentMethodDTO PaymentMethod;
     private LocalDateTime Order_Time;
@@ -20,38 +18,34 @@ public class POSOrderDTO {
     private String Note;
     private Integer Status;
     private List<OrderLineDTO> orderLine;
-    private String statusText; // Trạng thái dạng chuỗi
+    private String statusText;
 
     public POSOrderDTO(POSOrder oder) {
         this.ID = oder.getID();
         this.customerID = new CustomerDTO(oder.getCustomerID());
         this.Address = oder.getAddress();
-        Code_Voucher = oder.getCode_Voucher();
-        Total_Amount = oder.getTotal_Amount().toString();
-        Discount_Amount = oder.getDiscount_Amount().toString();
-        Total_Payment = oder.getTotal_Payment().toString();
-        PaymentMethod = new PaymentMethodDTO(oder.getPaymentMethod());
-        Order_Time = oder.getOrder_Time();
-        Payment_Time = oder.getPayment_Time();
-        Type_Oder = oder.getType_Oder();
-        Note = oder.getNote();
-        Status = oder.getStatus();
+        this.Total_Amount = oder.getTotal_Amount().toString();
+        this.Total_Payment = oder.getTotal_Payment().toString();
+        this.PaymentMethod = new PaymentMethodDTO(oder.getPaymentMethod());
+        this.Order_Time = oder.getOrder_Time();
+        this.Payment_Time = oder.getPayment_Time();
+        this.Type_Oder = oder.getType_Oder();
+        this.Note = oder.getNote();
+        this.Status = oder.getStatus();
     }
 
-    public POSOrderDTO(Long ID, CustomerDTO customerID, String address, String code_Voucher, String total_Amount, String discount_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDateTime orderTime, LocalDateTime edit_Date, Integer type_Oder, String note, Integer status, List<OrderLineDTO> orderLine, String statusText) {
+    public POSOrderDTO(Long ID, CustomerDTO customerID, String address, String total_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDateTime orderTime, LocalDateTime paymentTime, Integer type_Oder, String note, Integer status, List<OrderLineDTO> orderLine, String statusText) {
         this.ID = ID;
         this.customerID = customerID;
-        Address = address;
-        Code_Voucher = code_Voucher;
-        Total_Amount = total_Amount;
-        Discount_Amount = discount_Amount;
-        Total_Payment = total_Payment;
-        PaymentMethod = paymentMethod;
-        Order_Time = orderTime;
-        Payment_Time = edit_Date;
-        Type_Oder = type_Oder;
-        Note = note;
-        Status = status;
+        this.Address = address;
+        this.Total_Amount = total_Amount;
+        this.Total_Payment = total_Payment;
+        this.PaymentMethod = paymentMethod;
+        this.Order_Time = orderTime;
+        this.Payment_Time = paymentTime;
+        this.Type_Oder = type_Oder;
+        this.Note = note;
+        this.Status = status;
         this.orderLine = orderLine;
         this.statusText = statusText;
     }
@@ -81,28 +75,12 @@ public class POSOrderDTO {
         this.customerID = customerID;
     }
 
-    public String getCode_Voucher() {
-        return Code_Voucher;
-    }
-
-    public void setCode_Voucher(String code_Voucher) {
-        Code_Voucher = code_Voucher;
-    }
-
     public String getTotal_Amount() {
         return Total_Amount;
     }
 
     public void setTotal_Amount(String total_Amount) {
         Total_Amount = total_Amount;
-    }
-
-    public String getDiscount_Amount() {
-        return Discount_Amount;
-    }
-
-    public void setDiscount_Amount(String discount_Amount) {
-        Discount_Amount = discount_Amount;
     }
 
     public String getTotal_Payment() {

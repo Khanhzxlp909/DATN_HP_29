@@ -77,6 +77,8 @@ public class WebSecurityConfig {
                                         "/MiniatureCrafts/signup",
                                         "/MiniatureCrafts/registerinfo",
                                         "/MiniatureCrafts/home",
+                                        "/MiniatureCrafts/product/findByID/**",
+                                        "/MiniatureCrafts/fetch_products",
                                         "/MiniatureCrafts/filterByPrice",
                                         "/MiniatureCrafts/result/**",
                                         "/MiniatureCrafts/findid/**",

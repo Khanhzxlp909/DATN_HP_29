@@ -1,7 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.dto;
 
 import com.example.hp_29_MiniatureCrafts.entity.Images;
-import com.example.hp_29_MiniatureCrafts.entity.Product;
 
 public class ImagesDTO {
     private Integer ID;
@@ -24,7 +23,7 @@ public class ImagesDTO {
     public ImagesDTO(Images entity) {
         this.ID = entity.getID();
         this.Model = entity.getModel();
-        this.ProductID = entity.getProductID();
+        this.ProductID = entity.getEntity_ID();
         this.Cd_Images = entity.getCd_Images();
         this.Set_Default = entity.getSet_Default();
     }

@@ -1,8 +1,7 @@
 package com.example.hp_29_MiniatureCrafts.dto;
 
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class VariationDTO {
     private Long ID;
@@ -17,24 +16,30 @@ public class VariationDTO {
     private Boolean Status;
     private String Description;
     private Integer Sold;
-    private ImagesDTO images;
+    private ImagesDTO imagesDTO;
 
     public VariationDTO() {
     }
 
     public VariationDTO(Variation variationID) {
         this.ID = variationID.getID();
-        ProductID = new ProductDTO(variationID.getProductID());
+
+        ProductDTO productDTO = new ProductDTO(variationID.getProductID());
+//        productDTO.setVariations(null); // 👈 chặn vòng lặp JSON
+        ProductID = productDTO;
+
         this.Name = variationID.getName();
         this.SKU = variationID.getSKU();
         Price = variationID.getPrice();
         Quantity = variationID.getQuantity();
+        Color = variationID.getColor();
         Material = variationID.getMaterial();
         Size = variationID.getSize();
         Status = variationID.getStatus();
         Description = variationID.getDescription();
-        this.Sold = variationID.getSold();
+        Sold = variationID.getSold();
     }
+
 
 
     public VariationDTO(Long ID, ProductDTO productID, String name, String SKU, Double price, Integer quantity, String color, String material, String size, String description, Integer sold, Boolean status, ImagesDTO imagesDTO) {
@@ -49,16 +54,17 @@ public class VariationDTO {
         Size = size;
         Description = description;
         Sold = sold;
-        images = imagesDTO;
+        this.imagesDTO = imagesDTO;
         Status = status;
     }
 
+    @JsonProperty("images")
     public ImagesDTO getImagesDTO() {
-        return images;
+        return imagesDTO;
     }
 
     public void setImagesDTO(ImagesDTO imagesDTO) {
-        images = imagesDTO;
+        this.imagesDTO = imagesDTO;
     }
 
     public Long getID() {

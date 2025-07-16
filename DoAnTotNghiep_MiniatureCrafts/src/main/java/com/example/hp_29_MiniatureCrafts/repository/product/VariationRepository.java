@@ -1,6 +1,5 @@
 package com.example.hp_29_MiniatureCrafts.repository.product;
 
-import com.example.hp_29_MiniatureCrafts.entity.Product;
 import com.example.hp_29_MiniatureCrafts.entity.Variation;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -8,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface VariationRepository extends JpaRepository<Variation, Long> {
@@ -47,7 +45,7 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     List<Variation> findByProductID(@Param("id") Long id);
 
     @Query("select v from Variation v where v.ProductID.CategoryID.ID= :id order by v.ID DESC")
-    Page<Variation> findProductbyCatrgory(Pageable pageable, @Param("id") Long id);
+    Page<Variation> findProductbyCatergory(Pageable pageable, @Param("id") Long id);
 
 
 }

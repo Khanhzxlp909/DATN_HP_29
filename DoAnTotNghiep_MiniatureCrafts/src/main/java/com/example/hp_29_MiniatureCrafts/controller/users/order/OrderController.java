@@ -6,7 +6,6 @@ import com.example.hp_29_MiniatureCrafts.dto.POSOrderDTO;
 import com.example.hp_29_MiniatureCrafts.entity.OrderLine;
 import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
 import com.example.hp_29_MiniatureCrafts.service.order.OrderService;
-import com.example.hp_29_MiniatureCrafts.service.order.Voucher.VoucherService;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,9 +26,6 @@ import java.util.Map;
 public class OrderController {
     @Autowired
     private VariationService variationService;
-
-    @Autowired
-    private VoucherService voucherService;
 
     @Autowired
     OrderService orderService;

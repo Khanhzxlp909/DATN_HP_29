@@ -24,10 +24,19 @@ public class productController {
     @Autowired
     VariationService variationService;
 
+    @GetMapping("getproduct")
+    public List<ProductDTO> getProductDTOS() {
+        return variationService.getProducts();
+    }
 
     @GetMapping("findAll")
     public List<ProductDTO> getALL() {
         return productService.getAllProduct();
+    }
+
+    @GetMapping("findByID/{id}")
+    public ProductDTO getProductByID(@PathVariable Long id) {
+        return productService.getProductByID(id);
     }
 
     @PostMapping("/saved")

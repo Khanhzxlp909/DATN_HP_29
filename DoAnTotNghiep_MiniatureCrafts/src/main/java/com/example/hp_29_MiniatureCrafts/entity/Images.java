@@ -10,15 +10,15 @@ public class Images {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ID;  // ID tự tăng
     private String Model;
-    private Long ProductID;
+    private Long Entity_ID;
     private String Cd_Images;
     private Boolean Set_Default;
 
 
-    public Images(Integer ID, String model, Long productID, String cd_Images, Boolean set_Default) {
+    public Images(Integer ID, String model, Long entityID, String cd_Images, Boolean set_Default) {
         this.ID = ID;
         Model = model;
-        ProductID = productID;
+        Entity_ID = entityID;
         Cd_Images = cd_Images;
         Set_Default = set_Default;
     }
@@ -27,7 +27,7 @@ public class Images {
     public Images(ImagesDTO dto) {
         this.ID = dto.getID();
         this.Model = dto.getModel();
-        this.ProductID = dto.getProductID();
+        this.Entity_ID = dto.getProductID();
         this.Cd_Images = dto.getCd_Images();
         this.Set_Default = dto.getSet_Default();
     }
@@ -51,12 +51,12 @@ public class Images {
         Model = model;
     }
 
-    public Long getProductID() {
-        return ProductID;
+    public Long getEntity_ID() {
+        return Entity_ID;
     }
 
-    public void setProductID(Long productID) {
-        ProductID = productID;
+    public void setEntity_ID(Long entity_ID) {
+        Entity_ID = entity_ID;
     }
 
     public String getCd_Images() {

@@ -1,6 +1,8 @@
 package com.example.hp_29_MiniatureCrafts.entity;
 
+import com.example.hp_29_MiniatureCrafts.dto.VariationDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,10 +12,11 @@ public class Variation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;  // ID tự tăng
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")
     @JsonBackReference
-    private Product ProductID;  // Liên kết với Product
+    private Product ProductID;
+
     private String  Name;  // Liên kết với Product
 
     private String SKU;
@@ -139,5 +142,20 @@ public class Variation {
         Description = description;
         Sold = sold;
         Status = status;
+    }
+
+    public Variation(VariationDTO dto) {
+        this.ID = dto.getID();
+        ProductID = new Product(dto.getProductID());
+        Name = dto.getName();
+        this.SKU = dto.getSKU();
+        Price = dto.getPrice();
+        Quantity = dto.getQuantity();
+        Color = dto.getColor();
+        Material = dto.getMaterial();
+        Size = dto.getSize();
+        Description = dto.getDescription();
+        Sold = dto.getSold();
+        Status = dto.getStatus();
     }
 }

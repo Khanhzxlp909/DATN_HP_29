@@ -27,13 +27,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("admin/variation")
-//@CrossOrigin(value = "*")
 public class VariationController {
-
 
     @Autowired
     private VariationService variationService;
-
 
     private final String IMAGE_DIR = "D:/DoAnTotNghiep/DATN_HP_29/DoAnTotNghiep_MiniatureCrafts/upload/images/";
 
@@ -146,13 +143,10 @@ public class VariationController {
         }
     }
 
-
-
     @GetMapping("getproduct")
     public List<ProductDTO> getProductDTOS() {
         return variationService.getProducts();
     }
-
 
     @GetMapping("result/all")
     public Page<VariationDTO> home(Pageable pageable) {
@@ -175,8 +169,15 @@ public class VariationController {
     }
 
     @PostMapping("add")
-    public Variation add(@RequestBody VariationDTO varDTO) {
-        return variationService.add(varDTO);
+    public ResponseEntity<?> add(@RequestBody VariationDTO varDTO) {
+        try {
+            Variation savedVariation = variationService.add(varDTO);
+            return ResponseEntity.ok(Map.of("id", savedVariation.getID()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to add variation", "details", e.getMessage()));
+        }
     }
 
     @PostMapping("update")

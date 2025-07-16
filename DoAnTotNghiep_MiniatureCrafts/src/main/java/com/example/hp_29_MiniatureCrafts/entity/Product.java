@@ -2,6 +2,7 @@ package com.example.hp_29_MiniatureCrafts.entity;
 
 import com.example.hp_29_MiniatureCrafts.dto.ProductDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,6 +15,10 @@ public class Product {
     private Long ID;  // ID tự tăng
 
     private String Name;
+
+    @OneToMany(mappedBy = "ProductID", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Variation> variations;
 
     @ManyToOne
     @JoinColumn(name = "CategoryID")
@@ -32,11 +37,12 @@ public class Product {
     public Product() {
     }
 
-    public Product(ProductDTO dto) {
-        this.ID = dto.getID();
-        Name = dto.getName();
-        CategoryID = new Category(dto.getCategoryID());
-        BrandID = new Brand(dto.getBrandID());
+    public Product(Long ID, String name, List<Variation> variations, Category categoryID, Brand brandID) {
+        this.ID = ID;
+        Name = name;
+        this.variations = variations;
+        CategoryID = categoryID;
+        BrandID = brandID;
     }
 
     public Product(Long ID, String name, Category categoryID, Brand brandID) {
@@ -44,6 +50,30 @@ public class Product {
         Name = name;
         CategoryID = categoryID;
         BrandID = brandID;
+    }
+
+    public List<Variation> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(List<Variation> variations) {
+        this.variations = variations;
+    }
+
+    public List<Images> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Images> images) {
+        this.images = images;
+    }
+
+    public Product(ProductDTO dto) {
+        this.ID = dto.getID();
+        Name = dto.getName();
+
+        CategoryID = new Category(dto.getCategoryID());
+        BrandID = new Brand(dto.getBrandID());
     }
 
     public Long getID() {

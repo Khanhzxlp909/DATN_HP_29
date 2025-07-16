@@ -2,10 +2,8 @@ package com.example.hp_29_MiniatureCrafts.controller.admin.orderPOS;
 
 import com.example.hp_29_MiniatureCrafts.dto.OrderLineDTO;
 import com.example.hp_29_MiniatureCrafts.dto.POSOrderDTO;
-import com.example.hp_29_MiniatureCrafts.dto.VoucherDTO;
 import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
 import com.example.hp_29_MiniatureCrafts.service.order.OrderService;
-import com.example.hp_29_MiniatureCrafts.service.order.Voucher.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,9 +25,6 @@ public class POSOrderController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private VoucherService voucherService;
-
     /**
      * API để tạo đơn trả hàng
      *
@@ -46,17 +41,6 @@ public class POSOrderController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
         }
-    }
-
-    /**
-     * Tìm kiếm voucher theo mã voucher
-     *
-     * @param voucher mã voucher cần tìm
-     * @return thông tin voucher tương ứng nếu có
-     */
-    @GetMapping("resultvoucher/{voucher}")
-    public VoucherDTO findByVoucher(@PathVariable("voucher") String voucher) {
-        return voucherService.findVoucherByCodeVoucher(voucher);
     }
 
     /**

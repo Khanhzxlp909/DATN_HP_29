@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Table(name = "POSOder")
 public class POSOrder {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
@@ -20,14 +21,8 @@ public class POSOrder {
     @Column(name = "Address", length = 50)
     private String Address;
 
-    @Column(name = "Code_Voucher", length = 50)
-    private String Code_Voucher;
-
     @Column(name = "Total_Amount", precision = 10, scale = 2)
     private BigDecimal Total_Amount;
-
-    @Column(name = "Discount_Amount", precision = 10, scale = 2)
-    private BigDecimal Discount_Amount;
 
     @Column(name = "Total_Payment", precision = 10, scale = 2)
     private BigDecimal Total_Payment;
@@ -54,21 +49,12 @@ public class POSOrder {
     public POSOrder() {
     }
 
-    public String getAddress() {
-        return Address;
-    }
 
-    public void setAddress(String address) {
-        Address = address;
-    }
-
-    public POSOrder(Long ID, Customer customerID, String address, String code_Voucher, BigDecimal total_Amount, BigDecimal discount_Amount, BigDecimal total_Payment, com.example.hp_29_MiniatureCrafts.entity.PaymentMethod paymentMethod, LocalDateTime creation_date, LocalDateTime edit_Date, Integer type_Oder, String note, Integer status) {
+    public POSOrder(Long ID, Customer customerID, String address, BigDecimal total_Amount, BigDecimal total_Payment, com.example.hp_29_MiniatureCrafts.entity.PaymentMethod paymentMethod, LocalDateTime creation_date, LocalDateTime edit_Date, Integer type_Oder, String note, Integer status) {
         this.ID = ID;
         CustomerID = customerID;
         Address = address;
-        Code_Voucher = code_Voucher;
         Total_Amount = total_Amount;
-        Discount_Amount = discount_Amount;
         Total_Payment = total_Payment;
         PaymentMethod = paymentMethod;
         Order_Time = creation_date;
@@ -77,6 +63,15 @@ public class POSOrder {
         Note = note;
         Status = status;
     }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
+    }
+
 
     public Customer getCustomerID() {
         return CustomerID;
@@ -102,13 +97,6 @@ public class POSOrder {
         Order_Time = creation_date;
     }
 
-    public String getCode_Voucher() {
-        return Code_Voucher;
-    }
-
-    public void setCode_Voucher(String code_Voucher) {
-        Code_Voucher = code_Voucher;
-    }
 
     public BigDecimal getTotal_Amount() {
         return Total_Amount;
@@ -116,14 +104,6 @@ public class POSOrder {
 
     public void setTotal_Amount(BigDecimal total_Amount) {
         Total_Amount = total_Amount;
-    }
-
-    public BigDecimal getDiscount_Amount() {
-        return Discount_Amount;
-    }
-
-    public void setDiscount_Amount(BigDecimal discount_Amount) {
-        Discount_Amount = discount_Amount;
     }
 
     public BigDecimal getTotal_Payment() {

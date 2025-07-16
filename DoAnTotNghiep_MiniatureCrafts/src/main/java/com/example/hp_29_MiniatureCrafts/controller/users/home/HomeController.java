@@ -11,13 +11,13 @@ import com.example.hp_29_MiniatureCrafts.repository.auth.AccountRepository;
 import com.example.hp_29_MiniatureCrafts.repository.auth.CustomerRepository;
 import com.example.hp_29_MiniatureCrafts.repository.auth.EmployeeRepository;
 import com.example.hp_29_MiniatureCrafts.repository.auth.RoleRepository;
-import com.example.hp_29_MiniatureCrafts.repository.order.voucher.VoucherRepository;
 import com.example.hp_29_MiniatureCrafts.security.jwt.JwtUtils;
 import com.example.hp_29_MiniatureCrafts.security.services.UserDetailsImpl;
 import com.example.hp_29_MiniatureCrafts.service.account.AccountService;
 import com.example.hp_29_MiniatureCrafts.service.account.customer.CustomerService;
 import com.example.hp_29_MiniatureCrafts.service.product.BrandsService;
 import com.example.hp_29_MiniatureCrafts.service.product.CategoryService;
+import com.example.hp_29_MiniatureCrafts.service.product.ProductService;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,7 @@ public class HomeController {
     BrandsService brandsService;
 
     @Autowired
-    VoucherRepository voucherRepository;
+    ProductService productService;
 
     // phương thức login
     @PostMapping("/signin")
@@ -250,6 +250,16 @@ public class HomeController {
         return variationService.getAll(pageable);
     }
 
+    @GetMapping("product/findByID/{id}")
+    public ProductDTO getProductByID(@PathVariable Long id) {
+        return productService.getProductByID(id);
+    }
+
+    @GetMapping("fetch_products")
+    public Page<ProductDTO> getProductDTOS(Pageable pageable) {
+        return variationService.getProducts(pageable);
+    }
+
     @GetMapping("new")
     public Page<VariationDTO> newVariation(Pageable pageable) {
         return variationService.newVariation(pageable);
@@ -264,15 +274,8 @@ public class HomeController {
     public Page<VariationDTO> home(Pageable pageable,
                                    @RequestParam(required = false) Double minPrice,
                                    @RequestParam(required = false) Double maxPrice) {
-
-        // Gọi hàm xử lý từ repository hoặc service
         return variationService.filterPrice(pageable, minPrice, maxPrice);
     }
-
-//    @PostMapping("registerInfo")
-//    public Customer registerInfo(@RequestBody CustomerDTO customerDTO) {
-//        return customerService.createCustomer(customerDTO);
-//    }
 
     @PostMapping("updateInfo/{id}")
     public Customer updateCustomer(@RequestBody CustomerDTO customerDTO) {
@@ -300,20 +303,24 @@ public class HomeController {
 
     }
 
-    @GetMapping("findvoucher/{codevoucher}")
-    public VoucherDTO findByid(@PathVariable("codevoucher") String voucher) {
-        Voucher vouchers = voucherRepository.findVoucherByCode(voucher);
-        return new VoucherDTO(vouchers);
+    @GetMapping("category/{category}")
+    public Page<ProductDTO> filterCategory(Pageable pageable, @PathVariable("category") Long category) {
+        return variationService.fillterByCategory(pageable, category);
     }
 
-    @GetMapping("category/{category}")
-    public Page<VariationDTO> filterCategory(Pageable pageable, @PathVariable("category") Long category) {
-        return variationService.getProductByCategory(pageable, category);
+    @GetMapping("brands/{brand}")
+    public Page<ProductDTO> fillterBrand(Pageable pageable, @PathVariable("brand") Long brand) {
+        return variationService.fillterByBrand(pageable, brand);
     }
 
     @GetMapping("categories")
-    public List<CategoryDTO> getALL() {
+    public List<CategoryDTO> fillCategory() {
         return categoryService.getALL();
+    }
+
+    @GetMapping("brands")
+    public List<BrandDTO> fillBrands() {
+        return brandsService.getALL();
     }
 
     @GetMapping("brand")
