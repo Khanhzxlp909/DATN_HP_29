@@ -32,7 +32,7 @@ public class VariationController {
     @Autowired
     private VariationService variationService;
 
-    private final String IMAGE_DIR = "D:/DoAnTotNghiep/DATN_HP_29/DoAnTotNghiep_MiniatureCrafts/upload/images/";
+    private final String IMAGE_DIR = System.getProperty("user.dir") + "/upload/images/";
 
     @PostMapping("images/delete")
     public ResponseEntity<?> deleteImages(@RequestBody List<String> cd_images) {
