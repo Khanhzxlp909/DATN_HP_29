@@ -1,0 +1,62 @@
+<script>
+import axios from 'axios';
+// import Cookies from "js-cookie";
+// import VueCookies from 'vue-cookies';
+
+export default {
+  data() {
+    return {
+      currentPage: 1,
+      pageSize: 3,
+      totalPages: 1,
+      variations: [],
+      user: null,
+    };
+  },
+  mounted() {
+    console.log("Component đã được mount!");
+    console.log("Đang lấy dữ liệu sản phẩm...");
+    this.getProducts(this.currentPage);
+    console.log("Đã lấy dữ liệu sản phẩm!");
+    console.log("Trước khi gọi getUserInfo()");
+    console.log("Sau khi gọi getUserInfo()");
+  },
+  methods: {
+
+    // Hàm chuyển sang trang chi tiết sản phẩm
+    openDetail(id) {
+      sessionStorage.setItem("idvariation", id);
+      this.$router.push("/product-detail");
+    },
+
+    // Hàm xử lý dữ liệu sản phẩm
+    processData(data) {
+      return data.map((item) => {
+        item.productID.defaultImage =
+            item.productID.imagesDTOS && item.productID.imagesDTOS.length > 0
+                ? item.productID.imagesDTOS[0].cd_Images
+                : "default.png"; // Hình mặc định
+        item.sold = item.sold || 0; // Số lượng đã bán mặc định là 0
+        return item;
+      });
+    },
+
+    // Lấy dữ liệu sản phẩm từ API
+    getProducts(page) {
+      if (!page || page < 1) page = 1;
+      axios.get(`http://localhost:8080/MiniatureCrafts/home?page=${page}&size=${this.pageSize}`)
+          .then((response) => {
+            const rawData = response.data.content || [];
+            this.variations = this.processData(rawData);
+            this.totalPages = response.data.page.totalPages || 1;
+            this.currentPage = page;
+            localStorage.setItem("variations", JSON.stringify(this.variations));
+            console.log("Dữ liệu sản phẩm:", this.variations);
+          })
+          .catch((error) => {
+            console.error("Lỗi khi lấy dữ liệu từ API:", error);
+          });
+    },
+  },
+};
+</script>

@@ -1,0 +1,162 @@
+package com.example.hp_29_MiniatureCrafts.dto;
+
+import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class POSOrderDTO {
+    private Long ID;
+    private CustomerDTO customerID;
+    private String Address;
+    private String Total_Amount;
+    private String Total_Payment;
+    private PaymentMethodDTO PaymentMethod;
+    private LocalDateTime Order_Time;
+    private LocalDateTime Payment_Time;
+    private Integer Type_Oder;
+    private String Note;
+    private Integer Status;
+    private List<OrderLineDTO> orderLine;
+    private String statusText;
+
+    public POSOrderDTO(POSOrder oder) {
+        this.ID = oder.getID();
+        this.customerID = new CustomerDTO(oder.getCustomerID());
+        this.Address = oder.getAddress();
+        this.Total_Amount = oder.getTotal_Amount().toString();
+        this.Total_Payment = oder.getTotal_Payment().toString();
+        this.PaymentMethod = new PaymentMethodDTO(oder.getPaymentMethod());
+        this.Order_Time = oder.getOrder_Time();
+        this.Payment_Time = oder.getPayment_Time();
+        this.Type_Oder = oder.getType_Oder();
+        this.Note = oder.getNote();
+        this.Status = oder.getStatus();
+    }
+
+    public POSOrderDTO(Long ID, CustomerDTO customerID, String address, String total_Amount, String total_Payment, PaymentMethodDTO paymentMethod, LocalDateTime orderTime, LocalDateTime paymentTime, Integer type_Oder, String note, Integer status, List<OrderLineDTO> orderLine, String statusText) {
+        this.ID = ID;
+        this.customerID = customerID;
+        this.Address = address;
+        this.Total_Amount = total_Amount;
+        this.Total_Payment = total_Payment;
+        this.PaymentMethod = paymentMethod;
+        this.Order_Time = orderTime;
+        this.Payment_Time = paymentTime;
+        this.Type_Oder = type_Oder;
+        this.Note = note;
+        this.Status = status;
+        this.orderLine = orderLine;
+        this.statusText = statusText;
+    }
+
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
+    }
+
+    public Long getID() {
+        return ID;
+    }
+
+    public void setID(Long ID) {
+        this.ID = ID;
+    }
+
+    public CustomerDTO getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(CustomerDTO customerID) {
+        this.customerID = customerID;
+    }
+
+    public String getTotal_Amount() {
+        return Total_Amount;
+    }
+
+    public void setTotal_Amount(String total_Amount) {
+        Total_Amount = total_Amount;
+    }
+
+    public String getTotal_Payment() {
+        return Total_Payment;
+    }
+
+    public void setTotal_Payment(String total_Payment) {
+        Total_Payment = total_Payment;
+    }
+
+    public PaymentMethodDTO getPaymentMethod() {
+        return PaymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethodDTO paymentMethod) {
+        PaymentMethod = paymentMethod;
+    }
+
+    public LocalDateTime getOrder_Time() {
+        return Order_Time;
+    }
+
+    public void setOrder_Time(LocalDateTime order_Time) {
+        Order_Time = order_Time;
+    }
+
+    public LocalDateTime getPayment_Time() {
+        return Payment_Time;
+    }
+
+    public void setPayment_Time(LocalDateTime payment_Time) {
+        Payment_Time = payment_Time;
+    }
+
+    public Integer getType_Oder() {
+        return Type_Oder;
+    }
+
+    public void setType_Oder(Integer type_Oder) {
+        Type_Oder = type_Oder;
+    }
+
+    public String getNote() {
+        return Note;
+    }
+
+    public void setNote(String note) {
+        Note = note;
+    }
+
+    public Integer getStatus() {
+        return Status;
+    }
+
+    public void setStatus(Integer status) {
+        Status = status;
+    }
+
+    public List<OrderLineDTO> getOrderLine() {
+        return orderLine;
+    }
+
+    public void setOrderLine(List<OrderLineDTO> orderLine) {
+        this.orderLine = orderLine;
+    }
+
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
+    }
+
+    public String getStatusText() {
+        return statusText;
+    }
+
+    public POSOrderDTO() {
+    }
+
+
+}

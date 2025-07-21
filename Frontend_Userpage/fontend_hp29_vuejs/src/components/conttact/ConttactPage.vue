@@ -1,0 +1,142 @@
+<template>
+  <div class="content" style="margin-top: 30px">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-12">
+          <div class="info-shop">
+            <h3 class="title-heading">Thông tin liên hệ</h3>
+            <ul class="contact-info">
+              <h3>Shop xin hân hạnh phục vụ các bạn</h3>
+              <li class="footer__item">
+                <p><i class="fas fa-search-location footer__item-icon"></i> Hải Phòng, Viet Nam</p>
+              </li>
+              <li class="footer__item">
+                <p><i class="fas fa-phone-square-alt footer__item-icon"></i> Phone: <a
+                    href="tel:0123456789">0123456789</a></p>
+              </li>
+              <li class="footer__item">
+                <p><i class="fas fa-envelope-square footer__item-icon"></i> Email: <a
+                    href="mailto:abc@gmail.com">abc@gmail.com</a></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-8 col-12">
+          <div class="page-login">
+            <h3 class="title-heading">Gửi thông tin</h3>
+            <h3 class="text-contact">Bạn hãy điền nội dung tin nhắn vào form dưới đây
+                            và gửi cho chúng tôi. Chúng tôi sẽ trả lời bạn sau khi nhận được.
+                        </h3>
+            <form @submit.prevent="submitForm"  class="form" id="form-1">
+              <div class="form-group">
+                <label for="fullName" class="form-label">Tên đầy đủ</label>
+                <input id="fullName" v-model="form.fullName" name="fullName" type="text" placeholder="VD: Quốc Trung"
+                       class="form-control">
+                <span class="form-message"></span>
+              </div>
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input id="email" name="email" v-model="form.email" type="text" placeholder="VD: email@domain.com"
+                       class="form-control">
+                <span class="form-message"></span>
+              </div>
+              <div class="form-group">
+                <label for="phone" class="form-label">Điện thoại</label>
+                <input id="phone" v-model="form.phone" pattern="[0-9]{10}" name="phone" type="tel" placeholder="0912*******"
+                       class="form-control">
+                <span class="form-message"></span>
+              </div>
+              <label for="phone" class="form-label">Nội dung</label>
+              <div class="form-group" style="font-size: large">
+                <textarea name="noidung" v-model="form.content" id="noidung" cols="70" rows="10"></textarea>
+                <span class="form-message"></span>
+              </div>
+
+              <button class="form-submit btn-blocker" style="border-radius: unset;">
+                Gửi tin nhắn
+                <i class="fas fa-arrow-right" style="font-size: 16px;margin-left: 10px;"></i>
+              </button>
+
+            </form>
+          </div>
+        </div>
+        <div class="col-12">
+          <h3 style="text-align: center; margin-top:30px;border-top:1px solid #333;padding-top:10px">Bản đồ cửa hàng</h3>
+          <div class="mapbox">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.954111076736!2d106.7086283147493!3d10.81482379229551!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175289741790d39%3A0x95362685e34cec2f!2zQuG6v24gWGUgTWnhu4FuIMSQw7RuZyDEkGluaCBC4buZIEzEqW5o!5e0!3m2!1svi!2s!4v1637980933100!5m2!1svi!2s" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { reactive } from "vue";
+import axios from "axios";
+
+export default {
+  setup() {
+    const form = reactive({
+      fullName: "",
+      email: "",
+      phone: "",
+      content: ""
+    });
+
+    const errors = reactive({
+      fullName: null,
+      email: null,
+      phone: null,
+      content: null
+    });
+
+    const validateForm = () => {
+      let valid = true;
+      if (!form.fullName) {
+        errors.fullName = "Vui lòng nhập tên đầy đủ.";
+        valid = false;
+      } else errors.fullName = null;
+
+      if (!form.email.includes("@")) {
+        errors.email = "Email không hợp lệ.";
+        valid = false;
+      } else errors.email = null;
+
+      if (!form.phone.match(/^\d{10}$/)) {
+        errors.phone = "Số điện thoại phải có 10 chữ số.";
+        valid = false;
+      } else errors.phone = null;
+
+      if (!form.content) {
+        errors.message = "Vui lòng nhập nội dung.";
+        valid = false;
+      } else errors.message = null;
+
+      return valid;
+    };
+
+    const submitForm = async () => {
+      if (!validateForm()) return;
+
+      // Chuyển trang ngay lập tức
+      alert("Gửi thông tin thành công");
+      window.location.href = '/';
+
+      // Gửi dữ liệu lên API chạy nền
+      axios.post("http://localhost:8080/MiniatureCrafts/contact/send", form)
+          .then(response => {
+            console.log("Gửi thành công:", response.data);
+          })
+          .catch(error => {
+            console.error("Lỗi gửi dữ liệu:", error);
+          });
+    };
+
+
+    return {
+      form, errors, submitForm
+    };
+  }
+};
+</script>

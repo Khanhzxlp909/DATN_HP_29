@@ -1,0 +1,26 @@
+{
+  "name": "gundam-shop-admin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "boxicons": "^2.1.4",
+    "dayjs": "^1.11.13",
+    "font-awesome": "^4.7.0",
+    "js-cookie": "^3.0.5",
+    "js-cookies": "^1.0.4",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.5",
+    "vite-plugin-vue-devtools": "^7.6.8"
+  }
+}

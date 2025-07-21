@@ -1,0 +1,14 @@
+<template>
+  <div class="dashboard">
+    <h2>Dashboard Content</h2>
+    <!-- Place your content here -->
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style>
+
+</style>
