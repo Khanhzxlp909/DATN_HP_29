@@ -16,7 +16,7 @@
               <form @submit.prevent="isEditing ? updateProduct() : addProduct()" class="row">
                 <div class="form-group col-md-4">
                   <label for="productName">Tên sản phẩm:</label>
-                  <input id="productName" v-model="product.name" class="form-control" />
+                  <input id="productName" v-model="product.name" class="form-control"/>
                 </div>
 
                 <div class="form-group col-md-4">
@@ -40,10 +40,10 @@
                 <div class="form-group col-md-12">
                   <h5>Upload 3 ảnh sản phẩm</h5>
                   <div v-for="(image, index) in images" :key="index" class="image-preview-wrapper">
-                    <input type="file" @change="handleFileUpload($event, index)" class="form-control mb-2" />
-                    <img v-if="image.preview" :src="image.preview" class="img-thumbnail mt-2" style="max-width: 80px;" />
+                    <input type="file" @change="handleFileUpload($event, index)" class="form-control mb-2"/>
+                    <img v-if="image.preview" :src="image.preview" class="img-thumbnail mt-2" style="max-width: 80px;"/>
                     <label class="radio-label">
-                      <input type="radio" v-model="defaultImageIndex" :value="index" /> Ảnh mặc định
+                      <input type="radio" v-model="defaultImageIndex" :value="index"/> Ảnh mặc định
                     </label>
                   </div>
                 </div>
@@ -95,19 +95,21 @@ export default {
       product: {
         id: "",
         name: "",
-        categoryID: { id: "" },
-        brandID: { id: "" }
+        categoryID: {id: ""},
+        brandID: {id: ""},
+        images: []
       },
       brands: [],
       products: [],
       categories: [],
       images: [
-        { id: "", file: null, preview: "" },
-        { id: "", file: null, preview: "" },
-        { id: "", file: null, preview: "" }
+        {id: "", file: null, preview: ""},
+        {id: "", file: null, preview: ""},
+        {id: "", file: null, preview: ""}
       ],
       defaultImageIndex: 0,
       imageUrls: [],
+      imagesDelete: [],
       id_images: [],
       isEditing: false
     };
@@ -124,9 +126,10 @@ export default {
 
       try {
         const response = await axios.get("http://localhost:8080/admin/product/findAll", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: {Authorization: `Bearer ${token}`}
         });
         this.products = response.data;
+        console.log(this.products)
       } catch (error) {
         console.error("Lỗi khi tải sản phẩm:", error);
       }
@@ -138,7 +141,7 @@ export default {
 
       try {
         const response = await axios.get("http://localhost:8080/admin/brands/getbrands", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: {Authorization: `Bearer ${token}`}
         });
         this.brands = response.data.content;
       } catch (error) {
@@ -152,7 +155,7 @@ export default {
 
       try {
         const response = await axios.get("http://localhost:8080/admin/category/getcategory", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: {Authorization: `Bearer ${token}`}
         });
         this.categories = response.data.content;
       } catch (error) {
@@ -169,7 +172,11 @@ export default {
     },
 
     validateForm() {
-      if (!this.product.name.trim() || this.product.name.length > 25) return false;
+      if (!this.product.name.trim() || this.product.name.length > 50) {
+        alert("Quá giới hạn ký tự")
+        return false;
+      }
+      ;
       const uploadedFiles = this.images.filter(image => image.file !== null);
       return uploadedFiles.length === 3;
     },
@@ -177,16 +184,21 @@ export default {
     async addProduct() {
       const token = Cookies.get("token");
       if (!token) return this.$router.push("/login");
-      if (!this.validateForm()) return;
+      if (!this.validateForm()) {
+        console.log("Validation failed:", this.product, this.images);
+        return;
+      }
 
       try {
+        console.log("Sending product data:", this.product);
         const productResponse = await axios.post(
             "http://localhost:8080/admin/product/saved",
             this.product,
-            { headers: { Authorization: `Bearer ${token}` } }
+            {headers: {Authorization: `Bearer ${token}`}}
         );
-        const productId = productResponse.data.id;
+        console.log("Product added successfully:", productResponse.data);
 
+        const productId = productResponse.data.id;
         const uploadedImages = [];
         for (const image of this.images) {
           const formData = new FormData();
@@ -195,12 +207,12 @@ export default {
           const uploadResponse = await axios.post(
               "http://localhost:8080/admin/variation/images/upload",
               formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
+              {headers: {"Content-Type": "multipart/form-data"}}
           );
-
           uploadedImages.push(...uploadResponse.data.urls);
         }
 
+        console.log("Uploaded images:", uploadedImages);
         const imageRequests = uploadedImages.map((imageUrl, index) => ({
           productID: productId,
           model: "Product",
@@ -211,12 +223,12 @@ export default {
         await axios.post(
             "http://localhost:8080/admin/variation/images/setproduct",
             imageRequests,
-            { headers: { Authorization: `Bearer ${token}` } }
+            {headers: {Authorization: `Bearer ${token}`}}
         );
 
-        this.$router.push("/product");
+        this.fetchProducts();
       } catch (error) {
-        console.error("Lỗi:", error);
+        console.error("Error while adding product:", error);
       }
     },
 
@@ -225,21 +237,24 @@ export default {
       if (!token) return this.$router.push("/login");
       if (!this.validateForm()) return;
 
+      console.log("Deleting old images:", this.product.images);
       try {
-        if (this.imageUrls.length > 0) {
-          await axios.post(
-              "http://localhost:8080/admin/variation/images/delete",
-              this.imageUrls,
-              { headers: { Authorization: `Bearer ${token}` } }
-          );
-        }
+        // Step 1: Delete old images
 
         await axios.post(
-            "http://localhost:8080/admin/product/update",
-            this.product,
+            "http://localhost:8080/admin/variation/images/delete",
+            this.product.images.map(img => img.cd_Images),
             { headers: { Authorization: `Bearer ${token}` } }
         );
 
+        // Step 2: Update product details
+        await axios.post(
+            "http://localhost:8080/admin/product/update",
+            this.product,
+            {headers: {Authorization: `Bearer ${token}`}}
+        );
+
+        // Step 3: Upload new images
         const uploadedImages = [];
         for (const image of this.images) {
           if (image.file) {
@@ -249,13 +264,14 @@ export default {
             const uploadResponse = await axios.post(
                 "http://localhost:8080/admin/variation/images/upload",
                 formData,
-                { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+                {headers: {Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data"}}
             );
 
             uploadedImages.push(uploadResponse.data.urls[0]);
           }
         }
 
+        // Step 4: Associate new images with the product
         const imageRequests = uploadedImages.map((imageUrl, index) => ({
           productID: this.product.id,
           model: "Product",
@@ -266,9 +282,10 @@ export default {
         await axios.post(
             "http://localhost:8080/admin/variation/images/setproduct",
             imageRequests,
-            { headers: { Authorization: `Bearer ${token}` } }
+            {headers: {Authorization: `Bearer ${token}`}}
         );
 
+        // Redirect or refresh the product list
         this.$router.push("/product");
       } catch (error) {
         console.error("Lỗi khi cập nhật sản phẩm:", error);
@@ -279,15 +296,18 @@ export default {
       this.product = {
         id: product.id,
         name: product.name,
-        categoryID: { id: product.categoryID?.id || "" },
-        brandID: { id: product.brandID?.id || "" }
+        categoryID: {id: product.categoryID?.id || ""},
+        brandID: {id: product.brandID?.id || ""},
+        images: product.images || []
       };
 
+      console.log(this.product)
+      console.log("Deleting old images:", this.product.images);
       this.isEditing = true;
       this.images = [
-        { id: "", file: null, preview: "" },
-        { id: "", file: null, preview: "" },
-        { id: "", file: null, preview: "" }
+        {id: "", file: null, preview: ""},
+        {id: "", file: null, preview: ""},
+        {id: "", file: null, preview: ""}
       ];
 
       if (product.imagesDTOS && product.imagesDTOS.length > 0) {
@@ -300,7 +320,7 @@ export default {
         }));
 
         while (this.images.length < 3) {
-          this.images.push({ id: "", file: null, preview: "" });
+          this.images.push({id: "", file: null, preview: ""});
         }
 
         this.defaultImageIndex = product.imagesDTOS.findIndex(img => img.set_Default) || 0;

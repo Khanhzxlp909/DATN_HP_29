@@ -52,7 +52,8 @@
                       'badge bg-warning': item.status === 1,
                       'badge bg-success': item.status === 2,
                       'badge bg-info': item.status === 3,
-                      'badge bg-primary': item.status === 4
+                      'badge bg-primary': item.status === 4,
+                      'badge bg-dark ': item.status === 5
                     }">
                     {{ item.statusText }}
                   </span>
@@ -63,7 +64,7 @@
                       class="btn btn-primary btn-sm trash"
                       type="button"
                       @click="confirmDelete(item.id)"
-                      v-if="item.status !== 0 && item.status !== 2  && item.status !== 3 && item.status !== 4"
+                      v-if="item.status !== 0 && item.status !== 2  && item.status !== 3 && item.status !== 4 && item.status !== 5"
                   >
                     <i class="fas fa-trash-alt"></i> Huỷ đơn hàng
                   </button>
@@ -72,9 +73,22 @@
                       class="btn btn-success btn-sm edit"
                       type="button"
                       @click="succressOrder(item.id)"
-                      v-if="item.status !== 0 && item.status !== 2  && item.status !== 3 && item.status !== 4"
+                      v-if="item.status !== 0 && item.status !== 2  && item.status !== 3 && item.status !== 4 && item.status !== 5"
                   >
                     <i class="fa fa-edit"></i> Xác nhận đơn hàng
+                  </button>
+
+                  <button
+                      class="btn btn-success btn-sm edit"
+                      type="button"
+                      v-if="
+                          item.status === 5 &&
+                          !isOver30Days(item.order_Time) &&
+                          item.status !== 4
+                        "
+                      @click="initiateReturnOrder(item)"
+                  >
+                    <i class="fa fa-edit"></i> Duyệt trả hàng
                   </button>
 
                   <button
@@ -338,13 +352,12 @@ export default {
 
     async initiateReturnOrder(order) {
       try {
-        // Prompt the user for the return reason
         const returnReason = prompt("Nhập lý do trả hàng:");
         if (!returnReason) {
           alert("Bạn phải nhập lý do trả hàng!");
           return;
         }
-
+        const token = Cookies.get("token"); // Lấy token từ cookies
         // 1. Lấy danh sách sản phẩm trong đơn hàng gốc
         const res = await axios.get(`http://localhost:8080/admin/orders/history/getprd/${order.id}`);
         const originalLines = res.data;
@@ -360,13 +373,18 @@ export default {
             id: order.paymentMethod.id
           },
           orderLine: originalLines.map(line => ({
-            variationID: { id: line.variationID.id },
+            variationID: {id: line.variationID.id},
             quantity: line.quantity
           }))
         };
 
         // 3. Gửi yêu cầu tạo đơn trả hàng
-        const createRes = await axios.post(`http://localhost:8080/admin/orders/return/${order.id}`, returnOrder);
+        const createRes = await axios.post(`http://localhost:8080/admin/orders/accpect/return/${order.id}`, returnOrder, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+        );
 
         if (createRes.status === 200) {
           alert("Tạo đơn trả hàng thành công!");

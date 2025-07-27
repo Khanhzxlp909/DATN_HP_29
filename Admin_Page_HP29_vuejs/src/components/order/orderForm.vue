@@ -169,10 +169,8 @@
                 <p class="control-all-money"> {{ formatPrice(changeDue) }} VNĐ</p>
               </div>
               <div class="tile-footer col-md-12">
-                <button class="btn btn-primary luu-san-pham" type="button" @click="saveOrder">Lưu đơn hàng (F9)</button>
-                <button class="btn btn-primary luu-va-in" type="button" @click="saveAndPrint">Lưu và in hóa đơn (F10)
-                </button>
-                <a class="btn btn-secondary luu-va-in" href="/">Quay về</a>
+                <button class="btn btn-primary luu-san-pham" type="button" @click="saveOrder">Lưu đơn hàng</button>
+                <button class="btn btn-primary luu-san-pham" type="button" @click="cancel">Quay về</button>
               </div>
             </div>
           </div>
@@ -319,6 +317,9 @@ export default {
       return images
           ? `http://localhost:8080/upload/images/${images.cd_Images}`
           : "/img/default.jpg";
+    },
+    cancel (){
+      this.$router.push('/');
     },
 
     async saveOrder() {

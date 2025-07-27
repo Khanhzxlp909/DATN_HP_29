@@ -76,6 +76,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         // Lấy thông tin từ header "Authorization" của request.
 
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            System.out.println("🔍 [API] Parsing JWT from Authorization header: " + headerAuth);
             return headerAuth.substring(7);
             // Nếu header có nội dung và bắt đầu bằng "Bearer ", cắt chuỗi để lấy token JWT.
         }

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -83,6 +82,15 @@ public class OrderService {
         // Tìm đơn hàng theo ID
         POSOrder order = posOrderRepository.findByOrderID(orderId);
         order.setStatus(2);
+        posOrderRepository.save(order);
+    }
+
+    public void
+    accpectReturn(Long orderId, String note) {
+        // Tìm đơn hàng theo ID
+        POSOrder order = posOrderRepository.findByOrderID(orderId);
+        order.setNote(note);
+        order.setStatus(5);
         posOrderRepository.save(order);
     }
 
@@ -166,6 +174,7 @@ public class OrderService {
         statusMap.put(2, "Đang giao hàng");
         statusMap.put(3, "Đã giao hàng thành công");
         statusMap.put(4, "Trả hàng");
+        statusMap.put(5, "Chờ duyệt trả hàng");
 
         return statusMap.getOrDefault(status, "Không xác định"); // Mặc định nếu không có trong danh sách
     }
@@ -298,11 +307,8 @@ public class OrderService {
     }
 
 
-
-
-    public POSOrder createReturn(POSOrderDTO dto) {
+    public POSOrder accpectReturn(POSOrderDTO dto) {
         try {
-//            successOrder(dto.getID());
             System.out.println("Đơn hàng bị trả lại với ID: " + dto.getID());
             return handleReturnOrder(dto);
         } catch (RuntimeException e) {
@@ -314,6 +320,7 @@ public class OrderService {
     private POSOrder handleReturnOrder(POSOrderDTO dto) {
         try {
             POSOrder order = buildBaseOrderFromDTO(dto);
+
             POSOrder savedOrder = posOrderRepository.save(order);
             processOrderLines(dto, savedOrder);
             return savedOrder;

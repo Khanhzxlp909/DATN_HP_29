@@ -36,30 +36,41 @@ public class VariationController {
 
     @PostMapping("images/delete")
     public ResponseEntity<?> deleteImages(@RequestBody List<String> cd_images) {
+        System.out.println("🔍 [API] Received request to delete images: " + cd_images);
         try {
             List<String> deletedImages = new ArrayList<>();
             List<String> notFoundImages = new ArrayList<>();
 
             for (String cdImage : cd_images) {
-
-                // Xóa file ảnh trong thư mục
+                // Construct the file path
                 Path filePath = Paths.get(IMAGE_DIR + cdImage);
-                Files.deleteIfExists(filePath);
 
-                // Xóa ảnh trong database
+                // Check if the file exists and delete it
+                if (Files.exists(filePath)) {
+                    Files.delete(filePath);
+                    deletedImages.add(cdImage);
+                } else {
+                    notFoundImages.add(cdImage);
+                }
+
+                // Delete the image record from the database
+                System.out.println("Attempting to delete image record for: " + cdImage);
                 variationService.deleteImages(cdImage);
-                deletedImages.add(cdImage);
             }
 
+            // Return the response with the results
             return ResponseEntity.ok(Map.of(
-                    "message", "Images processed",
+                    "message", "Images processed successfully",
                     "deletedImages", deletedImages,
                     "notFoundImages", notFoundImages
             ));
         } catch (Exception e) {
-            e.printStackTrace(); // In ra lỗi trong console
+            e.printStackTrace(); // Log the error for debugging
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Error deleting images", "error", e.getMessage()));
+                    .body(Map.of(
+                            "message", "Error occurred while deleting images",
+                            "error", e.getMessage()
+                    ));
         }
     }
 

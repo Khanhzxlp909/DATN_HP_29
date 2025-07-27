@@ -81,8 +81,10 @@ public class OrderController {
         statusMap.put(1, "Chờ xác nhận");
         statusMap.put(2, "Đang giao hàng");
         statusMap.put(3, "Đã giao hàng thành công");
+        statusMap.put(4, "Trả hàng");
+        statusMap.put(5, "Chờ duyệt trả hàng");
 
-        return statusMap.getOrDefault(status, "Không xác định"); // Mặc định nếu không có trong danh sách
+        return statusMap.getOrDefault(status, "Không xác định");
     }
 
     // khi order client sẽ gửi về 2 json bao gồm thông tin khách hàng,

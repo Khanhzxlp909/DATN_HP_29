@@ -58,14 +58,21 @@ public class VariationService {
         return images.stream().map(dto -> new ImagesDTO(dto)).collect(Collectors.toList());
     }
 
-    // save truoc, lay id tu respone set va imagedto
     public ProductDTO saveProduct(ProductDTO productDTO) {
-        Product product = new Product();
-        product.setID(productDTO.getID());
-        product.setName(productDTO.getName());
-        product.setCategoryID(mapCategoryToEntity(productDTO.getCategoryID()));
-        product.setBrandID(mapBrandtoEntity(productDTO.getBrandID()));
-        return new ProductDTO(productRepository.save(product));
+        try {
+            System.out.println("🔍 [SERVICE] Saving product: " + productDTO);
+            Product product = new Product();
+            product.setID(productDTO.getID());
+            product.setName(productDTO.getName());
+            product.setCategoryID(mapCategoryToEntity(productDTO.getCategoryID()));
+            product.setBrandID(mapBrandtoEntity(productDTO.getBrandID()));
+            Product savedProduct = productRepository.save(product);
+            System.out.println("✅ [SERVICE] Product saved: " + savedProduct);
+            return new ProductDTO(savedProduct);
+        } catch (Exception e) {
+            e.printStackTrace(); // Log lỗi
+            throw new RuntimeException("Error saving product: " + e.getMessage());
+        }
     }
 
 

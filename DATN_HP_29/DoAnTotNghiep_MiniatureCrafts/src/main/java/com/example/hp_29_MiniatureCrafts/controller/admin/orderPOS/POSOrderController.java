@@ -31,15 +31,33 @@ public class POSOrderController {
      * @param dto thông tin đơn hàng trả về
      * @return POSOrder đã tạo
      */
-    @PostMapping("return/{id}")
-    public ResponseEntity<POSOrder> createReturnOrder(@PathVariable("id") Long id,@RequestBody POSOrderDTO dto) {
+    @PostMapping("/accpect/return/{id}")
+    public ResponseEntity<POSOrder> returnsAccepted(@PathVariable("id") Long id,@RequestBody POSOrderDTO dto) {
         try {
 
-            POSOrder savedOrder = orderService.createReturn(dto);
+            POSOrder savedOrder = orderService.accpectReturn(dto);
             orderService.completeReturnOrder(id);
             return ResponseEntity.ok(savedOrder);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    /**
+     * Xác nhận duyệt trả hàng một đơn hàng theo ID
+     *
+     * @param orderId ID của đơn hàng cần xác nhận
+     * @return thông báo xác nhận thành công
+     */
+    @GetMapping("/returns/{orderId}")
+    @Transactional
+    public String createReturn(@PathVariable Long orderId, @RequestParam("note") String note) {
+        try {
+            orderService.accpectReturn(orderId, note);
+            return "Gửi đơn thành công";
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException();
         }
     }
 
@@ -90,6 +108,8 @@ public class POSOrderController {
         }
     }
 
+
+
     /**
      * Lấy lịch sử đơn hàng của một khách hàng cụ thể (kèm theo thông tin sản phẩm và trạng thái)
      *
@@ -123,6 +143,7 @@ public class POSOrderController {
         statusMap.put(2, "Đang giao hàng");
         statusMap.put(3, "Đã giao hàng thành công");
         statusMap.put(4, "Trả hàng");
+        statusMap.put(5, "Chờ duyệt trả hàng");
 
         return statusMap.getOrDefault(status, "Không xác định");
     }

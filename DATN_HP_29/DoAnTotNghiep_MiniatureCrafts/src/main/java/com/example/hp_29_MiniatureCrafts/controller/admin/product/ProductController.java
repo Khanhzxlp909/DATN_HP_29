@@ -2,8 +2,6 @@ package com.example.hp_29_MiniatureCrafts.controller.admin.product;
 
 
 import com.example.hp_29_MiniatureCrafts.dto.ProductDTO;
-import com.example.hp_29_MiniatureCrafts.entity.Product;
-import com.example.hp_29_MiniatureCrafts.entity.Variation;
 import com.example.hp_29_MiniatureCrafts.service.product.ProductService;
 import com.example.hp_29_MiniatureCrafts.service.product.VariationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("admin/product")
-public class productController {
+public class ProductController {
 
     @Autowired
     ProductService productService;
@@ -39,12 +37,21 @@ public class productController {
         return productService.getProductByID(id);
     }
 
-    @PostMapping("/saved")
+    @PostMapping("saved")
     public ProductDTO saved(@RequestBody ProductDTO product) {
-        return variationService.saveProduct(product);
+        System.out.println("🔍 [API] Received product for saving: " + product);
+        try {
+            System.out.println("🔍 [API] Saving product: " + product);
+            ProductDTO savedProduct = variationService.saveProduct(product);
+            System.out.println("✅ [API] Product saved successfully: " + savedProduct);
+            return savedProduct;
+        } catch (Exception e) {
+            e.printStackTrace(); // Log lỗi
+            throw new RuntimeException("Error saving product: " + e.getMessage());
+        }
     }
 
-    @PostMapping("/update")
+    @PostMapping("update")
     public ResponseEntity<?> updated(@RequestBody ProductDTO product) {
         try {
             ProductDTO updatedProduct = variationService.saveProduct(product);

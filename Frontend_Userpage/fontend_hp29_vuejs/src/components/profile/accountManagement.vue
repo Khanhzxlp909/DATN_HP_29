@@ -120,7 +120,7 @@
 
                     <div class="col-2">
                       <button class="loadmore-btn"
-                              v-if="item.status !== 2  && item.status !== 3 && item.status !== 0 && item.status !== 4"
+                              v-if="item.status !== 2  && item.status !== 3 && item.status !== 0 && item.status !== 4 && item.status !== 5"
                               style="font-size: smaller;
                                margin-bottom: 5px"
                               @click="cancelOrder(item.id)">
@@ -128,7 +128,7 @@
                       </button>
                       <br>
                       <button class="loadmore-btn"
-                              v-if="item.status !== 1  && item.status !== 3 && item.status !== 0 && item.status !== 4"
+                              v-if="item.status !== 1  && item.status !== 3 && item.status !== 0 && item.status !== 4 && item.status !== 5"
                               style="font-size: smaller"
                               @click="completeOrder(item.id)">
                         Đã nhận được hàng
@@ -139,7 +139,7 @@
                               item.status !== 4 &&
                               !item.note?.includes('Trả hàng đơn #')"
                               style="font-size: smaller"
-                              @click="initiateReturnOrder(item)">
+                              @click="initiateReturnOrder(item.id)">
                         Trả hàng
                       </button>
                     </div>
@@ -280,7 +280,8 @@ export default {
       1: "Chờ xác nhận",
       2: "Đang giao hàng",
       3: "Giao hàng thành công",
-      4: "Trả hàng"
+      4: "Trả hàng",
+      5: "Chờ duyệt trả hàng"
     });
     // Lớp CSS cho trạng thái
     const statusClasses = ref({
@@ -288,7 +289,8 @@ export default {
       1: "blue",
       2: "orange",
       3: "green",
-      4: "black"
+      4: "black",
+      5: "yellow"
     });
     const filteredOrders = computed(() => {
       if (!selectedStatus.value) return orders.value;
@@ -437,49 +439,31 @@ export default {
       }
     };
 
-    const initiateReturnOrder = async (order) =>  {
-      console.log("trả hàng: "+order);
-      try {
-        // Prompt the user for the return reason
-        const returnReason = prompt("Nhập lý do trả hàng:");
-        if (!returnReason) {
-          alert("Bạn phải nhập lý do trả hàng!");
-          return;
-        }
-
-        // 1. Lấy danh sách sản phẩm trong đơn hàng gốc
-        const res = await axios.get(`http://localhost:8080/admin/orders/history/getprd/${order.id}`);
-        const originalLines = res.data;
-
-        // 2. Tạo dữ liệu đơn trả hàng mới
-        const returnOrder = {
-          address: order.address,
-          note: `Trả hàng đơn #${order.id}. Lý do: ${returnReason}`,
-          customerID: {
-            id: order.customerID.id
-          },
-          paymentMethod: {
-            id: order.paymentMethod.id
-          },
-          orderLine: originalLines.map(line => ({
-            variationID: { id: line.variationID.id },
-            quantity: line.quantity
-          }))
-        };
-
-        // 3. Gửi yêu cầu tạo đơn trả hàng
-        const createRes = await axios.post(`http://localhost:8080/admin/orders/return/${order.id}`, returnOrder);
-
-        if (createRes.status === 200) {
-          alert("Tạo đơn trả hàng thành công!");
-          this.fetchOrder(this.currentPage, this.pageSize); // Refresh danh sách đơn hàng
-        } else {
-          alert("Không thể tạo đơn trả hàng!");
-        }
-      } catch (error) {
-        console.error("Lỗi khi tạo đơn trả hàng:", error);
-        alert("Đã xảy ra lỗi khi tạo đơn trả hàng!");
+    const initiateReturnOrder = async (orderid) =>  {
+      const token = Cookies.get("authToken");
+      console.log("trả hàng: "+ orderid);
+      const apicomplete = `http://localhost:8080/admin/orders/returns/${orderid}`;
+      const returnReason = prompt("Nhập lý do trả hàng:");
+      if (!returnReason) {
+        alert("Bạn phải nhập lý do trả hàng!");
+        return;
       }
+
+      try {
+          await axios.get(apicomplete, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            params: {
+              note: `Trả hàng đơn #${orderid}. Lý do: ${returnReason}`,
+            }
+          });
+          alert("Đã gửi đơn hàng muốn trả hàng, vui lòng chờ shop duyệt!");
+          await getOrder();
+        } catch (error) {
+          console.error("Lỗi khi hủy đơn hàng:", error);
+        }
+
     };
 
     const getOrder = async () => {
