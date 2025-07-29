@@ -49,9 +49,15 @@
         </a>
       </li>
       <li>
-        <a class="app-menu__item" href="/variation">
+        <a class="app-menu__item" href="/product">
           <i class="app-menu__icon bx bx-package"></i>
           <span class="app-menu__label">Quản lý sản phẩm</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-menu__item" href="/variation">
+          <i class="app-menu__icon bx bx-package"></i>
+          <span class="app-menu__label">Quản lý biến thể</span>
         </a>
       </li>
       <li>

@@ -383,15 +383,6 @@ export default {
         alert("Đơn hàng thiếu phương thức thanh toán hoặc khách hàng!");
       }
     },
-    saveAndPrint() {
-      // Implement save and print functionality
-    },
-    calculateChange() {
-      // Implement change calculation
-    },
-    calculateTotal() {
-      // Implement discount calculation if needed
-    }
   }
 };
 </script>
