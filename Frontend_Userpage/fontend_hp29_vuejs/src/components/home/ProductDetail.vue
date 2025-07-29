@@ -260,7 +260,7 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import Cookies from "js-cookie";
 import { useRouter, useRoute } from "vue-router";
-
+import { useUser } from '@/components/composables/useUser';
 export default {
   setup() {
     const router = useRouter();
@@ -354,6 +354,8 @@ export default {
         const response = await axios.post("http://localhost:8080/api/v1/cart/addtocart", cartItem);
         if (response.status === 200) {
           alert("Thêm sản phẩm vào giỏ hàng thành công!");
+          await useUser();
+          window.location.reload();
         }
       } catch (error) {
         alert("Hiện đã hết hàng, không thể thêm sản phẩm vào giỏ hàng!");

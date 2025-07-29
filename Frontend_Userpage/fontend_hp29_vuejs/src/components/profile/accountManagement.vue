@@ -8,22 +8,17 @@
             <span class="heading-name_acc">{{ user.userInfo.name }}</span>
           </div>
           <div class="menu-manager">
-            <div class="my-profile" @click="showProfile">
-              <div class="my-profile-title" :class="{ active: activeTab === 'profile' }">
-                <i class="fas fa-user"><span> Hồ sơ của tôi</span></i>
-              </div>
+            <div class="menu-item" :class="{ active: activeTab === 'profile' }" @click="showProfile">
+              <i class="fas fa-user"></i><span>Hồ sơ của tôi</span>
             </div>
-            <div class="my-order" @click="showOrders">
-              <div class="my-order-title" :class="{ active: activeTab === 'orders' }">
-                <i class="fas fa-shopping-bag"> <span> Đơn hàng của tôi</span></i>
-              </div>
+            <div class="menu-item" :class="{ active: activeTab === 'orders' }" @click="showOrders">
+              <i class="fas fa-shopping-bag"></i><span>Đơn hàng của tôi</span>
             </div>
-            <div class="my-password" @click="showChangePassword">
-              <div class="my-password-title" :class="{ active: activeTab === 'password' }">
-                <i class="fas fa-key"><span> Đổi mật khẩu</span></i>
-              </div>
+            <div class="menu-item" :class="{ active: activeTab === 'password' }" @click="showChangePassword">
+              <i class="fas fa-key"></i><span>Đổi mật khẩu</span>
             </div>
           </div>
+
         </div>
         <div class="col-8">
           <div v-if="activeTab === 'profile'" :key="activeTab" class="detail__my-profile">
@@ -80,9 +75,6 @@
               <h2>Đơn hàng của bạn</h2>
             </div>
             <div class="filter-section">
-              <label for="status-filter">
-                <button class="loadmore-btn" @click="showOrders">Load more</button>
-              </label>
               <label for="status-filter">Trạng thái:</label>
               <select v-model="selectedStatus" @change="filterOrders">
                 <option value="">Tất cả</option>
@@ -102,8 +94,9 @@
                     <div class="col-2">SDT</div>
                     <div class="col-2">Ngày mua hàng</div>
                     <div class="col-2">Tổng tiền</div>
-                    <div class="col-2">Trạng thái</div>
                     <div class="col-2">Chi tiết</div>
+                    <div class="col-2">Trạng thái</div>
+
                   </div>
                 </div>
                 <div class="detail__my-order-body" v-for="item in paginatedOrdersFiltered" :key="item.id">
@@ -112,6 +105,7 @@
                     <div class="col-2">{{ item.customerID.phone }}</div>
                     <div class="col-2">{{ formatDateTime(item.order_Time) }}</div>
                     <div class="col-2">{{ formatCurrency(item.total_Payment) }}</div>
+                    <div class="col-2">{{ item.note }}</div>
                     <div class="col-2">
                       <span class="status-badge" :class="statusClasses[item.status]">
                         {{ statusLabels[item.status] }}
@@ -119,29 +113,7 @@
                     </div>
 
                     <div class="col-2">
-                      <button class="loadmore-btn"
-                              v-if="item.status !== 2  && item.status !== 3 && item.status !== 0 && item.status !== 4 && item.status !== 5"
-                              style="font-size: smaller;
-                               margin-bottom: 5px"
-                              @click="cancelOrder(item.id)">
-                        Hủy đơn
-                      </button>
-                      <br>
-                      <button class="loadmore-btn"
-                              v-if="item.status !== 1  && item.status !== 3 && item.status !== 0 && item.status !== 4 && item.status !== 5"
-                              style="font-size: smaller"
-                              @click="completeOrder(item.id)">
-                        Đã nhận được hàng
-                      </button>
-                      <button class="loadmore-btn"
-                              v-if="item.status === 3 &&
-                              !isOver30Days(item.order_Time) &&
-                              item.status !== 4 &&
-                              !item.note?.includes('Trả hàng đơn #')"
-                              style="font-size: smaller"
-                              @click="initiateReturnOrder(item.id)">
-                        Trả hàng
-                      </button>
+
                     </div>
                   </div>
                 </div>
@@ -157,57 +129,94 @@
               </form>
             </div>
           </div>
-          <div v-if="activeTab === 'orderline'" class="detail__my-order" style="font-size: 13px">
-            <div class="heading-edit-password"></div>
-            <h2>Chi tiết đơn hàng</h2>
+          <div v-if="activeTab === 'orderline'" class="detail__order-tracking" style="font-size: 13px;">
+            <h2 style="margin-bottom: 20px;">Chi tiết đơn hàng</h2>
+
             <div class="filter-section">
-              <label for="status-filter">
-                <button class="loadmore-btn" @click="showOrders"> Trở lại</button>
-              </label>
+              <button class="loadmore-btn" @click="showOrders">← Trở lại</button>
             </div>
-            <div class="detail__my-order-content">
-              <div class="product__variations mt-3">
-                <h3>Sản phẩm</h3>
-                <div
-                    class="variation-item"
-                    v-for="v in paginatedOrderDetails"
-                    :key="v.id"
-                    @click="viewProductDetail(v.variationID.productID.id)"
-                    :style="{
-                    border: '2px solid #13FBE6',
-                    padding: '8px',
-                    margin: '5px',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    display: 'inline-block',
-                    textAlign: 'center',
-                    width: '230px',
-                    height: '260px'
-                  }"
-                >
-                  <!-- Ảnh biến thể: nếu có, hiển thị, còn không thì mặc định -->
-                  <img
-                      :src="`http://localhost:8080/upload/images/${v.variationID.images.cd_Images}`"
-                      alt="Hình ảnh biến thể"
-                      style="width: 65%; height: 65%; object-fit: cover;"
-                  />
-                  <div style="font-weight: bold; margin-top: 4px;">{{ v.variationID.name }}</div>
-                  <div style="font-weight: bold; margin-top: 4px;">Số lượng: {{ v.quantity }}</div>
-                  <div style="font-weight: bold; margin-top: 4px;">Giá bán: {{ formatCurrency(v.price) }}</div>
+
+            <div class="order-info-box">
+              <p><strong>Mã đơn hàng:</strong> {{ selectedOrder.id }}</p>
+              <p><strong>Tên khách hàng:</strong> {{ selectedOrder.customerID.name }}</p>
+              <p><strong>Địa chỉ:</strong> {{ selectedOrder.address }}</p>
+              <p><strong>SDT:</strong> {{ selectedOrder.customerID.phone }}</p>
+              <p>
+                <strong>Trạng thái:</strong>
+                <span class="status-tracking">
+                  {{ statusLabels[selectedOrder.status] }}
+                </span>
+              </p>
+              <p><strong>Ngày đặt:</strong> {{ formatDateTime(selectedOrder.order_Time) }}</p>
+              <p><strong>Tổng tiền:</strong> {{ formatCurrency(selectedOrder.total_Payment) }}</p>
+              <p>
+                <button class="loadmore-btn"
+                        v-if="selectedOrder.status !== 2  && selectedOrder.status !== 3 && selectedOrder.status !== 0 && selectedOrder.status !== 4 && selectedOrder.status !== 5"
+                        style="font-size: smaller;
+                               margin-bottom: 5px"
+                        @click="cancelOrder(selectedOrder.id)">
+                  Hủy đơn
+                </button>
+                <br>
+                <button class="loadmore-btn"
+                        v-if="selectedOrder.status !== 1  && selectedOrder.status !== 3 && selectedOrder.status !== 0 && selectedOrder.status !== 4 && selectedOrder.status !== 5"
+                        style="font-size: smaller"
+                        @click="completeOrder(selectedOrder.id)">
+                  Đã nhận được hàng
+                </button>
+                <button class="loadmore-btn"
+                        v-if="selectedOrder.status === 3 &&
+                              !isOver30Days(selectedOrder.order_Time) &&
+                              selectedOrder.status !== 4 &&
+                              !selectedOrder.note?.includes('Trả hàng đơn #')"
+                        style="font-size: smaller"
+                        @click="initiateReturnOrder(item.id)">
+                  Trả hàng
+                </button>
+              </p>
+            </div>
+
+            <div class="order-table">
+              <div class="table-header row">
+                <div class="col">Hình ảnh</div>
+                <div class="col">Tên sản phẩm</div>
+                <div class="col">Loại</div>
+                <div class="col">Đơn giá</div>
+                <div class="col">Số lượng</div>
+                <div class="col">Thành tiền</div>
+              </div>
+
+              <div
+                  class="table-row row"
+                  v-for="v in paginatedOrderDetails"
+                  :key="v.id"
+                  @click="viewProductDetail(v.variationID.productID.id)"
+              >
+                <div class="col">
+                  <img :src="`http://localhost:8080/upload/images/${v.variationID.images.cd_Images}`" alt="Hình ảnh"
+                       class="product-img">
                 </div>
+                <div class="col">{{ v.variationID.name }}</div>
+                <div class="col">{{ v.variationID.productID.name }}</div>
+                <div class="col">{{ formatCurrency(v.unit_Price) }}</div>
+                <div class="col">{{ v.quantity }}</div>
+                <div class="col">{{ formatCurrency(v.quantity * v.unit_Price) }}</div>
               </div>
-              <!-- Pagination controls -->
-              <div class="pagination" v-if="totalOrderDetailPages > 1">
-                <button type="button" @click="prevOrderDetailPage" class="loadmore-btn" :disabled="currentOrderDetailPage === 1">
-                  « Trước
-                </button>
-                <span><h1>Trang {{ currentOrderDetailPage }} / {{ totalOrderDetailPages }}</h1></span>
-                <button type="button" @click="nextOrderDetailPage" class="loadmore-btn" :disabled="currentOrderDetailPage === totalOrderDetailPages">
-                  Sau »
-                </button>
-              </div>
+            </div>
+
+            <div class="pagination">
+              <button type="button" @click="prevOrderDetailPage" class="loadmore-btn"
+                      :disabled="currentOrderDetailPage === 1">
+                « Trước
+              </button>
+              <span><h1>Trang {{ currentOrderDetailPage }} / {{ totalOrderDetailPages }}</h1></span>
+              <button type="button" @click="nextOrderDetailPage" class="loadmore-btn"
+                      :disabled="currentOrderDetailPage === totalOrderDetailPages">
+                Sau »
+              </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -219,7 +228,7 @@ import {ref, onMounted, computed, watch} from 'vue';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import dayjs from 'dayjs'
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 
 export default {
   setup() {
@@ -343,12 +352,13 @@ export default {
     const currentOrderDetailPage = ref(1);
 
     const totalOrderDetailPages = computed(() => {
-      return Math.ceil(selectedOrder.value.length / itemsPerOrderDetailPage);
+      return Math.ceil(selectedOrder.value.orderLine.length / itemsPerOrderDetailPage);
     });
 
     const paginatedOrderDetails = computed(() => {
       const start = (currentOrderDetailPage.value - 1) * itemsPerOrderDetailPage;
-      return selectedOrder.value.slice(start, start + itemsPerOrderDetailPage);
+      const end = start + itemsPerOrderDetailPage;
+      return selectedOrder.value.orderLine.slice(start, end);
     });
 
     const prevOrderDetailPage = () => {
@@ -360,10 +370,15 @@ export default {
     };
 
     const viewOrderDetails = async (orderId) => {
+      const token = Cookies.get("token");
       try {
-        const response = await axios.get(`${apiUrl}history/getprd/${orderId}`);
+        const response = await axios.get(`${apiUrl}order/${orderId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         selectedOrder.value = response.data;
-
+        console.log("selectedOrder.value:", selectedOrder.value);
         if (activeTab.value !== "orderline") {
           activeTab.value = "orderline"; // Chỉ cập nhật nếu chưa là orderline
         }
@@ -415,7 +430,8 @@ export default {
           }
         });
         alert("Đơn hàng đã được hủy thành công!");
-        await getOrder();
+        window.location.reload();
+
       } catch (error) {
         console.error("Lỗi khi hủy đơn hàng:", error);
       }
@@ -432,16 +448,17 @@ export default {
             }
           });
           alert("Đơn hàng đã được giao thành công!");
-          await getOrder();
+          window.location.reload();
+
         } catch (error) {
           console.error("Lỗi khi hủy đơn hàng:", error);
         }
       }
     };
 
-    const initiateReturnOrder = async (orderid) =>  {
+    const initiateReturnOrder = async (orderid) => {
       const token = Cookies.get("authToken");
-      console.log("trả hàng: "+ orderid);
+      console.log("trả hàng: " + orderid);
       const apicomplete = `http://localhost:8080/admin/orders/returns/${orderid}`;
       const returnReason = prompt("Nhập lý do trả hàng:");
       if (!returnReason) {
@@ -450,19 +467,19 @@ export default {
       }
 
       try {
-          await axios.get(apicomplete, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            },
-            params: {
-              note: `Trả hàng đơn #${orderid}. Lý do: ${returnReason}`,
-            }
-          });
-          alert("Đã gửi đơn hàng muốn trả hàng, vui lòng chờ shop duyệt!");
-          await getOrder();
-        } catch (error) {
-          console.error("Lỗi khi hủy đơn hàng:", error);
-        }
+        await axios.get(apicomplete, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          params: {
+            note: `Trả hàng đơn #${orderid}. Lý do: ${returnReason}`,
+          }
+        });
+        alert("Đã gửi đơn hàng muốn trả hàng, vui lòng chờ shop duyệt!");
+        await getOrder();
+      } catch (error) {
+        console.error("Lỗi khi hủy đơn hàng:", error);
+      }
 
     };
 
@@ -549,16 +566,16 @@ export default {
       }
     };
 
-  const isOver30Days = (dateString) => {
-    if (!dateString) return false;
+    const isOver30Days = (dateString) => {
+      if (!dateString) return false;
 
-    const createdDate = dayjs(dateString, "YYYY-MM-DD HH:mm:ss"); // Parse đúng format
-    const today = dayjs();
-    const diffDays = today.diff(createdDate, 'day');
-    console.log("created:", createdDate.format(), "now:", today.format(), "diff:", diffDays);
+      const createdDate = dayjs(dateString, "YYYY-MM-DD HH:mm:ss"); // Parse đúng format
+      const today = dayjs();
+      const diffDays = today.diff(createdDate, 'day');
+      console.log("created:", createdDate.format(), "now:", today.format(), "diff:", diffDays);
 
-    return diffDays > 30;
-  }
+      return diffDays > 30;
+    }
 
     const saveProfile = async () => {
       const token = Cookies.get("authToken");
@@ -668,8 +685,9 @@ export default {
 
 <style scoped>
 .container {
-   width: 100%;
+  width: 100%;
 }
+
 /* Style cho select box trạng thái */
 .filter-section {
   margin-bottom: 15px;
@@ -760,30 +778,203 @@ export default {
   transition: all 0.2s ease;
 }
 
-/* Mỗi trạng thái - bạn có thể tùy chỉnh tiếp */
-.bg-cancelled {
-  background-color: #f8d7da;
-  color: #721c24;
+.detail__order-tracking {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 204, 204, 0.15);
+  color: #333;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-.bg-pending {
-  background-color: #fff3cd;
-  color: #856404;
+.detail__order-tracking h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #00cccc;
+  margin-bottom: 16px;
 }
 
-.bg-shipping {
-  background-color: #cce5ff;
-  color: #004085;
+.order-info-box {
+  background-color: #f5fefe;
+  border-left: 4px solid #00cccc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
 }
 
-.bg-completed {
-  background-color: #d4edda;
-  color: #155724;
+.order-info-box p {
+  margin: 8px 0;
+  font-size: 14px;
 }
 
-.bg-returned {
-  background-color: #ffe0b3;
-  color: #663c00;
+.status-tracking {
+  font-weight: bold;
+  color: #00aaaa;
 }
+
+.steps-tracking {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0;
+  padding: 0 10px;
+}
+
+.step-tracking {
+  flex: 1;
+  text-align: center;
+  color: #ccc;
+  position: relative;
+}
+
+.step-tracking:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: -50%;
+  width: 100%;
+  height: 2px;
+  background-color: #ccc;
+  z-index: 0;
+}
+
+.step-tracking.active {
+  color: #00cccc;
+}
+
+.step-tracking.active .circle {
+  border-color: #00cccc;
+  background-color: #00cccc;
+  color: #fff;
+}
+
+.step-tracking.active:not(:last-child)::after {
+  background-color: #00cccc;
+}
+
+.circle {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  background-color: #fff;
+  z-index: 1;
+}
+
+.order-table {
+  margin-top: 20px;
+}
+
+.table-header,
+.table-row {
+  display: flex;
+  padding: 14px 10px;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.table-header {
+  background-color: #f0fefe;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.table-row:hover {
+  background-color: #f8ffff;
+  cursor: pointer;
+}
+
+.col {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+}
+
+.product-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+}
+
+.loadmore-btn {
+  background-color: #00cccc;
+  color: white;
+  padding: 6px 16px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.loadmore-btn:hover {
+  background-color: #00aaaa;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.menu-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 300px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #333;
+  transition: background 0.3s, color 0.3s;
+}
+
+.menu-item i {
+  font-size: 18px;
+  min-width: 20px;
+}
+
+.menu-item:hover {
+  background-color: #f0f0f0;
+}
+
+.menu-item.active {
+  background-color: #0b7dda;
+  color: red;
+}
+
+.menu-item.active i {
+  color: white;
+}
+
+.menu-item.active span {
+  color: white;
+}
+
 
 </style>
+

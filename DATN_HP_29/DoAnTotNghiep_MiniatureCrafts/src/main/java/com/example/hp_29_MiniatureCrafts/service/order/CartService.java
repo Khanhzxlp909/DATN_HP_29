@@ -28,13 +28,11 @@ public class CartService {
         List<CartItem> cartItems = cartRepository.findByCustomerId(customerId);
         return cartItems.stream().map(this::mapEntityToDTO).toList();
     }
-//
-//    public CartItemDTO updateQuantity(Long cartItemId, int newQuantity) {
-//        CartItem cartItem = cartRepository.findById(cartItemId)
-//                .orElseThrow(() -> new RuntimeException("CartItem not found"));
-//        cartItem.setQuantity(newQuantity);
-//        return mapEntityToDTO(cartRepository.save(cartItem));
-//    }
+
+    public int countTotalItemsByCustomerId(Long customerId) {
+        Integer totalItems = cartRepository.countTotalItemsByCustomerId(customerId);
+        return totalItems != null ? totalItems : 0;
+    }
 
     public void clearCartByCustomer(Long customerId) {
         cartRepository.deleteByCustomerId(customerId);
@@ -93,7 +91,7 @@ public class CartService {
         int availableQuantity = variation.getQuantity();
 
         if (newQuantity > availableQuantity) {
-            return ResponseEntity.badRequest().body("Not enough stock for: " + variation.getProductID().getName());
+            return ResponseEntity.badRequest().body("Not enough stock");
         }
 
         if (newQuantity <= 0) {

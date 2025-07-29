@@ -64,7 +64,7 @@
                       class="btn btn-primary btn-sm trash"
                       type="button"
                       @click="confirmDelete(item.id)"
-                      v-if="item.status !== 0 && item.status !== 2  && item.status !== 3 && item.status !== 4 && item.status !== 5"
+                      v-if="item.status !== 0 && item.status !== 2  && item.status !== 3  && item.status !== 4 && item.status !== 5"
                   >
                     <i class="fas fa-trash-alt"></i> Huỷ đơn hàng
                   </button>

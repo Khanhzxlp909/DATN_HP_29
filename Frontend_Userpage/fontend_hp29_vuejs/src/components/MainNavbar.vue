@@ -74,11 +74,19 @@
             </form>
           </div>
           <div class="col-3 m-auto hidden-sm hidden-xs">
-            <div class="item-car clearfix">
-              <router-link :to="user ? `/cart?userId=${user.userInfo.id}` : '/cart'" class="header__second__cart--icon">
+            <div class="item-car clearfix position-relative">
+              <router-link
+                  :to="user ? `/cart?userId=${user.userInfo.id}` : '/cart'"
+                  class="header__second__cart--icon"
+              >
                 <i class="fas fa-shopping-cart"></i>
+                <span v-if="cart !== null && cart > 0" id="header__second__cart--notice" class="header__second__cart--notice">
+                  {{ cart }}
+                </span>
+
               </router-link>
             </div>
+
           </div>
         </div>
       </div>
@@ -94,9 +102,6 @@
             <router-link to="/product">Sản phẩm</router-link>
           </li>
           <li class="header_nav-list-item">
-            <router-link to="/New">Tin tức </router-link>
-          </li>
-          <li class="header_nav-list-item">
             <a href="/lien-he">Liên hệ</a>
           </li>
         </ul>
@@ -106,37 +111,21 @@
 </template>
 
 <script>
-import axios from "axios";
-import Cookies from "js-cookie"; // Ensure you have js-cookie installed
 import {useRouter} from "vue-router"; // Import useRouter
-import {ref} from 'vue'; // Import ref
-
+import { useUser } from '@/components/composables/useUser';
 export default {
   setup() {
-    const user = ref(null);
-    const searchKeyword = ref('');
     const router = useRouter();
+    const {
+      user,
+      cart,
+      searchKeyword,
+      getUserInfo,
+      getCart,
+      logout,
+    } = useUser();
 
-    const getUserInfo = () => {
-      const token = Cookies.get("authToken");
-      if (!token) {
-        console.error("No token found, please log in!");
-        return;
-      }
-      axios
-          .get("http://localhost:8080/MiniatureCrafts/user", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            user.value = response.data;
-          })
-          .catch((error) => {
-            console.error("Error fetching user info:", error);
-            user.value = null; // Reset user if error occurs
-          });
-    };
+
 
     const submitSearch = () => {
       if (searchKeyword.value) {
@@ -144,20 +133,17 @@ export default {
       }
     };
 
-    const logout = () => {
-      Cookies.remove("authToken");
-      Cookies.remove("customers")
-      user.value = null;
-      router.push("/"); // Redirect to login page
-    };
 
     getUserInfo();
 
     return {
       user,
+      cart,
       searchKeyword,
-      submitSearch,
+      getUserInfo,
+      getCart,
       logout,
+      submitSearch,
     };
   },
 };

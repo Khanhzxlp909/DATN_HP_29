@@ -25,6 +25,11 @@ public class CartController {
         return cartServices.findAll(pageable, customer_id);
     }
 
+    @GetMapping("count/{customer_id}")
+    public Integer countCart(@PathVariable("customer_id") Long customer_id) {
+        return cartServices.countTotalItemsByCustomerId(customer_id);
+    }
+
     @PostMapping("/addtocart")
     public ResponseEntity<?> saveCart(@RequestBody CartItemDTO cartItemDTO) {
 

@@ -141,6 +141,36 @@ public class OrderService {
         // Chuyển stream thành danh sách
     }
 
+    public POSOrderDTO getOrderById(Long orderID) {
+        POSOrder entity = posOrderRepository.findByOrderID(orderID);
+
+        if (entity == null) {
+            throw new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderID);
+        }
+
+        POSOrderDTO dto = new POSOrderDTO();
+        dto.setID(entity.getID());
+        dto.setCustomerID(mapCustomerEntityToDTO(entity.getCustomerID()));
+        dto.setAddress(entity.getAddress());
+        dto.setTotal_Amount(entity.getTotal_Amount() != null ? entity.getTotal_Amount().toString() : "0");
+        dto.setTotal_Payment(entity.getTotal_Payment() != null ? entity.getTotal_Payment().toString() : "0");
+        dto.setPaymentMethod(new PaymentMethodDTO(entity.getPaymentMethod().getID(), entity.getPaymentMethod().getType(), entity.getPaymentMethod().getNote(), entity.getPaymentMethod().getStatus()));
+        dto.setOrder_Time(entity.getOrder_Time());
+        dto.setPayment_Time(entity.getPayment_Time());
+        dto.setType_Oder(entity.getType_Oder());
+        dto.setNote(entity.getNote());
+        dto.setStatus(entity.getStatus());
+        dto.setOrderLine(getAllOrderLinesByOrderId(entity.getID()));
+        return dto;
+    }
+
+    public List<OrderLineDTO> getAllOrderLinesByOrderId(Long orderId) {
+        List<OrderLine> orderLines = orderLineRepository.findAllOrderID(orderId);
+
+        // Chuyển đổi từ OrderLine sang OrderLineDTO
+        return orderLines.stream().map(this::mapOrderLineEntityToDTO).collect(Collectors.toList());
+    }
+
     public Page<POSOrderDTO> findAllOrder(Pageable pageable) {
         Page<POSOrder> posOrders = posOrderRepository.findAllDESC(pageable);
 

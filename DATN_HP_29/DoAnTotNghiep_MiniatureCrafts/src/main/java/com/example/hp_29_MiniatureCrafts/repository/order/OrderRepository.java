@@ -17,4 +17,5 @@ public interface OrderRepository extends JpaRepository<POSOrder, Integer> {
     @Query("SELECT p FROM POSOrder p where p.CustomerID.ID = :id ORDER BY p.ID DESC")
     Page<POSOrder> findAllBYDesc(Pageable pageable, @Param("id") Long customer_id);
 
+
 }

@@ -44,6 +44,23 @@ public class OrderController {
         }
     }
 
+
+    /**
+     * Lấy lịch sử đơn hàng theo 1 id đơn hàng cụ thể (kèm theo thông tin sản phẩm và trạng thái)
+     *
+     * @param id       ID của khách hàng
+     * @return danh sách đơn hàng đã được gắn statusText
+     */
+    @GetMapping("order/{id}")
+    public ResponseEntity<POSOrderDTO> getOrderById(@PathVariable("id") Long id) {
+        try {
+            POSOrderDTO orders = orderService.getOrderById(id);
+            return ResponseEntity.ok(orders);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+    
     @GetMapping("/completeOrder/{orderId}")
     @Transactional
     public String completeOrder(@PathVariable Long orderId) {

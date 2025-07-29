@@ -3,8 +3,8 @@
     <div class="container">
       <div class="cart-wrap">
         <div class="cart-content">
-          <form class="form-cart">
-            <div class="cart-body-left">
+          <form class="form-cart"  @submit.prevent>
+            <div class="cart-body">
               <div class="cart-heading hidden-xs">
                 <div class="row cart-row">
                   <div class="col-11" style="text-align: center;">
@@ -58,10 +58,12 @@
                           >
                           <input
                               type="number"
-                              v-model="item.quantity"
+                              :value="item.quantity"
+                              @input="item.quantity = $event.target.value"
+                              @change="updateQuantity(item.id, $event.target.value)"
                               class="text-input"
-                              @change="updateQuantity(item.id, item.quantity)"
-                          >
+                          />
+
                           <input
                               type="button"
                               value="+"
@@ -80,42 +82,47 @@
                   </div>
                 </div>
               </div>
-              <div class="cart-footer">
-                <div class="row cart-footer-row">
-                  <div class="col-1"></div>
-                  <div class="col-11 continue">
+              <div class="cart-footer-right">
+                <div class="row cart-footer-row align-items-center">
+                  <!-- Nút tiếp tục mua sắm -->
+                  <div class="col-md-4 col-12 continue mb-2 mb-md-0">
                     <a href="/product">
-                      <i class="fas fa-chevron-left"></i>
-                      Tiếp tục mua sắm
+                      <i class="fas fa-chevron-left"></i> Tiếp tục mua sắm
                     </a>
+                  </div>
+
+                  <!-- Thành tiền -->
+                  <div class="col-md-4 col-12 mb-2 mb-md-0 text-md-center text-start">
+                    <h1 style="font-size: 25px; margin: 0;">
+                      <label>Thành tiền:
+                        <span class="total__price"> {{ formatCurrency(totalPrice) }}</span>
+                      </label>
+
+                    </h1>
+                  </div>
+
+                  <!-- Nút đặt hàng -->
+                  <div class="col-md-4 col-12 text-md-end text-start">
+                    <a v-if="cart.length > 0"
+                       href="/pay"
+                       class="chekout btn btn-primary"
+                       style="display: inline-block;">
+                      Đặt hàng ngay!
+                    </a>
+                    <button
+                        v-else
+                        @click.prevent="alert('Giỏ hàng của bạn đang trống.')"
+                        class="chekout btn btn-secondary"
+                        style="display: inline-block; cursor: not-allowed;">
+                      Đặt hàng ngay!
+                    </button>
                   </div>
                 </div>
               </div>
+
             </div>
             <div class="cart-body-right">
-              <div class="cart-total">
-                <h1><label for="">Thành tiền:</label>
-                  <span class="total__price">{{ formatCurrency(totalPrice) }}</span>
-                </h1>
-              </div>
-              <div class="cart-buttons">
-                <!--Điều kiện kiểm tra nếu giỏ hàng trống-->
-                <a v-if="cart.length > 0"
-                    style="display: block; text-align: center;"
-                    href="/pay"
-                   class="chekout"
-                >
-                  Đặt hàng ngay!
-                </a>
-                <button
-                    v-else
-                    @click.prevent="alert('Giỏ hàng của bạn đang trống.')"
-                    class="chekout"
-                    style="display: block; text-align: center; cursor: not-allowed;"
-                >
-                  Đặt hàng ngay!
-                </button>
-              </div>
+
             </div>
           </form>
         </div>
@@ -126,9 +133,9 @@
 
 <script>
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
-import { useRoute } from "vue-router";
-
+import {ref, onMounted} from 'vue';
+import {useRoute} from "vue-router";
+import { useUser } from '@/components/composables/useUser';
 export default {
   setup() {
     const cart = ref([]);
@@ -151,6 +158,7 @@ export default {
         cart.value = response.data;
         console.log(cart.value)
         calculateTotal();
+
       } catch (error) {
         console.error("Lỗi khi lấy giỏ hàng:", error);
       }
@@ -171,21 +179,28 @@ export default {
       }, 0);
     };
 
-    // Cập nhật số lượng sản phẩm
     const updateQuantity = async (cartItemId, newQuantity) => {
-      if (newQuantity <= 0) {
+      newQuantity = parseInt(newQuantity);
+      if (isNaN(newQuantity) || newQuantity <= 0) {
         alert("Số lượng không hợp lệ!");
         return;
       }
+
       try {
         const response = await axios.post(`${apiUrl}/editquantity/${cartItemId}/${newQuantity}`);
         if (response.status === 200) {
-          getCart(); // Cập nhật lại giỏ hàng
+          await getCart(); // Reload lại dữ liệu
+          await useUser();
+          window.location.reload();
         }
       } catch (error) {
         console.error("Lỗi khi cập nhật số lượng:", error);
+        if(error.response.data === "Not enough stock"){  // Khi số lượng khóa hợp lệ
+          alert("Vượt quá số lượng sản phẩm còn lại!");
+        }
       }
     };
+
 
     // Xóa sản phẩm khỏi giỏ hàng
     const removeFromCart = async (cartItemId) => {
