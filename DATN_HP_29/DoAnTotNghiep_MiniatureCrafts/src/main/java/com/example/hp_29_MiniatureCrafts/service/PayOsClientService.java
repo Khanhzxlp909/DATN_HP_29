@@ -1,10 +1,15 @@
 package com.example.hp_29_MiniatureCrafts.service;
 
+import com.example.hp_29_MiniatureCrafts.dto.CreatePaymentRequest;
 import com.example.hp_29_MiniatureCrafts.model.PayOsClient;
 import com.example.hp_29_MiniatureCrafts.repository.PayOsClientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import vn.payos.PayOS;
+import vn.payos.type.CheckoutResponseData;
+import vn.payos.type.PaymentData;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,66 +19,89 @@ import java.util.Optional;
 public class PayOsClientService {
 
     private final PayOsClientRepository payOsClientRepository;
+    private final PayOS payos; // Di chuyển PayOS dependency vào đây
 
     @Autowired
-    public PayOsClientService(PayOsClientRepository payOsClientRepository) {
+    public PayOsClientService(PayOsClientRepository payOsClientRepository, PayOS payos) {
         this.payOsClientRepository = payOsClientRepository;
+        this.payos = payos;
     }
 
     /**
-     * Lưu một giao dịch mới vào DB.
-     * Thường được gọi sau khi tạo link thanh toán thành công.
+     * Tối ưu: Gộp logic tạo link và lưu DB vào một transaction duy nhất.
+     * Controller chỉ cần gọi hàm này.
      */
+    @Transactional
+    public CheckoutResponseData createPaymentLinkAndSaveTransaction(CreatePaymentRequest request) throws Exception {
+        long orderCode = System.currentTimeMillis();
+
+        // Thêm các trường thông tin người mua
+        PaymentData paymentData = PaymentData.builder()
+                .orderCode(orderCode)
+                .amount(request.getAmount())
+                .description(request.getDescription())
+                .cancelUrl("http://localhost:5173/payment-cancel")
+                .returnUrl("http://localhost:5173/payment-success")
+                // ✨ Bổ sung các thông tin này ✨
+                .buyerName("Nguyễn Văn A") // Lấy từ thông tin đơn hàng
+                .buyerEmail("nguyenvana@email.com") // Lấy từ thông tin đơn hàng
+                .buyerPhone("0987654321") // Lấy từ thông tin đơn hàng
+                .build();
+
+        CheckoutResponseData checkoutResponseData = payos.createPaymentLink(paymentData);
+
+        // Lưu giao dịch vào DB
+        PayOsClient newTransaction = new PayOsClient();
+        newTransaction.setOrderId(request.getOrderId());
+        newTransaction.setOrderCode(orderCode); // Lưu kiểu Long
+        newTransaction.setAmount(request.getAmount());
+        newTransaction.setDescription(request.getDescription());
+        newTransaction.setCheckoutUrl(checkoutResponseData.getCheckoutUrl());
+        newTransaction.setStatus("PENDING");
+        newTransaction.setCreationDate(LocalDateTime.now());
+        payOsClientRepository.save(newTransaction);
+
+        return checkoutResponseData;
+    }
+
+    @Transactional
     public PayOsClient createTransaction(PayOsClient transaction) {
         transaction.setCreationDate(LocalDateTime.now());
-        if (transaction.getStatus() == null) {
-            transaction.setStatus("PENDING"); // Gán trạng thái ban đầu nếu chưa có
+        if (transaction.getStatus() == null || transaction.getStatus().isEmpty()) {
+            transaction.setStatus("PENDING");
         }
         return payOsClientRepository.save(transaction);
     }
 
-    /**
-     * Tìm giao dịch bằng ID.
-     */
+    @Transactional(readOnly = true) // Chỉ đọc, không thay đổi dữ liệu
     public Optional<PayOsClient> findById(Long id) {
         return payOsClientRepository.findById(id);
     }
 
-    /**
-     * Tìm giao dịch bằng orderCode.
-     */
-    public Optional<PayOsClient> findByOrderCode(Integer orderCode) {
+    @Transactional(readOnly = true)
+    public Optional<PayOsClient> findByOrderCode(Long orderCode) { // Sửa thành Long
         return payOsClientRepository.findByOrderCode(orderCode);
     }
 
-    /**
-     * Lấy tất cả các giao dịch.
-     */
+    @Transactional(readOnly = true)
     public List<PayOsClient> getAllTransactions() {
         return payOsClientRepository.findAll();
     }
 
-    /**
-     * Cập nhật thông tin một giao dịch dựa trên ID.
-     */
+    @Transactional
     public PayOsClient updateTransaction(Long id, PayOsClient transactionDetails) {
-        // Tìm giao dịch hiện có, nếu không thấy sẽ báo lỗi
         PayOsClient existingTransaction = payOsClientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Transaction not found with id: " + id));
 
-        // Cập nhật các trường từ thông tin được cung cấp
         existingTransaction.setAmount(transactionDetails.getAmount());
         existingTransaction.setDescription(transactionDetails.getDescription());
         existingTransaction.setStatus(transactionDetails.getStatus());
-        // Bạn có thể thêm các trường khác cần cập nhật ở đây
 
         return payOsClientRepository.save(existingTransaction);
     }
 
-    /**
-     * Cập nhật trạng thái giao dịch khi nhận webhook.
-     */
-    public PayOsClient updateTransactionStatus(Integer orderCode, String newStatus) {
+    @Transactional
+    public PayOsClient updateTransactionStatus(Long orderCode, String newStatus) { // Sửa thành Long
         PayOsClient transaction = findByOrderCode(orderCode)
                 .orElseThrow(() -> new EntityNotFoundException("Transaction not found with order code: " + orderCode));
 
@@ -84,11 +112,8 @@ public class PayOsClientService {
         return payOsClientRepository.save(transaction);
     }
 
-    /**
-     * Xóa một giao dịch dựa trên ID.
-     */
+    @Transactional
     public void deleteTransaction(Long id) {
-        // Kiểm tra xem giao dịch có tồn tại không trước khi xóa
         if (!payOsClientRepository.existsById(id)) {
             throw new EntityNotFoundException("Transaction not found with id: " + id);
         }

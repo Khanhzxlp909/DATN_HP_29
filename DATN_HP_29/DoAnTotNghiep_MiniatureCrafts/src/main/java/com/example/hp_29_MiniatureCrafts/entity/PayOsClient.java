@@ -1,13 +1,19 @@
-package com.example.hp_29_MiniatureCrafts.model; // Thay đổi package cho phù hợp
+package com.example.hp_29_MiniatureCrafts.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PayOsClient") // Ánh xạ tới bảng có tên chính xác là "PayOsClient"
-@Data
+@Table(name = "PayOsClient")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PayOsClient {
 
     @Id
@@ -15,11 +21,13 @@ public class PayOsClient {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "OderID") // Chú ý: Có thể bạn gõ nhầm 'OrderID' thành 'OderID'
-    private Long oderId;
+    // Sửa lỗi chính tả và quy ước đặt tên
+    @Column(name = "OderID") // Annotation giữ nguyên để khớp với DB
+    private Long orderId;
 
+    // Sửa lỗi tràn số: long > int
     @Column(name = "OrderCode")
-    private Integer orderCode;
+    private Long orderCode;
 
     @Column(name = "Amount")
     private Integer amount;
@@ -27,7 +35,7 @@ public class PayOsClient {
     @Column(name = "Status")
     private String status;
 
-    @Column(name = "CheckoutUrl")
+    @Column(name = "CheckoutUrl", length = 2048) // Tăng độ dài cho URL
     private String checkoutUrl;
 
     @Column(name = "CreationDate")
@@ -36,10 +44,12 @@ public class PayOsClient {
     @Column(name = "PaymentDate")
     private LocalDateTime paymentDate;
 
-    @Column(name = "Description")
-    private String Description;
-    // Nếu 'OderID' là khóa ngoại tới bảng Order, bạn nên dùng quan hệ @ManyToOne
-    // @ManyToOne
-    // @JoinColumn(name = "OderID", insertable=false, updatable=false)
+    // Sửa quy ước đặt tên
+    @Column(name = "Description") // Annotation giữ nguyên để khớp với DB
+    private String description;
+
+    // Gợi ý: Nếu bạn có Entity 'Order', hãy dùng quan hệ @ManyToOne
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "OderID", referencedColumnName = "id")
     // private Order order;
 }
