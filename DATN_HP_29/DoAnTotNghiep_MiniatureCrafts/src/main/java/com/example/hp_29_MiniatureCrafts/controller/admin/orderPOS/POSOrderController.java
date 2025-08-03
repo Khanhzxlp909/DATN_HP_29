@@ -174,7 +174,6 @@ public class POSOrderController {
     public Page<POSOrderDTO> getAllOrder(Pageable pageable) {
         return orderService.findAllOrder(pageable);
     }
-
     /**
      * Tạo mới một đơn hàng POS
      *
