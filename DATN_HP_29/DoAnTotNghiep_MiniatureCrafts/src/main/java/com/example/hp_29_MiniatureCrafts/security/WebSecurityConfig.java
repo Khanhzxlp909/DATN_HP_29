@@ -23,121 +23,68 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
-@EnableMethodSecurity // Kích hoạt bảo mật cấp phương thức (các chú thích như @PreAuthorize, @Secured)
-@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 @EnableWebSecurity
+@EnableMethodSecurity
+@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class WebSecurityConfig {
 
     @Autowired
-    UsersDetailsServiceImpl userDetailsService; // Dịch vụ tùy chỉnh để tải thông tin người dùng từ cơ sở dữ liệu
+    private UsersDetailsServiceImpl userDetailsService;
 
     @Autowired
-    private AuthEntryPointJwt unauthorizedHandler; // Xử lý khi có yêu cầu không hợp lệ hoặc không có quyền truy cập
+    private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(); // Bộ lọc JWT để kiểm tra token trong mỗi yêu cầu
+        return new AuthTokenFilter();
     }
-
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        // Tạo DaoAuthenticationProvider với UserDetailsService và PasswordEncoder tùy chỉnh
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
-        authProvider.setUserDetailsService(userDetailsService); // Sử dụng userDetailsService để tải thông tin người dùng
-        authProvider.setPasswordEncoder(passwordEncoder()); // Mã hóa mật khẩu bằng BCrypt
-
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        // Trả về AuthenticationManager để quản lý xác thực
         return authConfig.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Mã hóa mật khẩu bằng thuật toán BCrypt
+        return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()) // Vô hiệu hóa CSRF
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Bật CORS và chỉ định cấu hình CORS
+        http.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(
-                                        "/api/vnpay/**",
-                                        "/upload/images/**",
-                                        "/MiniatureCrafts/signin",
-                                        "/MiniatureCrafts/signup",
-                                        "/MiniatureCrafts/registerinfo",
-                                        "/MiniatureCrafts/home",
-                                        "/MiniatureCrafts/product/findByID/**",
-                                        "/MiniatureCrafts/fetch_products",
-                                        "/MiniatureCrafts/filterByPrice",
-                                        "/MiniatureCrafts/result/**",
-                                        "/MiniatureCrafts/findid/**",
-                                        "/MiniatureCrafts/category/**",
-                                        "/MiniatureCrafts/brands/**",
-                                        "/MiniatureCrafts/user/**",
-                                        "/MiniatureCrafts/categories",
-                                        "/MiniatureCrafts/brand",
-                                        "/MiniatureCrafts/new",
-                                        "/MiniatureCrafts/bestseller",
-                                        "/MiniatureCrafts/history/**",
-                                        "/MiniatureCrafts/history/getprd/**",
-                                        "/admin/warehouse/**",
-                                        "/admin/orders/**",
-                                        "/admin/orders/history/getprd/**",
-                                        "/admin/employee/**",
-                                        "/admin/signin",
-                                        "/admin/variation/brands/**",
-                                        "/admin/variation/warehouse/supiller/**",
-                                        "/admin/variation/getproduct",
-                                        "/admin/signup",
-                                        "/brands/get",
-                                        "/admin/variation/category/**",
-                                        "/admin/variation/result/all",
-                                        "/admin/variation/get/all",
-                                        "/admin/orders/resultvoucher/**",
-                                        "/admin/orders/findall",
-                                        "/admin/warehouse/findall",
-                                        "/admin/warehouse/suppiller/get",
-                                        "/admin/customer/result/**",
-                                        "/admin/customer/edit/**",
-                                        "/admin/category/get",
-                                        "/admin/category/get",
-                                        "/admin/product/findAll",
-                                        "/admin/brands/get",
-                                        "/admin/result/all",
-                                        "/admin/employee/**",
-                                        "/admin/warehouse/suppiller/**",
-                                        "/admin/warehouse/result/**",
-                                        "/admin/warehouse/update/**",
-                                        "/admin/warehouse/save",
-                                        "/admin/warehouse/**",
-                                        "/admin/variation/add",
-                                        "/admin/employee/findall",
-                                        "/admin/variation/images/upload",
-                                        "/admin/variation/images/findall",
-                                        "/admin/variation/getproduct",
-                                        "/admin/variation/images/findall",
-                                        "/admin/news/findall",
-                                        "/api/v1/cart/findall/**",
-                                        "/api/v1/cart/addtocart",
-                                        "/api/v1/cart/remove/**",
-                                        "/api/v1/cart/removeall/**",
-                                        "/api/v1/cart/editquantity/**",
-                                        "/MiniatureCrafts/send-email/**",
-                                        "/admin/introduces/findall",
-                                        "/MiniatureCrafts/contact/send"
-                                ).permitAll() // Cho phép tất cả các yêu cầu
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/MiniatureCrafts/signin",
+                                "/MiniatureCrafts/signup",
+                                "/admin/signin",
+                                "/MiniatureCrafts/home",
+                                "/MiniatureCrafts/product/**",
+                                "/MiniatureCrafts/fetch_products",
+                                "/upload/images/**",
+                                "/api/v1/transactions/**"
+                        ).permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers(
+                                "/api/v1/cart/**",
+                                "/MiniatureCrafts/history/**"
+                        ).authenticated()
+                        .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
@@ -146,17 +93,24 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://192.168.1.11:8082/", "http://127.0.0.1:5502/", "http://localhost:5174/", "http://localhost:5173/", "http://localhost:3000/", "http://localhost:8081/", "http://localhost:8082/")); // Cho phép origin từ frontend
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Các phương thức HTTP được phép
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Các headers cần thiết
-        configuration.setAllowCredentials(true); // Cho phép cookie hoặc thông tin xác thực
+        configuration.setAllowedOrigins(List.of(
+                "http://192.168.1.11:8082/",
+                "http://127.0.0.1:5502/",
+                "http://localhost:5174/",
+                "http://localhost:5173/",
+                "http://localhost:3000/",
+                "http://localhost:8081/",
+                "http://localhost:8082/"
+        ));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Áp dụng CORS cho tất cả các endpoint
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
