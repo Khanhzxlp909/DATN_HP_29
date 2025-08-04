@@ -128,14 +128,7 @@ public class WebSecurityConfig {
                                 "/MiniatureCrafts/contact/send",
                                 "/MiniatureCrafts/product/**",
                                 "/MiniatureCrafts/fetch_products"
-
-
-                        ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers(
-                                "/api/v1/cart/**",
-                                "/MiniatureCrafts/history/**"
-                        ).authenticated()
+                        ).permitAll() // Cho phép tất cả các yêu cầu
                         .anyRequest().authenticated()
                 );
 

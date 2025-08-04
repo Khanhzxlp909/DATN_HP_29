@@ -368,6 +368,7 @@ export default {
 
     async updateVariation() {
       const token = Cookies.get("authToken");
+      console.log(">> Token:", token); // Kiểm tra xem có null hoặc sai định dạng không
       if (!token) return this.$router.push("/login");
       if (!this.validateForm()) return;
 

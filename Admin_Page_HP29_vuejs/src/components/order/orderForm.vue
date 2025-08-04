@@ -51,7 +51,7 @@
                   <td class="so--luong">{{ variation.productID.name }}</td>
                   <td class="so--luong">
                     <div class="color-box"
-                        :style="{ backgroundColor: variation.color, width: '30px', height: '30px', borderRadius: '4px' }">
+                         :style="{ backgroundColor: variation.color, width: '30px', height: '30px', borderRadius: '4px' }">
                     </div>
                   </td>
                   <td class="so--luong">{{ variation.material }}</td>
@@ -146,9 +146,8 @@
               <div class="form-group col-md-12">
                 <label class="control-label">Hình thức thanh toán</label>
                 <select class="form-control" v-model="paymentMethod" required>
-                  <option value="1">Quẹt thẻ</option>
-                  <option value="2">Thanh toán trực tiếp</option>
-                  <option value="3">Chuyển khoản</option>
+                  <option value="1">Chuyển khoản</option>
+                  <option value="2">Tiền mặt</option>
                 </select>
               </div>
               <div class="form-group col-md-6">
@@ -161,7 +160,8 @@
               </div>
               <div class="form-group col-md-6">
                 <label class="control-label">Khách hàng đưa tiền (F8): </label>
-                <input class="form-control" style="width: 100%" type="number" v-model="amountReceived" placeholder="Nhập số tiền khách đưa">
+                <input class="form-control" style="width: 100%" type="number" v-model="amountReceived"
+                       placeholder="Nhập số tiền khách đưa">
               </div>
 
               <div class="form-group col-md-6">
@@ -257,6 +257,7 @@ export default {
         console.error("Có lỗi xảy ra khi lấy dữ liệu sản phẩm:", error);
       }
     },
+
     async getCustomer() {
       try {
         const response = await axios.get(`http://localhost:8080/admin/customer/result/all`);
@@ -269,17 +270,21 @@ export default {
         console.error("Lỗi khi lấy danh sách khách hàng:", error);
       }
     },
+
     increaseQuantity(item) {
       item.quantity += 1;
     },
+
     decreaseQuantity(item) {
       if (item.quantity > 1) {
         item.quantity -= 1;
       }
     },
+
     removeFromCart(item) {
       this.cart = this.cart.filter(product => product.id !== item.id);
     },
+
     addToCart(product) {
       const existingProduct = this.cart.find(item => item.id === product.id);
       console.log(product.quantity)
@@ -296,29 +301,30 @@ export default {
         this.cart.push({...product, quantity: 1});  // Thêm mới nếu chưa có
       }
     },
-    parsePrice(priceString) {
-      // Chuyển đổi giá từ chuỗi sang số
-      return parseFloat(priceString.replace(/\./g, '').replace(' ₫', ''));
-    },
+
     formatPrice(price) {
       // Định dạng giá thành chuỗi
       return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₫";
     },
+
     changePage(page) {
       if (page < 0 || page >= this.totalPages) return; // Kiểm tra giới hạn trang
       this.currentPage = page;
       this.fetchProducts(this.currentPage, this.pageSize); // Tải dữ liệu trang mới
     },
+
     formatCurrency(value) {
       // Chuyển đổi giá trị thành chuỗi và định dạng với dấu phân cách hàng nghìn
       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' ₫';
     },
+
     getImagesUrl(images) {
       return images
           ? `http://localhost:8080/upload/images/${images.cd_Images}`
           : "/img/default.jpg";
     },
-    cancel (){
+
+    cancel() {
       this.$router.push('/');
     },
 
@@ -354,30 +360,94 @@ export default {
           quantity: item.quantity // Số lượng
         })),
       };
-      console.log(orderData)
+
       try {
         const token = Cookies.get("token"); // Lấy token từ cookies
-        const response = await axios.post("http://localhost:8080/admin/orders/newOrder", orderData, {
-          headers: {
-            Authorization: `Bearer ${token}` // Thêm token vào header
-          }
-        });
-
-        if (response.status === 201) {
-          alert("Đơn hàng đã được lưu thành công!");
-          this.fetchProducts(this.currentPage, this.pageSize);
-          // Reset các trường dữ liệu nếu cần
-          this.cart = [];
-          this.orderNote = '';
-          this.paymentMethod = '';
-          this.selectedCustomer = null; // Reset khách hàng đã chọn
-
-        } else if (response.status === 400) {
-          console.error("Lỗi khi lưu đơn hàng:", error);
-          alert("Đơn hàng thiếu phương thức thanh toán hoặc khách hàng!");
-        } else {
-          alert("Không thể lưu đơn hàng. Vui lòng thử lại!");
+        if (!token) {
+          alert("Bạn cần đăng nhập để thực hiện thao tác này.");
+          return;
         }
+        const finalAmount = this.finalAmount; // Tổng tiền sau khi áp dụng giảm gi
+
+        if (this.paymentMethod == 1) {
+          console.log("Chuyển khoản")
+          const response = await axios.post("http://localhost:8080/admin/orders/newOrder", orderData, {
+            headers: {
+              Authorization: `Bearer ${token}` // Thêm token vào header
+            }
+          });
+
+          if (response.status === 201) {
+            alert("Đơn hàng đã được lưu thành công!");
+            this.fetchProducts(this.currentPage, this.pageSize);
+            // Reset các trường dữ liệu nếu cần
+            this.cart = [];
+            this.orderNote = '';
+            this.paymentMethod = '';
+            this.selectedCustomer = null; // Reset khách hàng đã chọn
+
+
+            // ---------------------------------------------------------- xử lý thanh toán PayOS ----------------------------------------------------------
+            const orderID = response.data.id; // Lấy ID đơn hàng từ API response
+            // 🏦 Xử lý thanh toán PAYOS
+            const amount = finalAmount; // Tổng tiền
+            const dataForPayment = {
+              "amount": amount,
+              "description": "Thanh toán đơn hàng: " + orderID,
+              "orderId": orderID
+            };
+            console.log("Data for payment:", dataForPayment);
+            const payosResponse = await axios.post(`http://localhost:8080/api/v1/transactions/create-payment-link`, dataForPayment,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                });
+            console.log("PayOS Response:", payosResponse);
+            if (payosResponse.status === 200) {
+              // Chuyển hướng ngay lập tức
+              const paymentLink = payosResponse.data.checkoutUrl;
+              console.log("Payment Link:", paymentLink);
+              window.open(paymentLink, "_blank"); // Mở link thanh toán trong tab mới
+              // window.location.href = payosResponse.data.checkoutUrl;
+            } else {
+              console.error("Lỗi khi tạo link thanh toán:", payosResponse);
+              alert("Không thể tạo link thanh toán. Vui lòng thử lại!");
+            }
+            // -----------------------------------------------------------------------------------------------------------------------------------------------
+          } else if (response.status === 400) {
+            console.error("Lỗi khi lưu đơn hàng:", error);
+            alert("Đơn hàng thiếu phương thức thanh toán hoặc khách hàng!");
+          } else {
+            alert("Không thể lưu đơn hàng. Vui lòng thử lại!");
+          }
+
+        } else if (orderData.paymentMethod.id == 2) {
+
+          const response = await axios.post("http://localhost:8080/admin/orders/newOrder", orderData, {
+            headers: {
+              Authorization: `Bearer ${token}` // Thêm token vào header
+            }
+          });
+
+          if (response.status === 201) {
+            alert("Đơn hàng đã được lưu thành công!");
+            this.fetchProducts(this.currentPage, this.pageSize);
+            // Reset các trường dữ liệu nếu cần
+            this.cart = [];
+            this.orderNote = '';
+            this.paymentMethod = '';
+            this.selectedCustomer = null; // Reset khách hàng đã chọn
+
+          } else if (response.status === 400) {
+            console.error("Lỗi khi lưu đơn hàng:", error);
+            alert("Đơn hàng thiếu phương thức thanh toán hoặc khách hàng!");
+          } else {
+            alert("Không thể lưu đơn hàng. Vui lòng thử lại!");
+          }
+
+        }
+
       } catch (error) {
         console.error("Lỗi khi lưu đơn hàng:", error);
         alert("Đơn hàng thiếu phương thức thanh toán hoặc khách hàng!");

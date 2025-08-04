@@ -131,7 +131,9 @@ export default {
           address: order.value.address,
           code_Voucher: '',
           note: order.value.note || "",
-          paymentMethod: {id: order.value.paymentMethod.id},
+          paymentMethod: {
+            id: order.value.paymentMethod.id
+          },
           type_Oder: "1",
           orderLine: cart.value.map(item => ({
             variationID: {id: item.variation_id.id},

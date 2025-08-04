@@ -26,6 +26,8 @@ const login = async () => {
         Cookies.set('roles', JSON.stringify(response.data.roles));
         console.log("ADMIN: " + JSON.stringify(Cookies.get('admin')));
         console.log("ADMIN: " + JSON.stringify(response.data.userInfo.name));
+
+        console.log(response.data)
         // Chuyển hướng đến trang sản phẩm
         window.location.href = '/product'; // Dùng window.location.href để chuyển hướng đến URL bên ngoài
       }
