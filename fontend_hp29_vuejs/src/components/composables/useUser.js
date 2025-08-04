@@ -48,6 +48,7 @@ const logout = () => {
     Cookies.remove("authToken");
     Cookies.remove("customers");
     user.value = null;
+    window.location.href = "/"; // Redirect to login page
 };
 
 export function useUser() {

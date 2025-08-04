@@ -74,7 +74,7 @@ export default {
       try {
         const response = await axios.get(`http://localhost:8080/api/v1/cart/findall/${user.value.userInfo.id}`);
         cart.value = response.data;
-        console.log("Cart: "+ cart.value);
+        console.log("Cart: " + cart.value);
         calculateTotal();
       } catch (error) {
         console.error("Lỗi khi lấy giỏ hàng:", error);
@@ -83,7 +83,7 @@ export default {
 
     // 🔢 Tính tổng tiền giỏ hàng
     const calculateTotal = () => {
-      console.log("Tien cart: "+cart.value.quantity);
+      console.log("Tien cart: " + cart.value.quantity);
       totalPrice.value = cart.value.reduce((total, item) => {
         return total + item.quantity * item.variation_id.price; // Không format tiền ở đây
       }, 0);
@@ -91,7 +91,7 @@ export default {
 
 
     const formatCurrency = (value) => {
-      return value.toLocaleString("vi-VN") ;
+      return value.toLocaleString("vi-VN");
     };
 
     // ✅ Cập nhật `productDetails` khi `cart` thay đổi
@@ -111,102 +111,128 @@ export default {
     };
 
 
-    // Hàm lấy địa chỉ IP của người dùng
-    const getUserIP = async () => {
+    // ✅ Gửi đơn hàng
+    const submitOrder = async () => {
       try {
-        const response = await axios.get("https://api64.ipify.org?format=json");
-        return response.data.ip;
+        if (!order.value.paymentMethod.id) {
+          alert("Vui lòng chọn phương thức thanh toán!");
+          return;
+        }
+        if (!selectedProvince.value || !detailedAddress.value) {
+          alert("Vui lòng nhập đầy đủ thông tin địa chỉ!");
+          return;
+        }
+
+        // Gộp tỉnh/thành phố + địa chỉ cụ thể
+        order.value.address = `${detailedAddress.value}, ${selectedProvince.value}`;
+
+        const data = {
+          customerID: {id: order.value.customerID.id},
+          address: order.value.address,
+          code_Voucher: '',
+          note: order.value.note || "",
+          paymentMethod: {id: order.value.paymentMethod.id},
+          type_Oder: "1",
+          orderLine: cart.value.map(item => ({
+            variationID: {id: item.variation_id.id},
+            quantity: item.quantity
+          }))
+        };
+
+        const token = Cookies.get("authToken");
+
+        if (order.value.paymentMethod.id === 1) {
+
+          const response = await axios.post(`${apiUrl}newOrder`, data, {
+            headers: {Authorization: `Bearer ${token}`}
+          });
+
+          const orderID = response.data.id; // Lấy ID đơn hàng từ API response
+          // 🏦 Xử lý thanh toán PAYOS
+          const amount = totalPrice.value; // Tổng tiền
+          const dataForPayment = {
+            "amount": amount,
+            "description": "Thanh toán đơn hàng: " + orderID,
+            "orderId": orderID
+          };
+          console.log("Data for payment:", dataForPayment);
+          const payosResponse = await axios.post(`http://localhost:8080/api/v1/transactions/create-payment-link`, dataForPayment ,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              });
+          console.log("PayOS Response:", payosResponse);
+
+
+          if (response.status === 201) {
+            const email = user.value.email;
+            console.log(user.value)
+            alert("Đơn hàng đã được tạo thành công!");
+            alert("Sau khi bạn thanh toán, đơn hàng sẽ được xác nhận và gửi đến đơn vị vận chuyển trong vòng 48h!");
+
+
+            // Chuyển hướng ngay lập tức
+            window.location.href = payosResponse.data.checkoutUrl;
+
+
+            const orderId = response.data.id; // Lấy ID đơn hàng từ API response
+            axios.get(`${apiUrl}send-email/${email}/${orderId}`, {
+              headers: {Authorization: `Bearer ${token}`}
+            });
+
+            // Xóa giỏ hàng (chạy nền)
+            axios.get(`http://localhost:8080/api/v1/cart/removeall/${order.value.customerID.id}`)
+                .then(() => {
+                  cart.value = [];
+                  productDetails.value = [];
+                  totalPrice.value = 0;
+                })
+                .catch(error => console.error("Lỗi khi xóa giỏ hàng:", error));
+          } else {
+            alert("Không thể tạo đơn hàng. Vui lòng thử lại!");
+          }
+
+
+        } else {
+          // 🚚 Thanh toán khi nhận hàng (COD)
+          const response = await axios.post(`${apiUrl}newOrder`, data, {
+            headers: {Authorization: `Bearer ${token}`}
+          });
+          console.log("Response:", response);
+
+          if (response.status === 201) {
+            const email = user.value.email;
+            console.log(user.value)
+            alert("Đơn hàng đã được tạo thành công!");
+
+
+            // Chuyển hướng ngay lập tức
+            // window.location.href = "/history";
+
+
+            const orderId = response.data.id; // Lấy ID đơn hàng từ API response
+            axios.get(`${apiUrl}send-email/${email}/${orderId}`, {
+              headers: {Authorization: `Bearer ${token}`}
+            });
+
+            // Xóa giỏ hàng (chạy nền)
+            axios.get(`http://localhost:8080/api/v1/cart/removeall/${order.value.customerID.id}`)
+                .then(() => {
+                  cart.value = [];
+                  productDetails.value = [];
+                  totalPrice.value = 0;
+                })
+                .catch(error => console.error("Lỗi khi xóa giỏ hàng:", error));
+          } else {
+            alert("Không thể tạo đơn hàng. Vui lòng thử lại!");
+          }
+        }
       } catch (error) {
-        console.error("Lỗi khi lấy IP:", error);
-        return "127.0.0.1"; // Mặc định nếu không lấy được IP
+        console.error("Lỗi khi tạo đơn hàng:", error);
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
       }
     };
-
-    // ✅ Gửi đơn hàng
-  const submitOrder = async () => {
-    try {
-      if (!order.value.paymentMethod.id) {
-        alert("Vui lòng chọn phương thức thanh toán!");
-        return;
-      }
-      if (!selectedProvince.value || !detailedAddress.value) {
-        alert("Vui lòng nhập đầy đủ thông tin địa chỉ!");
-        return;
-      }
-
-      // Gộp tỉnh/thành phố + địa chỉ cụ thể
-      order.value.address = `${detailedAddress.value}, ${selectedProvince.value}`;
-
-      const data = {
-        customerID: { id: order.value.customerID.id },
-        address: order.value.address,
-        code_Voucher: '',
-        note: order.value.note || "",
-        paymentMethod: { id: order.value.paymentMethod.id },
-        type_Oder: "1",
-        orderLine: cart.value.map(item => ({
-          variationID: { id: item.variation_id.id },
-          quantity: item.quantity
-        }))
-      };
-
-      const token = Cookies.get("authToken");
-
-      if (order.value.paymentMethod.id === 1) {
-        // 🏦 Xử lý thanh toán VNPay
-        const amount = totalPrice.value; // Tổng tiền
-        const orderId = `OD${Date.now()}`; // Mã đơn hàng (tạo ngẫu nhiên)
-        const ipAddr = await getUserIP(); // Lấy địa chỉ IP của người dùng
-        const vnpayResponse = await axios.get(`http://localhost:8080/api/vnpay/create_payment`, {
-          params: { amount, orderId, ipAddr },
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (vnpayResponse.status === 200) {
-          window.location.href = vnpayResponse.data.paymentUrl; // Chuyển hướng đến VNPay
-        } else {
-          alert("Không thể tạo giao dịch VNPay. Vui lòng thử lại!");
-        }
-      } else {
-        // 🚚 Thanh toán khi nhận hàng (COD)
-        const response = await axios.post(`${apiUrl}newOrder`, data, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (response.status === 201) {
-          const email = user.value.email;
-          console.log(user.value)
-          alert("Đơn hàng đã được tạo thành công!");
-
-
-          // Chuyển hướng ngay lập tức
-          window.location.href = "/history";
-
-
-
-          const orderId = response.data.id; // Lấy ID đơn hàng từ API response
-          axios.get(`${apiUrl}send-email/${email}/${orderId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          }).catch(error => console.error("Lỗi khi gửi email:", error));
-
-          // Xóa giỏ hàng (chạy nền)
-          axios.get(`http://localhost:8080/api/v1/cart/removeall/${order.value.customerID.id}`)
-            .then(() => {
-              cart.value = [];
-              productDetails.value = [];
-              totalPrice.value = 0;
-            })
-            .catch(error => console.error("Lỗi khi xóa giỏ hàng:", error));
-        } else {
-          alert("Không thể tạo đơn hàng. Vui lòng thử lại!");
-        }
-      }
-    } catch (error) {
-      console.error("Lỗi khi tạo đơn hàng:", error);
-      alert("Có lỗi xảy ra, vui lòng thử lại!");
-    }
-  };
-
 
 
     onMounted(() => {
@@ -354,6 +380,6 @@ export default {
 <style>
 
 .container {
-   width: 100%;
+  width: 100%;
 }
 </style>
