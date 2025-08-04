@@ -1,4 +1,4 @@
-package com.example.hp_29_MiniatureCrafts.model;
+package com.example.hp_29_MiniatureCrafts.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,8 +22,9 @@ public class PayOsClient {
     private Long id;
 
     // Sửa lỗi chính tả và quy ước đặt tên
-    @Column(name = "OderID") // Annotation giữ nguyên để khớp với DB
-    private Long orderId;
+    @OneToOne
+    @JoinColumn(name = "OderID", referencedColumnName = "ID")
+    private POSOrder orderId;
 
     // Sửa lỗi tràn số: long > int
     @Column(name = "OrderCode")

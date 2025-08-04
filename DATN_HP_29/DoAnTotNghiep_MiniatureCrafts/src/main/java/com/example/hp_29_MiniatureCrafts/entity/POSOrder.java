@@ -46,6 +46,9 @@ public class POSOrder {
     @Column(name = "Status")
     private Integer Status;
 
+    @OneToOne(mappedBy = "orderId")
+    private PayOsClient payOsClient;
+
     public POSOrder() {
     }
 
@@ -154,5 +157,11 @@ public class POSOrder {
         Type_Oder = type_Oder;
     }
 
+    public PayOsClient getPayOsClient() {
+        return payOsClient;
+    }
 
+    public void setPayOsClient(PayOsClient payOsClient) {
+        this.payOsClient = payOsClient;
+    }
 }

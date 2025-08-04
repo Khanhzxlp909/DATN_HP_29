@@ -134,6 +134,7 @@
 <script>
 import axios from 'axios';
 import {ref, onMounted} from 'vue';
+import Cookies from 'js-cookie';
 import {useRoute} from "vue-router";
 import { useUser } from '@/components/composables/useUser';
 export default {
@@ -142,6 +143,7 @@ export default {
     const totalPrice = ref(0);
     const apiUrl = "http://localhost:8080/api/v1/cart";
     const route = useRoute();
+    const token = Cookies.get("authToken");
     const customerId = route.query.userId; // Giả sử ID khách hàng là 1 (có thể thay đổi)
     const getDefaultImage = (images) => {
       if (!images || images.length === 0) return "default-image.jpg"; // Ảnh mặc định nếu không có ảnh nào
@@ -153,8 +155,11 @@ export default {
 
     // Lấy giỏ hàng từ API
     const getCart = async () => {
+
       try {
-        const response = await axios.get(`${apiUrl}/findall/${customerId}`);
+        const response = await axios.get(`${apiUrl}/findall/${customerId}`,{
+          headers: { Authorization: `Bearer ${token}` }
+        });
         cart.value = response.data;
         console.log(cart.value)
         calculateTotal();

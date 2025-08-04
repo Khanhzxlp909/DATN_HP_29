@@ -1,8 +1,10 @@
 package com.example.hp_29_MiniatureCrafts.service;
 
 import com.example.hp_29_MiniatureCrafts.dto.CreatePaymentRequest;
-import com.example.hp_29_MiniatureCrafts.model.PayOsClient;
+import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
+import com.example.hp_29_MiniatureCrafts.entity.PayOsClient;
 import com.example.hp_29_MiniatureCrafts.repository.PayOsClientRepository;
+import com.example.hp_29_MiniatureCrafts.repository.order.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,9 @@ public class PayOsClientService {
         this.payos = payos;
     }
 
+
+    @Autowired
+    private OrderRepository orderRepository;
     /**
      * Tối ưu: Gộp logic tạo link và lưu DB vào một transaction duy nhất.
      * Controller chỉ cần gọi hàm này.
@@ -52,7 +57,13 @@ public class PayOsClientService {
 
         // Lưu giao dịch vào DB
         PayOsClient newTransaction = new PayOsClient();
-        newTransaction.setOrderId(request.getOrderId());
+
+        POSOrder order = orderRepository.findByOrderID(request.getOrderId());
+        if (order == null) {
+            throw new RuntimeException("Không tìm thấy đơn hàng với ID: " + request.getOrderId());
+        }
+
+        newTransaction.setOrderId(order);
         newTransaction.setOrderCode(orderCode); // Lưu kiểu Long
         newTransaction.setAmount(request.getAmount());
         newTransaction.setDescription(request.getDescription());

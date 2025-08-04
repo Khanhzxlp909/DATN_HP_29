@@ -1,6 +1,6 @@
 package com.example.hp_29_MiniatureCrafts.repository;
 
-import com.example.hp_29_MiniatureCrafts.model.PayOsClient;
+import com.example.hp_29_MiniatureCrafts.entity.PayOsClient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

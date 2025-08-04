@@ -1,7 +1,7 @@
 package com.example.hp_29_MiniatureCrafts.controller;
 
 import com.example.hp_29_MiniatureCrafts.dto.CreatePaymentRequest;
-import com.example.hp_29_MiniatureCrafts.model.PayOsClient;
+import com.example.hp_29_MiniatureCrafts.entity.PayOsClient;
 import com.example.hp_29_MiniatureCrafts.service.PayOsClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
