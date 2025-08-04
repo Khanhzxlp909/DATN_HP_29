@@ -69,6 +69,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/v3/api-docs/**",
+                                "/api/v1/transactions/**",
+                                "/upload/images/**",
                                 "/swagger-ui/**",
                                 "/MiniatureCrafts/signin",
                                 "/MiniatureCrafts/signup",
@@ -76,8 +78,8 @@ public class WebSecurityConfig {
                                 "/MiniatureCrafts/home",
                                 "/MiniatureCrafts/product/**",
                                 "/MiniatureCrafts/fetch_products",
-                                "/upload/images/**",
-                                "/api/v1/transactions/**"
+
+
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(
