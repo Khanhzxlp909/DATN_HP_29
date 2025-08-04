@@ -145,7 +145,6 @@ export default {
   computed: {
     sections() {
       return [
-        { title: "Sản phẩm mới", items: this.variations },
         { title: "Sản phẩm bán chạy", items: this.bestSellers },
         { title: "Sản phẩm mới cập nhật", items: this.topSellers },
       ];
