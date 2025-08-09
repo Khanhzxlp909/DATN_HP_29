@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Dashboard from "@/components/view/orderPage.vue";
+import Dashboard from "@/components/dashboard/Dashboard.vue";
 import POSOrder from "@/components/order/orderForm.vue";
 import OrderPage from "@/components/order/orderPage.vue";
 import LoginPage from "@/components/login/loginPages.vue";

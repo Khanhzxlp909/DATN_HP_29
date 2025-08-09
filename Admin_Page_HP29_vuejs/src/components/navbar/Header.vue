@@ -37,9 +37,15 @@
     <hr/>
     <ul class="app-menu">
       <li>
-        <a class="app-menu__item" href="/order" @click.prevent="navigateTo('order')">
+        <a class="app-menu__item haha" href="/order" @click.prevent="navigateTo('order')">
           <i class="app-menu__icon bx bx-cart"></i>
           <span class="app-menu__label">POS Bán Hàng</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-menu__item" href="/">
+          <i class='app-menu__icon bx bx-tachometer'></i>
+          <span class="app-menu__label">Bảng điều khiển</span>
         </a>
       </li>
       <li>
