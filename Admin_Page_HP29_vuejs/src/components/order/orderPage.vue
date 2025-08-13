@@ -7,11 +7,28 @@
             <a href="/"><b>Home/</b></a> <a href="#"><b>Danh sách đơn hàng</b></a>
           </li>
         </ul>
-        <div id="clock">{{ currentTime }}</div>
+<!--        <div id="clock">{{ currentTime }}</div>-->
       </div>
       <div class="row">
         <div class="col-md-12">
           <div class="tile-body">
+            <!-- Bộ lọc trạng thái và phương thức thanh toán -->
+            <div class="row mb-3">
+              <div class="col-md-3">
+                <label for="statusFilter"><b>Trạng thái đơn hàng:</b></label>
+                <select id="statusFilter" v-model="filterStatus" class="form-control" @change="applyFilters">
+                  <option value="">Tất cả</option>
+                  <option v-for="(text, value) in statusOptions" :key="value" :value="value">{{ text }}</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="paymentFilter"><b>Phương thức thanh toán:</b></label>
+                <select id="paymentFilter" v-model="filterPayment" class="form-control" @change="applyFilters">
+                  <option value="1">Chuyển khoản</option>
+                  <option value="2">Tiền mặt</option>
+                </select>
+              </div>
+            </div>
             <div class="row element-button">
               <div class="col-sm-2">
                 <router-link class="btn btn-add btn-sm" to="/order" title="Thêm">
@@ -36,7 +53,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr v-for="item in orders" :key="item.id" @click="viewOrderDetails(item.id)">
+              <tr v-for="item in filteredOrders" :key="item.id" @click="viewOrderDetails(item.id)">
                 <td>{{ item.id }}</td>
                 <td>{{ item.customerID.name }}</td>
                 <td>{{ item.address }}</td>
@@ -203,16 +220,28 @@ export default {
   data() {
     return {
       orders: [],
+      filteredOrders: [],
+      paymentMethods: [],
+      statusOptions: {
+        0: 'Đã huỷ',
+        1: 'Chờ xác nhận',
+        2: 'Đã xác nhận',
+        3: 'Đã thanh toán',
+        4: 'Đã trả hàng',
+        5: 'Hoàn thành'
+      },
+      filterStatus: '',
+      filterPayment: '',
       selectedOrders: [],
-      currentPage: 0, // Số trang hiện tại
-      pageSize: 15, // Số sản phẩm mỗi trang
-      showModal: false, // Biến để hiển thị modal
-      orderDetails: null, // Cần thêm nếu chưa có
+      currentPage: 0,
+      pageSize: 15,
+      showModal: false,
+      orderDetails: null,
+      totalPages: 1,
     };
   },
   mounted() {
-    this.fetchOrder(this.currentPage, this.pageSize); // Gọi hàm để lấy tất cả sản phẩm khi component được mount
-    // Gọi hàm để lấy tất cả khách hàng khi component được mount
+    this.fetchOrder(this.currentPage, this.pageSize);
   },
   methods: {
     isOver30Days(dateString) {
@@ -269,18 +298,26 @@ export default {
     async fetchOrder(page, size) {
       try {
         const response = await axios.get(`http://localhost:8080/admin/orders/findall?page=${page}&size=${size}`);
-        this.orders = response.data.content; // Lấy danh sách order
+        this.orders = response.data.content;
         this.totalPages = response.data.page.totalPages;
-        console.log("Dữ liệu:", this.orders);
+        this.applyFilters();
       } catch (error) {
         console.error("Có lỗi xảy ra khi lấy dữ liệu:", error);
       }
     },
 
+    applyFilters() {
+      this.filteredOrders = this.orders.filter(order => {
+        const matchStatus = this.filterStatus === '' || order.status == this.filterStatus;
+        const matchPayment = this.filterPayment === '' || order.paymentMethod.id == this.filterPayment;
+        return matchStatus && matchPayment;
+      });
+    },
+
     changePage(page) {
-      if (page < 0 || page >= this.totalPages) return; // Kiểm tra giới hạn trang
+      if (page < 0 || page >= this.totalPages) return;
       this.currentPage = page;
-      this.fetchOrder(this.currentPage, this.pageSize); // Tải dữ liệu trang mới
+      this.fetchOrder(this.currentPage, this.pageSize);
     },
 
     importFromFile() {
@@ -399,6 +436,11 @@ export default {
     }
 
 
+  },
+  watch: {
+    orders() {
+      this.applyFilters();
+    }
   },
   filters: {
     currency(value) {

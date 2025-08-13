@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/dashboard")
@@ -23,6 +24,38 @@ public class DashboardController {
 
     @Autowired
     VariationService variationService;
+
+    @GetMapping("/monthly-revenue")
+    public ResponseEntity<Map<String, List<Double>>> getMonthlyRevenue(
+            @RequestParam(required = false) Integer year) {
+
+        int targetYear = (year != null) ? year : LocalDate.now().getYear();
+        return ResponseEntity.ok(service.getRevenueByHalfYear(targetYear));
+    }
+
+    @GetMapping("/day-revenue")
+    public ResponseEntity<Map<String, List<Double>>> getDayRevenue(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month
+
+    ) {
+
+        int targetYear = (year != null) ? year : LocalDate.now().getYear();
+        int targetMonth = (month != null) ? month : LocalDate.now().getMonthValue();
+        return ResponseEntity.ok(service.getRevenueByHalfMonth(targetYear, targetMonth));
+    }
+
+    // API: Tổng số lượng sản phẩm
+    @GetMapping("/total-quantity")
+    public Long getTotalProductQuantity() {
+        return service.getTotalProductQuantity();
+    }
+
+    // API: Tổng doanh thu
+    @GetMapping("/total-revenue")
+    public Double getTotalRevenue() {
+        return service.getTotalRevenue();
+    }
 
     @GetMapping("/top-products")
     public ResponseEntity<List<TopProductDTO>> topProducts(@RequestParam(defaultValue = "10") int limit) {
@@ -93,4 +126,34 @@ public class DashboardController {
     public ResponseEntity<SimpleCountDTO> countQuantityVariations() {
         return ResponseEntity.ok(new SimpleCountDTO(service.countQuantityVariation()));
     }
+
+    // Tổng doanh thu trong tháng của các đơn đã thanh toán
+    @GetMapping("/paid-revenue/month")
+    public ResponseEntity<Double> getPaidOrderRevenueInMonth(
+            @RequestParam int year,
+            @RequestParam int month) {
+        return ResponseEntity.ok(service.getPaidOrderRevenueInMonth(year, month));
+    }
+
+    // Tổng doanh thu trong ngày của các đơn đã thanh toán
+    @GetMapping("/paid-revenue/day")
+    public ResponseEntity<Double> getPaidOrderRevenueInDay(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return ResponseEntity.ok(service.getPaidOrderRevenueInDay(date));
+    }
+
+    // Đếm tổng các đơn hàng bị hủy trong tháng
+    @GetMapping("/orders-in-month/canceled")
+    public ResponseEntity<Long> countCanceledOrdersInMonth(
+            @RequestParam int year,
+            @RequestParam int month) {
+        return ResponseEntity.ok(service.countCanceledOrdersInMonth(year, month));
+    }
+
+    // Tổng doanh thu trong tháng hiện tại của các đơn đã thanh toán
+    @GetMapping("/paid-revenue/current-month")
+    public ResponseEntity<Double> getPaidOrderRevenueCurrentMonth() {
+        return ResponseEntity.ok(service.getPaidOrderRevenueCurrentMonth());
+    }
+
 }

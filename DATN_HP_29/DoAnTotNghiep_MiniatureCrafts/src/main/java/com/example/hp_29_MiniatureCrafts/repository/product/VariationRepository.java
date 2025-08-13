@@ -10,6 +10,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface VariationRepository extends JpaRepository<Variation, Long> {
+
+    // Lấy tổng số lượng sản phẩm
+    @Query("SELECT SUM(v.Quantity) FROM Variation v")
+    Long getTotalProductQuantity();
+
     @Query("select v from Variation v order by v.ID DESC")
     Page<Variation> findAll(Pageable pageable);
 
@@ -40,12 +45,18 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     @Query("select v from Variation v where v.ID= :idvariation")
     Variation findByIdVariation(@Param("idvariation") Long id);
 
-//
     @Query("select v from Variation v where v.ProductID.ID= :id order by v.ID DESC")
     List<Variation> findByProductID(@Param("id") Long id);
 
     @Query("select v from Variation v where v.ProductID.CategoryID.ID= :id order by v.ID DESC")
     Page<Variation> findProductbyCatergory(Pageable pageable, @Param("id") Long id);
 
+    // Tổng Quantity của tất cả variation
+    @Query("SELECT COALESCE(SUM(v.Quantity), 0) FROM Variation v")
+    Long sumAllQuantities();
+
+    // Đếm số lượng variation
+    @Query("SELECT COUNT(v) FROM Variation v")
+    Long countAllVariations();
 
 }
