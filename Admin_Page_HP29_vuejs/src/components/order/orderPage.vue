@@ -12,7 +12,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="tile-body">
-            <!-- Bộ lọc trạng thái và phương thức thanh toán -->
+            <!-- Bộ lọc trạng thái, phương thức thanh toán và ngày tháng năm -->
             <div class="row mb-3">
               <div class="col-md-3">
                 <label for="statusFilter"><b>Trạng thái đơn hàng:</b></label>
@@ -24,9 +24,42 @@
               <div class="col-md-3">
                 <label for="paymentFilter"><b>Phương thức thanh toán:</b></label>
                 <select id="paymentFilter" v-model="filterPayment" class="form-control" @change="applyFilters">
+                  <option value="">Tất cả</option>
                   <option value="1">Chuyển khoản</option>
                   <option value="2">Tiền mặt</option>
                 </select>
+              </div>
+              <div class="col-md-3">
+                <label for="startDate"><b>Từ ngày:</b></label>
+                <input type="date" id="startDate" v-model="filterStartDate" class="form-control" @change="applyFilters" />
+              </div>
+              <div class="col-md-3">
+                <label for="endDate"><b>Đến ngày:</b></label>
+                <input type="date" id="endDate" v-model="filterEndDate" class="form-control" @change="applyFilters" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-3">
+                <label for="customerName"><b>Tên khách hàng:</b></label>
+                <input
+                  type="text"
+                  id="customerName"
+                  v-model="filterCustomerName"
+                  class="form-control"
+                  placeholder="Nhập tên khách hàng"
+                  @input="applyFilters"
+                />
+              </div>
+              <div class="col-md-3">
+                <label for="customerPhone"><b>Số điện thoại:</b></label>
+                <input
+                  type="text"
+                  id="customerPhone"
+                  v-model="filterCustomerPhone"
+                  class="form-control"
+                  placeholder="Nhập số điện thoại"
+                  @input="applyFilters"
+                />
               </div>
             </div>
             <div class="row element-button">
@@ -232,6 +265,10 @@ export default {
       },
       filterStatus: '',
       filterPayment: '',
+      filterStartDate: '',
+      filterEndDate: '',
+      filterCustomerName: '',
+      filterCustomerPhone: '',
       selectedOrders: [],
       currentPage: 0,
       pageSize: 15,
@@ -310,7 +347,20 @@ export default {
       this.filteredOrders = this.orders.filter(order => {
         const matchStatus = this.filterStatus === '' || order.status == this.filterStatus;
         const matchPayment = this.filterPayment === '' || order.paymentMethod.id == this.filterPayment;
-        return matchStatus && matchPayment;
+        let matchDate = true;
+        if (this.filterStartDate) {
+          matchDate = matchDate && dayjs(order.order_Time).isAfter(dayjs(this.filterStartDate).startOf('day').subtract(1, 'second'));
+        }
+        if (this.filterEndDate) {
+          matchDate = matchDate && dayjs(order.order_Time).isBefore(dayjs(this.filterEndDate).endOf('day').add(1, 'second'));
+        }
+        const matchName =
+          this.filterCustomerName === '' ||
+          (order.customerID.name && order.customerID.name.toLowerCase().includes(this.filterCustomerName.toLowerCase()));
+        const matchPhone =
+          this.filterCustomerPhone === '' ||
+          (order.customerID.phone && order.customerID.phone.includes(this.filterCustomerPhone));
+        return matchStatus && matchPayment && matchDate && matchName && matchPhone;
       });
     },
 

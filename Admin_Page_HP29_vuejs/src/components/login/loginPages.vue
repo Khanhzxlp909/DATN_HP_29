@@ -29,7 +29,7 @@ const login = async () => {
 
         console.log(response.data)
         // Chuyển hướng đến trang sản phẩm
-        window.location.href = '/product'; // Dùng window.location.href để chuyển hướng đến URL bên ngoài
+        window.location.href = '/'; // Dùng window.location.href để chuyển hướng đến URL bên ngoài
       }
     }else{
       errorMessage.value = error.response?.data?.message || 'Bạn không đủ quyền hạn, vui lòng đăng nhập lại.';
