@@ -66,7 +66,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in products" :key="item.id">
+                <tr v-for="item in pagedProducts" :key="item.id">
                   <td>{{ item.id }}</td>
                   <td>{{ item.name }}</td>
                   <td>{{ item.categoryID.name }}</td>
@@ -77,6 +77,23 @@
                 </tr>
                 </tbody>
               </table>
+              <div class="pagination-wrapper">
+                <button
+                  class="btn btn-secondary"
+                  :disabled="currentPage === 1"
+                  @click="currentPage--"
+                >
+                  Trước
+                </button>
+                <span class="mx-2">Trang {{ currentPage }} / {{ totalPages }}</span>
+                <button
+                  class="btn btn-secondary"
+                  :disabled="currentPage === totalPages"
+                  @click="currentPage++"
+                >
+                  Sau
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -111,13 +128,30 @@ export default {
       imageUrls: [],
       imagesDelete: [],
       id_images: [],
-      isEditing: false
+      isEditing: false,
+      currentPage: 1,
+      pageSize: 10,
     };
   },
   created() {
     this.fetchCategories();
     this.fetchProducts();
     this.fetchBrands();
+  },
+  computed: {
+    pagedProducts() {
+      const start = (this.currentPage - 1) * this.pageSize;
+      return this.products.slice(start, start + this.pageSize);
+    },
+    totalPages() {
+      return Math.ceil(this.products.length / this.pageSize) || 1;
+    }
+  },
+  watch: {
+    products() {
+      // Reset về trang đầu khi dữ liệu thay đổi
+      this.currentPage = 1;
+    }
   },
   methods: {
     async fetchProducts() {
@@ -364,5 +398,13 @@ export default {
   font-size: 14px;
   margin-left: 10px;
   color: #555;
+}
+
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 8px;
 }
 </style>

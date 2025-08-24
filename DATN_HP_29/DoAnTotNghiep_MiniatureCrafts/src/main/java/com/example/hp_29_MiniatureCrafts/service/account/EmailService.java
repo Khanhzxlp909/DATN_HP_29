@@ -312,4 +312,24 @@ public class EmailService {
         }).collect(Collectors.toList());
     }
 
+    // Gửi email OTP quên mật khẩu
+    public void sendOtpEmail(String to, String otp) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo(to);
+        helper.setSubject("Mã OTP xác thực quên mật khẩu MiniatureCrafts");
+        String htmlContent = String.format("""
+            <html>
+            <body>
+                <h2>Yêu cầu quên mật khẩu</h2>
+                <p>Mã OTP của bạn là: <b style="font-size:24px;">%s</b></p>
+                <p>Vui lòng nhập mã này để xác thực đổi mật khẩu.</p>
+                <p>Mã OTP có hiệu lực trong vài phút.</p>
+            </body>
+            </html>
+        """, otp);
+        helper.setText(htmlContent, true);
+        mailSender.send(message);
+    }
+
 }

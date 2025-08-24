@@ -42,13 +42,13 @@
           <span class="app-menu__label">POS Bán Hàng</span>
         </a>
       </li>
-      <li>
+      <li v-if="showDashboard">
         <a class="app-menu__item" href="/">
           <i class='app-menu__icon bx bx-tachometer'></i>
           <span class="app-menu__label">Bảng điều khiển</span>
         </a>
       </li>
-      <li>
+      <li v-if="showCustomer">
         <a class="app-menu__item" href="/customer">
           <i class="app-menu__icon bx bx-group"></i>
           <span class="app-menu__label">Quản lý khách hàng</span>
@@ -72,16 +72,10 @@
           <span class="app-menu__label">Quản lý đơn hàng</span>
         </a>
       </li>
-      <li>
+      <li v-if="showEmployee">
         <a class="app-menu__item" href="/employee">
           <i class="app-menu__icon bx bx-id-card"></i>
           <span class="app-menu__label">Nhân viên</span>
-        </a>
-      </li>
-      <li>
-        <a class="app-menu__item" href="/news">
-          <i class="app-menu__icon bx bx-news"></i>
-          <span class="app-menu__label">Tin tức</span>
         </a>
       </li>
       <li>
@@ -115,6 +109,7 @@ export default {
     return {
       isSidebarVisible: true,
       admin: JSON.parse(Cookies.get("admin") || "{}"),
+      roles : Cookies.get("roles"|| "[]"),
     };
   },
   computed: {
@@ -126,6 +121,18 @@ export default {
     },
     isOrderPage() {
       return this.$route.path === "/warehouse/warehouseDetails";
+    },
+    showDashboard() {
+      // Hiển thị bảng điều khiển nếu là admin, ẩn nếu là USER
+      return this.roles.includes('ADMIN');
+    },
+    showCustomer() {
+      // Hiển thị quản lý khách hàng nếu là admin, ẩn nếu là USER
+      return this.roles.includes('ADMIN');
+    },
+    showEmployee() {
+      // Hiển thị nhân viên nếu là admin, ẩn nếu là USER
+      return this.roles.includes('admin');
     }
   },
   mounted() {

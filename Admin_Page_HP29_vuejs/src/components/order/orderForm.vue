@@ -107,10 +107,17 @@
                 <tr v-for="item in cart" :key="item.id">
                   <td>{{ item.sku }}</td>
                   <td>{{ item.productID.name }}</td>
-                  <td>
-                    <button @click="decreaseQuantity(item)">-</button>
-                    {{ item.quantity }}
-                    <button @click="increaseQuantity(item)">+</button>
+                  <td class="quantity-cell">
+                    <button class="quantity-btn" @click="decreaseQuantity(item)">-</button>
+                    <input
+                      class="quantity-input"
+                      type="number"
+                      min="1"
+                      :max="getMaxQuantity(item)"
+                      v-model.number="item.quantity"
+                      @input="onQuantityInput(item)"
+                    />
+                    <button class="quantity-btn" @click="increaseQuantity(item)">+</button>
                   </td>
                   <td>{{ formatCurrency(item.price) }}</td>
                   <td>{{ formatPrice(item.quantity * item.price) }}</td>
@@ -272,15 +279,26 @@ export default {
     },
 
     increaseQuantity(item) {
-      item.quantity += 1;
+      if (item.quantity < this.getMaxQuantity(item)) {
+        item.quantity += 1;
+      }
     },
-
     decreaseQuantity(item) {
       if (item.quantity > 1) {
         item.quantity -= 1;
       }
     },
-
+    getMaxQuantity(item) {
+      // Giới hạn số lượng không vượt quá tồn kho
+      const product = this.products.find(p => p.id === item.id);
+      return product ? product.quantity : 9999;
+    },
+    onQuantityInput(item) {
+      // Đảm bảo số lượng nhập tay không vượt quá tồn kho và không nhỏ hơn 1
+      if (item.quantity < 1) item.quantity = 1;
+      const max = this.getMaxQuantity(item);
+      if (item.quantity > max) item.quantity = max;
+    },
     removeFromCart(item) {
       this.cart = this.cart.filter(product => product.id !== item.id);
     },
@@ -456,3 +474,33 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.quantity-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.quantity-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  color: #333;
+  font-size: 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.quantity-btn:hover {
+  background: #e0e0e0;
+}
+.quantity-input {
+  width: 50px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 28px;
+  margin: 0 2px;
+}
+</style>

@@ -49,7 +49,7 @@
                       <img :src="getImagesUrl(v.images)" alt="" width="70px"/>
                     </td>
                     <td>{{ v.productID.categoryID.name }}</td>
-                    <td>{{ v.price }}</td>
+                    <td>{{ formatCurrency(v.price) }}</td>
                     <td>{{ v.sold }}</td>
                   </tr>
                   </tbody>

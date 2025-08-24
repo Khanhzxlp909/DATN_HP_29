@@ -5,7 +5,7 @@
         <div class="col-sm-12 col-lg-6">
           <form method="POST" class="form" id="form-2" @submit.prevent="login">
             <h3 class="heading">ĐĂNG NHẬP</h3>
-            <a href="#" class="form__forgot-password">Bạn quên mật khẩu?</a>
+            <a href="/forgot-password" class="form__forgot-password">Bạn quên mật khẩu?</a>
             <div class="form-group">
               <label for="username" class="form-label">Tên đăng nhập</label>
               <input id="username" v-model="username" type="text" placeholder="Nhập tên đăng nhập" class="form-control">

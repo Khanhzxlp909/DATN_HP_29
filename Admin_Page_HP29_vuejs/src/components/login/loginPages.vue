@@ -23,16 +23,17 @@ const login = async () => {
         Cookies.set('token', response.data.token);
         Cookies.set('authToken', response.data.token);
         Cookies.set('admin', JSON.stringify(response.data.userInfo), { expires: 1 });
-        Cookies.set('roles', JSON.stringify(response.data.roles));
+        Cookies.set('roles', response.data.roles);
         console.log("ADMIN: " + JSON.stringify(Cookies.get('admin')));
         console.log("ADMIN: " + JSON.stringify(response.data.userInfo.name));
+        console.log("ADMIN: " + response.data.roles);
 
         console.log(response.data)
         // Chuyển hướng đến trang sản phẩm
         window.location.href = '/'; // Dùng window.location.href để chuyển hướng đến URL bên ngoài
       }
     }else{
-      errorMessage.value = error.response?.data?.message || 'Bạn không đủ quyền hạn, vui lòng đăng nhập lại.';
+      errorMessage.value = error.response?.data?.message || 'Bạn không đủ quyền hạn, vui lòng sử dụng tài khoản có quyền hạn truy cập.';
       window.location.href = '/login';
     }
   } catch (error) {

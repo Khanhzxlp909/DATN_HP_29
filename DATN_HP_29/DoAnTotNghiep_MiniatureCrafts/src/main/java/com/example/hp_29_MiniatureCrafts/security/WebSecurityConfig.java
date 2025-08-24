@@ -72,6 +72,7 @@ public class WebSecurityConfig {
                                 "/api/v1/transactions/**",
                                 "/upload/images/**",
                                 "/swagger-ui/**",
+                                "/MiniatureCrafts/account/forgot-password/**",
                                 "/api/admin/dashboard/top-products",
                                 "/MiniatureCrafts/signin",
                                 "/MiniatureCrafts/signup",

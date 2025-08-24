@@ -93,40 +93,6 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <h5>Thông tin liên hệ</h5>
-            <p>Địa chỉ: 123 Đường ABC, Thành phố XYZ</p>
-            <p>Điện thoại: (012) 345-6789</p>
-            <p>Email: contact@example.com</p>
-          </div>
-          <div class="col-md-4">
-            <h5>Liên kết nhanh</h5>
-            <ul>
-              <li><a href="/about">Giới thiệu</a></li>
-              <li><a href="/products">Sản phẩm</a></li>
-              <li><a href="/contact">Liên hệ</a></li>
-              <li><a href="/policy">Chính sách</a></li>
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <h5>Mạng xã hội</h5>
-            <ul class="social-media">
-              <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
-              <li><a href="https://twitter.com" target="_blank">Twitter</a></li>
-              <li><a href="https://instagram.com" target="_blank">Instagram</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="text-center">
-          <p>&copy; 2023 Công ty ABC. Bảo lưu mọi quyền.</p>
-        </div>
-      </div>
-    </footer>
-
   </div>
 </template>
 

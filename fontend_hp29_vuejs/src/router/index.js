@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'; // Import cho Vue 3
 import HomePage from '@/views/HomePage.vue'; // Import view component
-import LoginPage from '@/components/login/loginPage.vue'; // Import view component
-import RegisterPage from '@/components/login/registerPage.vue'; // Import view component
-import ProductPage from '@/components/home/productPage.vue'; // Import view component
+import LoginPage from '@/components/login/LoginPage.vue'; // Import view component
+import ForgotPassword from '@/components/login/ForgotPassword.vue'; // Import view component
+import RegisterPage from '@/components/login/RegisterPage.vue'; // Import view component
+import ProductPage from '@/components/home/ProductPage.vue'; // Import view component
 import ProductDetail from '@/components/home/ProductDetail.vue'; // Import view component
 import AccountManagement from '@/components/profile/accountManagement.vue'; // Import view component
-import SeachProduct from '@/components/home/seachProduct.vue'; // Import view component
+import ResultProduct from '@/components/home/ResultProduct.vue'; // Import view component
 import CartPage from '@/components/cart/cartPage.vue'; // Import view component
 import PaymentPages from '@/components/pay/paymentPages.vue';
-import RegisterInfoPage from "@/components/login/registerInfoPage.vue"; // Import view component
-import HomeNew from "@/components/home/HomeNew.vue";
+import RegisterInfoPage from "@/components/login/RegisterInfoPage.vue"; // Import view component
 import ContactPage from "@/components/conttact/ConttactPage.vue";
 
 const routes = [
@@ -46,7 +46,7 @@ const routes = [
     {
         path: '/result',
         name: 'resultpage',
-        component: SeachProduct, // Component sẽ hiển thị khi truy cập đường dẫn "/"
+        component: ResultProduct, // Component sẽ hiển thị khi truy cập đường dẫn "/"
     },
     {
         path: '/product/:id',
@@ -69,9 +69,9 @@ const routes = [
         component: PaymentPages , // Component sẽ hiển thị khi truy cập đường dẫn "/"
     },
     {
-        path: '/New',
-        name: 'HomeNew',
-        component: HomeNew, // Component sẽ hiển thị khi truy cập đường dẫn "/"
+        path: '/forgot-password',
+        name: 'forgotpassword',
+        component: ForgotPassword , // Component sẽ hiển thị khi truy cập đường dẫn "/"
     },
     // Các route khác nếu có
 ];

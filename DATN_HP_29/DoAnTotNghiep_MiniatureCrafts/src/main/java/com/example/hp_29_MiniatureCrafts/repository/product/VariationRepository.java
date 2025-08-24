@@ -31,7 +31,10 @@ public interface VariationRepository extends JpaRepository<Variation, Long> {
     @Query("SELECT v FROM Variation v WHERE " +
             "v.Name LIKE %:keyword% " +
             "OR v.ProductID.CategoryID.Name LIKE %:keyword% " +
+            "OR v.ProductID.BrandID.Name LIKE %:keyword% " +
             "OR v.Description LIKE %:keyword% " +
+            "OR v.Color LIKE %:keyword% " +
+            "OR v.Size LIKE %:keyword% " +
             "OR v.Material LIKE %:keyword% ")
     Page<Variation> findByName(Pageable pageable, @Param("keyword") String keyword);
 

@@ -382,9 +382,9 @@ public class VariationService {
         });
     }
 
-    public Page<VariationDTO> findByName(Pageable pageable, String id) {
+    public Page<VariationDTO> findByName(Pageable pageable, String keyword) {
         // Truy vấn các Variations theo Status và phân trang
-        Page<Variation> variation = variationRepository.findByName(pageable, id);
+        Page<Variation> variation = variationRepository.findByName(pageable, keyword);
 
         return variation.map(entity -> {
             VariationDTO dto = new VariationDTO();
