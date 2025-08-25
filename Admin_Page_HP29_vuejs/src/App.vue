@@ -4,7 +4,7 @@
 
       <!-- Main Content -->
       <div class="main-content">
-        <Header/>
+        <Header v-if="showHeader"/>
         <router-view />
       </div>
     </div>
@@ -13,11 +13,19 @@
 
 <script>
 import Header from "./components/navbar/Header.vue";
+import Cookies from "js-cookie";
 
 export default {
   components: {
     Header,
   },
+  computed: {
+    showHeader() {
+      // Only show Header if roles cookie exists and is not null
+      const roles = Cookies.get("roles");
+      return roles !== undefined && roles !== null;
+    }
+  }
 };
 </script>
 

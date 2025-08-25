@@ -147,9 +147,10 @@ export default {
     },
     logout() {
       // Xóa token khỏi cookies
-      Cookies.remove("token"); // Thay đổi "token" thành tên cookie bạn đã sử dụng
-      Cookies.remove("authToken"); // Thay đổi "token" thành tên cookie bạn đã sử dụng
-      Cookies.remove("admin"); // Thay đổi "token" thành tên cookie bạn đã sử dụng
+      Cookies.remove("roles");
+      Cookies.remove("token");
+      Cookies.remove("authToken");
+      Cookies.remove("admin");  
       location.reload();
       // Chuyển hướng đến trang đăng nhập
       this.$router.push("/login"); // Hoặc trang bạn muốn chuyển hướng đến
