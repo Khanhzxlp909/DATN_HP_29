@@ -37,9 +37,9 @@ const login = async () => {
       window.location.href = '/login';
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
-    errorMessage.value = error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+    errorMessage.value =  'Tài khoản hoặc mật khẩu không đúng.';
   }
 };
 </script>
