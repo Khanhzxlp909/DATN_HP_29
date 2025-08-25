@@ -109,8 +109,8 @@
                 cursor: 'pointer',
                 display: 'inline-block',
                 textAlign: 'center',
-                width: '120px',
-                height: '120px'
+                width: '160px',
+                height: '125px'
               }"
             >
               <!-- Ảnh biến thể: nếu có, hiển thị, còn không thì mặc định -->
@@ -145,7 +145,7 @@
           </div>
 
           <div class="product__shopnow">
-            <button class="shopnow" style="color: white" :disabled="!activeVariation?.status">
+            <button @click="payment" class="shopnow" style="color: #9a5252" :disabled="!activeVariation?.status">
               Mua ngay
             </button>
             <span class="home-product-item__like home-product-item__like--liked">
@@ -162,7 +162,7 @@
     </div>
     <div class="product__relateto">
       <div class="container">
-        <h3 class="product__relateto-heading">Sản phẩm liên quan</h3>
+        <h3 class="product__relateto-heading">Sản phẩm bán chạy</h3>
         <div class="row">
           <div class="col-lg-3 col-md-6 col-sm-12 mb-20"
                v-for="(v, index) in bestSellers"
@@ -217,42 +217,6 @@
       </div>
     </div>
   </div>
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4">
-          <h5>Thông tin liên hệ</h5>
-          <p>Địa chỉ: 123 Đường ABC, Thành phố XYZ</p>
-          <p>Điện thoại: (012) 345-6789</p>
-          <p>Email: contact@example.com</p>
-        </div>
-        <div class="col-md-4">
-          <h5>Liên kết nhanh</h5>
-          <ul>
-            <li><a href="/about">Giới thiệu</a></li>
-            <li><a href="/products">Sản phẩm</a></li>
-            <li><a href="/contact">Liên hệ</a></li>
-            <li><a href="/policy">Chính sách</a></li>
-          </ul>
-        </div>
-        <div class="col-md-4">
-          <h5>Mạng xã hội</h5>
-          <ul class="social-media">
-            <li>
-              <a href="https://facebook.com" target="_blank">Facebook</a>
-            </li>
-            <li><a href="https://twitter.com" target="_blank">Twitter</a></li>
-            <li>
-              <a href="https://instagram.com" target="_blank">Instagram</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="text-center">
-        <p>&copy; 2023 Công ty ABC. Bảo lưu mọi quyền.</p>
-      </div>
-    </div>
-  </footer>
 </template>
 
 <script>
@@ -274,6 +238,40 @@ export default {
     const selectedSize = ref(null);
     const variations = ref(null);
     const activeVariation = ref({});
+
+    const payment = () => {
+      // Validate quantity before proceeding
+      if (quantity.value > (activeVariation.value?.quantity || 0)) {
+        alert("Số lượng mua vượt quá số lượng còn lại!");
+        return;
+      }
+      sessionStorage.removeItem("cart")
+      try {
+        // Lấy giỏ hàng hiện tại trong sessionStorage
+        let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+
+        // Tạo item mới
+        const orderItem = {
+          customer_id: {},
+          variation_id: activeVariation.value,
+          id: Date.now(),
+          status: 0,
+          quantity: quantity.value,
+        };
+
+        // Thêm vào mảng giỏ hàng
+        cart.push(orderItem);
+
+        // Lưu lại
+        sessionStorage.setItem("cart", JSON.stringify(cart));
+
+        console.log("Đã lưu sessionStorage cart:", cart);
+
+        window.location.href = "/pay";
+      } catch (e) {
+        console.error("Lỗi khi set sessionStorage:", e);
+      }
+    };
 
     const getProductDetail = async () => {
       const id = route.params.id; // Get the product ID from the route parameter
@@ -324,8 +322,12 @@ export default {
 
     const changeQuantity = (value) => {
       const newQuantity = quantity.value + value;
-      if (newQuantity > 0) {
+      if (newQuantity > 0 && newQuantity <= (activeVariation.value?.quantity || 0)) {
         quantity.value = newQuantity;
+      }
+      // Optional: alert if trying to exceed available quantity
+      if (newQuantity > (activeVariation.value?.quantity || 0)) {
+        // alert("Số lượng vượt quá số lượng còn lại!");
       }
     };
 
@@ -402,6 +404,7 @@ export default {
     });
 
     return {
+      payment,
       selectVariation,
       openDetail,
       bestSellers: variations,

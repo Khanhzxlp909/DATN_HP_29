@@ -5,6 +5,7 @@ import com.example.hp_29_MiniatureCrafts.entity.POSOrder;
 import com.example.hp_29_MiniatureCrafts.entity.PayOsClient;
 import com.example.hp_29_MiniatureCrafts.repository.PayOsClientRepository;
 import com.example.hp_29_MiniatureCrafts.repository.order.OrderRepository;
+import com.example.hp_29_MiniatureCrafts.service.order.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,49 +32,93 @@ public class PayOsClientService {
 
 
     @Autowired
+    private OrderService orderService;
+
+    @Autowired
     private OrderRepository orderRepository;
     /**
      * Tối ưu: Gộp logic tạo link và lưu DB vào một transaction duy nhất.
      * Controller chỉ cần gọi hàm này.
      */
     @Transactional
-    public CheckoutResponseData createPaymentLinkAndSaveTransaction(CreatePaymentRequest request) throws Exception {
+    public CheckoutResponseData createPaymentLinkAdmin(CreatePaymentRequest request) throws Exception {
         long orderCode = System.currentTimeMillis();
 
-        // Thêm các trường thông tin người mua
-        PaymentData paymentData = PaymentData.builder()
-                .orderCode(orderCode)
-                .amount(request.getAmount())
-                .description(request.getDescription())
-                .cancelUrl("http://localhost:5173/payment-cancel")
-                .returnUrl("http://localhost:5173/payment-success")
-                // ✨ Bổ sung các thông tin này ✨
-                .buyerName("Nguyễn Văn A") // Lấy từ thông tin đơn hàng
-                .buyerEmail("nguyenvana@email.com") // Lấy từ thông tin đơn hàng
-                .buyerPhone("0987654321") // Lấy từ thông tin đơn hàng
-                .build();
+       if (request.getRoles().equals("customer")){
+           // Thêm các trường thông tin người mua
+           PaymentData paymentData = PaymentData.builder()
+                   .orderCode(orderCode)
+                   .amount(request.getAmount())
+                   .description(request.getDescription())
+                   .cancelUrl("http://localhost:8081/payment-cancel/"+request.getOrderId())
+                   .returnUrl("http://localhost:8081/payment-success")
+                   // ✨ Bổ sung các thông tin này ✨
+                   .buyerName("Nguyễn Văn A") // Lấy từ thông tin đơn hàng
+                   .buyerEmail("nguyenvana@email.com") // Lấy từ thông tin đơn hàng
+                   .buyerPhone("0987654321") // Lấy từ thông tin đơn hàng
+                   .build();
 
-        CheckoutResponseData checkoutResponseData = payos.createPaymentLink(paymentData);
+           CheckoutResponseData checkoutResponseData = payos.createPaymentLink(paymentData);
 
-        // Lưu giao dịch vào DB
-        PayOsClient newTransaction = new PayOsClient();
+           // Lưu giao dịch vào DB
+           PayOsClient newTransaction = new PayOsClient();
 
-        POSOrder order = orderRepository.findByOrderID(request.getOrderId());
-        if (order == null) {
-            throw new RuntimeException("Không tìm thấy đơn hàng với ID: " + request.getOrderId());
-        }
+           POSOrder order = orderRepository.findByOrderID(request.getOrderId());
+           if (order == null) {
+               throw new RuntimeException("Không tìm thấy đơn hàng với ID: " + request.getOrderId());
+           }
 
-        newTransaction.setOrderId(order);
-        newTransaction.setOrderCode(orderCode); // Lưu kiểu Long
-        newTransaction.setAmount(request.getAmount());
-        newTransaction.setDescription(request.getDescription());
-        newTransaction.setCheckoutUrl(checkoutResponseData.getCheckoutUrl());
-        newTransaction.setStatus("PENDING");
-        newTransaction.setCreationDate(LocalDateTime.now());
-        payOsClientRepository.save(newTransaction);
+           newTransaction.setOrderId(order);
+           newTransaction.setOrderCode(orderCode); // Lưu kiểu Long
+           newTransaction.setAmount(request.getAmount());
+           newTransaction.setDescription(request.getDescription());
+           newTransaction.setCheckoutUrl(checkoutResponseData.getCheckoutUrl());
+           newTransaction.setStatus("PENDING");
+           newTransaction.setCreationDate(LocalDateTime.now());
+           orderService.successOrder(request.getOrderId());
+           payOsClientRepository.save(newTransaction);
 
-        return checkoutResponseData;
+           return checkoutResponseData;
+       } else {
+
+           // Thêm các trường thông tin người mua
+           PaymentData paymentData = PaymentData.builder()
+                   .orderCode(orderCode)
+                   .amount(request.getAmount())
+                   .description(request.getDescription())
+                   .cancelUrl("http://localhost:8081/payment-cancel/"+  request.getOrderId())
+                   .returnUrl("http://localhost:8081/payment-success")
+                   // ✨ Bổ sung các thông tin này ✨
+                   .buyerName("Nguyễn Văn A") // Lấy từ thông tin đơn hàng
+                   .buyerEmail("nguyenvana@email.com") // Lấy từ thông tin đơn hàng
+                   .buyerPhone("0987654321") // Lấy từ thông tin đơn hàng
+                   .build();
+
+           CheckoutResponseData checkoutResponseData = payos.createPaymentLink(paymentData);
+
+           // Lưu giao dịch vào DB
+           PayOsClient newTransaction = new PayOsClient();
+
+           POSOrder order = orderRepository.findByOrderID(request.getOrderId());
+           if (order == null) {
+               throw new RuntimeException("Không tìm thấy đơn hàng với ID: " + request.getOrderId());
+           }
+
+           newTransaction.setOrderId(order);
+           newTransaction.setOrderCode(orderCode); // Lưu kiểu Long
+           newTransaction.setAmount(request.getAmount());
+           newTransaction.setDescription(request.getDescription());
+           newTransaction.setCheckoutUrl(checkoutResponseData.getCheckoutUrl());
+           newTransaction.setStatus("PENDING");
+           newTransaction.setCreationDate(LocalDateTime.now());
+
+           orderService.successOrder(request.getOrderId());
+           payOsClientRepository.save(newTransaction);
+
+           return checkoutResponseData;
+       }
     }
+
 
     @Transactional
     public PayOsClient createTransaction(PayOsClient transaction) {

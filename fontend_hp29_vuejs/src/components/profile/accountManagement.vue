@@ -141,8 +141,9 @@
               <p><strong>Tên khách hàng:</strong> {{ selectedOrder.customerID.name }}</p>
               <p><strong>Địa chỉ:</strong> {{ selectedOrder.address }}</p>
               <p><strong>SDT:</strong> {{ selectedOrder.customerID.phone }}</p>
+              <p><strong>Phương thức thanh toán:</strong> {{ selectedOrder.paymentMethod.type }}</p>
               <p>
-                <strong>Trạng thái:</strong>
+                <strong>Trạng thái: </strong>
                 <span class="status-tracking">
                   {{ statusLabels[selectedOrder.status] }}
                 </span>
@@ -151,7 +152,7 @@
               <p><strong>Tổng tiền:</strong> {{ formatCurrency(selectedOrder.total_Payment) }}</p>
               <p>
                 <button class="loadmore-btn"
-                        v-if="selectedOrder.status !== 2  && selectedOrder.status !== 3 && selectedOrder.status !== 0 && selectedOrder.status !== 4 && selectedOrder.status !== 5"
+                        v-if=" selectedOrder.status !== 3 && selectedOrder.status !== 0 && selectedOrder.status !== 4 && selectedOrder.status !== 5"
                         style="font-size: smaller;
                                margin-bottom: 5px"
                         @click="cancelOrder(selectedOrder.id)">
@@ -163,15 +164,6 @@
                         style="font-size: smaller"
                         @click="completeOrder(selectedOrder.id)">
                   Đã nhận được hàng
-                </button>
-                <button class="loadmore-btn"
-                        v-if="selectedOrder.status === 3 &&
-                              !isOver30Days(selectedOrder.order_Time) &&
-                              selectedOrder.status !== 4 &&
-                              !selectedOrder.note?.includes('Trả hàng đơn #')"
-                        style="font-size: smaller"
-                        @click="initiateReturnOrder(item.id)">
-                  Trả hàng
                 </button>
               </p>
             </div>
@@ -430,6 +422,7 @@ export default {
           }
         });
         alert("Đơn hàng đã được hủy thành công!");
+        alert("Quý khách vui lòng liên hệ với cửa hàng để được hoàn tiền (nếu có)!");
         window.location.reload();
 
       } catch (error) {
@@ -456,32 +449,6 @@ export default {
       }
     };
 
-    const initiateReturnOrder = async (orderid) => {
-      const token = Cookies.get("authToken");
-      console.log("trả hàng: " + orderid);
-      const apicomplete = `http://localhost:8080/admin/orders/returns/${orderid}`;
-      const returnReason = prompt("Nhập lý do trả hàng:");
-      if (!returnReason) {
-        alert("Bạn phải nhập lý do trả hàng!");
-        return;
-      }
-
-      try {
-        await axios.get(apicomplete, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          params: {
-            note: `Trả hàng đơn #${orderid}. Lý do: ${returnReason}`,
-          }
-        });
-        alert("Đã gửi đơn hàng muốn trả hàng, vui lòng chờ shop duyệt!");
-        await getOrder();
-      } catch (error) {
-        console.error("Lỗi khi hủy đơn hàng:", error);
-      }
-
-    };
 
     const getOrder = async () => {
       const customer = JSON.parse(Cookies.get('customers') || '{}');
@@ -637,7 +604,6 @@ export default {
 
     return {
       isOver30Days,
-      initiateReturnOrder,
       viewProductDetail,
       selectedStatus,
       currentPage,

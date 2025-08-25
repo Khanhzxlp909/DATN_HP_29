@@ -32,9 +32,9 @@ public class PayOsClientController {
      * Controller giờ chỉ gọi service, logic đã được chuyển đi.
      */
     @PostMapping("/create-payment-link")
-    public ResponseEntity<Map<String, String>> createPaymentLink(@RequestBody CreatePaymentRequest request) {
+    public ResponseEntity<Map<String, String>> createPaymentLinkAdmin(@RequestBody CreatePaymentRequest request) {
         try {
-            CheckoutResponseData data = payOsClientService.createPaymentLinkAndSaveTransaction(request);
+            CheckoutResponseData data = payOsClientService.createPaymentLinkAdmin(request);
             // Trả về checkoutUrl cho frontend
             Map<String, String> response = Collections.singletonMap("checkoutUrl", data.getCheckoutUrl());
             return ResponseEntity.ok(response);

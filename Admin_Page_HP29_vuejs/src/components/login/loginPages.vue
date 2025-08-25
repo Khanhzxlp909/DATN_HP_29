@@ -30,16 +30,16 @@ const login = async () => {
 
         console.log(response.data)
         // Chuyển hướng đến trang sản phẩm
-        window.location.href = '/'; // Dùng window.location.href để chuyển hướng đến URL bên ngoài
+        window.location.href = '/posorder'; // Dùng window.location.href để chuyển hướng đến URL bên ngoài
       }
     }else{
       errorMessage.value = error.response?.data?.message || 'Bạn không đủ quyền hạn, vui lòng sử dụng tài khoản có quyền hạn truy cập.';
       window.location.href = '/login';
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
-    errorMessage.value = error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+    errorMessage.value =  'Tài khoản hoặc mật khẩu không đúng.';
   }
 };
 </script>

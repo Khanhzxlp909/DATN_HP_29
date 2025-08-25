@@ -48,7 +48,7 @@
                   <td class="so--luong" colspan="7">Không tìm thấy sản phẩm nào.</td>
                 </tr>
                 <tr v-for="variation in products" :key="variation.id" @click="addToCart(variation)">
-                  <td class="so--luong">{{ variation.productID.name }}</td>
+                  <td class="so--luong">{{ variation.name }}</td>
                   <td class="so--luong">
                     <div class="color-box"
                          :style="{ backgroundColor: variation.color, width: '30px', height: '30px', borderRadius: '4px' }">
@@ -73,6 +73,16 @@
             </div>
             <div class="alert">
               <div class="pagination">
+                <!-- Nút về trang đầu -->
+                <button
+                    class="page-button"
+                    :disabled="currentPage === 0"
+                    @click="changePage(0)"
+                >
+                  First
+                </button>
+
+                <!-- Nút lùi 1 trang -->
                 <button
                     class="page-button"
                     :disabled="currentPage === 0"
@@ -80,7 +90,10 @@
                 >
                   Previous
                 </button>
+
                 <span>Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+
+                <!-- Nút tiến 1 trang -->
                 <button
                     class="page-button"
                     :disabled="currentPage >= totalPages - 1"
@@ -88,7 +101,17 @@
                 >
                   Next
                 </button>
+
+                <!-- Nút nhảy đến trang cuối -->
+                <button
+                    class="page-button"
+                    :disabled="currentPage >= totalPages - 1"
+                    @click="changePage(totalPages - 1)"
+                >
+                  Last
+                </button>
               </div>
+
             </div>
             <div class="tile mt-3">
               <h3 class="tile-title">Giỏ hàng</h3>
@@ -415,7 +438,7 @@ export default {
               "orderId": orderID
             };
             console.log("Data for payment:", dataForPayment);
-            const payosResponse = await axios.post(`http://localhost:8080/api/v1/transactions/create-payment-link`, dataForPayment,
+            const payosResponse = await axios.post(`http://localhost:8080/api/v1/transactions/create-payment-link/admin`, dataForPayment,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`
@@ -467,8 +490,19 @@ export default {
         }
 
       } catch (error) {
-        console.error("Lỗi khi lưu đơn hàng:", error);
-        alert("Đơn hàng thiếu phương thức thanh toán hoặc khách hàng!");
+        if (error.response && error.response.data) {
+          // Lấy thông báo lỗi từ server
+          const serverMessage = error.response.data.data || "";
+
+          if (serverMessage.includes("hết hàng")) {
+            alert("❌ Sản phẩm này đã có người nhanh tay đặt trước hoặc đã bán hết!");
+          } else {
+            alert(serverMessage || "Có lỗi xảy ra, vui lòng thử lại!");
+          }
+        } else {
+          console.error("Lỗi khi lưu đơn hàng:", error);
+          alert("Có lỗi xảy ra, vui lòng thử lại!");
+        }
       }
     },
   }

@@ -85,8 +85,7 @@ public class OrderService {
         posOrderRepository.save(order);
     }
 
-    public void
-    accpectReturn(Long orderId, String note) {
+    public void accpectReturn(Long orderId, String note) {
         // Tìm đơn hàng theo ID
         POSOrder order = posOrderRepository.findByOrderID(orderId);
         order.setNote(note);
@@ -438,8 +437,6 @@ public class OrderService {
             entity.setCustomerID(customer);
             entity.setAddress(dto.getAddress());
 
-            // Bỏ voucher - không cần set Code_Voucher và Discount_Amount
-
             PaymentMethod paymentMethod = mapPaymentMethodDTOToEntity(dto.getPaymentMethod());
             entity.setPaymentMethod(paymentMethod);
 
@@ -502,12 +499,11 @@ public class OrderService {
             entity.setCustomerID(customer);
             entity.setAddress(dto.getAddress());
 
-            // Bỏ voucher - không cần set Code_Voucher và Discount_Amount
 
             PaymentMethod paymentMethod = mapPaymentMethodDTOToEntity(dto.getPaymentMethod());
             entity.setPaymentMethod(paymentMethod);
 
-            entity.setStatus(1); // Trạng thái "Hoàn thành"
+            entity.setStatus(1); // Trạng thái "Chờ"
             entity.setType_Oder(2); // Đơn hàng Shop
             entity.setOrder_Time(LocalDateTime.now());
             entity.setNote(dto.getNote());

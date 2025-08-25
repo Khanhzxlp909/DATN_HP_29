@@ -34,7 +34,7 @@
                            :name="'filterByCategory'"
                            v-model="selectedCategoryId"
                            :value="category.id"
-                           @change="filterByCategory(category.id)" />
+                           @change="filterByCategory(category.id)"/>
                     <span>{{ category.name }}</span>
                   </label>
                 </li>
@@ -54,7 +54,7 @@
                            :name="'filterByBrand'"
                            v-model="selectedBrandsID"
                            :value="brand.id"
-                           @change="filterByBrands(brand.id)" />
+                           @change="filterByBrands(brand.id)"/>
 
                     <span>{{ brand.name }}</span>
                   </label>
@@ -70,53 +70,50 @@
             </div>
           </div>
           <div class="row row-product" id="products">
-              <div class="col-lg-4 col-md-6 col-12 mb-20" v-for="v in variations" :key="v.id"
-                   style="margin-bottom: 20px">
-                <a @click="openDetail(v.id)" class="product__new-item">
-                  <div class="card" style="width: 100%">
-                    <div>
-                      <img
-                          class="card-img-top"
-                          :src="`http://localhost:8080/upload/images/${v.defaultImage}`"
-                          :alt="v.name"
-                      />
-                    </div>
-                    <div class="card-body">
-                      <h5 class="card-title custom__name-product">{{ v.name }}</h5>
-                      <p class="card-text brand-color">Hãng: {{ v.brandID.name }}</p>
-                      <p class="card-text brand-color">Danh mục: {{ v.categoryID.name }}</p>
+            <div class="col-lg-4 col-md-6 col-12 mb-20" v-for="v in variations" :key="v.id"
+                 style="margin-bottom: 20px">
+              <a @click="openDetail(v.id)" class="product__new-item">
+                <div class="card" style="width: 100%">
+                  <div>
+                    <img
+                        class="card-img-top"
+                        :src="`http://localhost:8080/upload/images/${v.defaultImage}`"
+                        :alt="v.name"
+                    />
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title custom__name-product">{{ v.name }}</h5>
+                    <p class="card-text brand-color">Hãng: {{ v.brandID.name }}</p>
+                    <p class="card-text brand-color">Danh mục: {{ v.categoryID.name }}</p>
 
-                      <p class="card-text price-color product__price-new">
+                    <p class="card-text brand-color">Giá:
+                      <span class="card-text price-color product__price-new">
                         {{ formatCurrency(getMinPrice(v.variations)) }}
-                      </p>
+                      </span>
+                    </p>
 
-                      <div class="status-product">
-                        Trạng thái:
-                        <b class="text-success">Còn hàng</b>
-                      </div>
-
-                      <div class="home-product-item__action">
+                    <div class="home-product-item__action">
                     <span class="home-product-item__like home-product-item__like--liked">
                       <i class="home-product-item__like-icon-empty far fa-heart"></i>
                       <i class="home-product-item__like-icon-fill fas fa-heart"></i>
                     </span>
-                        <div class="home-product-item__rating">
-                          <i class="home-product-item__star--gold fas fa-star"></i>
-                          <i class="home-product-item__star--gold fas fa-star"></i>
-                          <i class="home-product-item__star--gold fas fa-star"></i>
-                          <i class="home-product-item__star--gold fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                        </div>
-                        <span class="home-product-item__sold">{{ v.sold }} đã bán</span>
+                      <div class="home-product-item__rating">
+                        <i class="home-product-item__star--gold fas fa-star"></i>
+                        <i class="home-product-item__star--gold fas fa-star"></i>
+                        <i class="home-product-item__star--gold fas fa-star"></i>
+                        <i class="home-product-item__star--gold fas fa-star"></i>
+                        <i class="fas fa-star"></i>
                       </div>
-                      <div class="sale-off" v-if="v.discount">
-                        <span class="sale-off-percent">{{ v.discount }}%</span>
-                        <span class="sale-off-label">GIẢM</span>
-                      </div>
+                      <span class="home-product-item__sold">{{ v.sold }} đã bán</span>
+                    </div>
+                    <div class="sale-off" v-if="v.discount">
+                      <span class="sale-off-percent">{{ v.discount }}%</span>
+                      <span class="sale-off-label">GIẢM</span>
                     </div>
                   </div>
-                </a>
-              </div>
+                </div>
+              </a>
+            </div>
           </div>
           <div class="pagination">
             <button :disabled="currentPage === 1" @click="changePage(currentPage - 1)" class="btn btn-primary btn-sm">
@@ -134,38 +131,6 @@
     </div>
   </div>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4">
-          <h5>Thông tin liên hệ</h5>
-          <p>Địa chỉ: 123 Đường ABC, Thành phố XYZ</p>
-          <p>Điện thoại: (012) 345-6789</p>
-          <p>Email: contact@example.com</p>
-        </div>
-        <div class="col-md-4">
-          <h5>Liên kết nhanh</h5>
-          <ul>
-            <li><a href="/about">Giới thiệu</a></li>
-            <li><a href="/products">Sản phẩm</a></li>
-            <li><a href="/contact">Liên hệ</a></li>
-            <li><a href="/policy">Chính sách</a></li>
-          </ul>
-        </div>
-        <div class="col-md-4">
-          <h5>Mạng xã hội</h5>
-          <ul class="social-media">
-            <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
-            <li><a href="https://twitter.com" target="_blank">Twitter</a></li>
-            <li><a href="https://instagram.com" target="_blank">Instagram</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="text-center">
-        <p>&copy; 2023 Công ty ABC. Bảo lưu mọi quyền.</p>
-      </div>
-    </div>
-  </footer>
 </template>
 
 <script>
@@ -293,6 +258,7 @@ export default {
         console.error('Error fetching categories:', error)
       }
     }
+
     async function getBrands() {
       try {
         const {data} = await axios.get('http://localhost:8080/MiniatureCrafts/brands')
@@ -332,8 +298,9 @@ export default {
 
 <style scoped>
 .container {
-   width: 100%;
+  width: 100%;
 }
+
 .pagination {
   display: flex;
   justify-content: center;

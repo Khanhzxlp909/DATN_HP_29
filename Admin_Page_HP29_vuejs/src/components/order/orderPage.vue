@@ -127,33 +127,6 @@
                   >
                     <i class="fa fa-edit"></i> Xác nhận đơn hàng
                   </button>
-
-                  <button
-                      class="btn btn-success btn-sm edit"
-                      type="button"
-                      v-if="
-                          item.status === 5 &&
-                          !isOver30Days(item.order_Time) &&
-                          item.status !== 4
-                        "
-                      @click="initiateReturnOrder(item)"
-                  >
-                    <i class="fa fa-edit"></i> Duyệt trả hàng
-                  </button>
-
-                  <button
-                      class="btn btn-warning btn-sm edit"
-                      type="button"
-                      v-if="
-                          item.status === 3 &&
-                          !isOver30Days(item.order_Time) &&
-                          item.status !== 4 &&
-                          !item.note?.includes('Trả hàng đơn #')
-                        "
-                      @click="initiateReturnOrder(item)"
-                  >
-                    <i class="fa fa-edit"></i> Trả hàng
-                  </button>
                 </td>
               </tr>
               </tbody>
@@ -437,53 +410,6 @@ export default {
       this.selectedOrders = isChecked ? this.orders.map(order => order.id) : [];
     },
 
-    async initiateReturnOrder(order) {
-      try {
-        const returnReason = prompt("Nhập lý do trả hàng:");
-        if (!returnReason) {
-          alert("Bạn phải nhập lý do trả hàng!");
-          return;
-        }
-        const token = Cookies.get("token"); // Lấy token từ cookies
-        // 1. Lấy danh sách sản phẩm trong đơn hàng gốc
-        const res = await axios.get(`http://localhost:8080/admin/orders/history/getprd/${order.id}`);
-        const originalLines = res.data;
-
-        // 2. Tạo dữ liệu đơn trả hàng mới
-        const returnOrder = {
-          address: order.address,
-          note: `Trả hàng đơn #${order.id}. Lý do: ${returnReason}`,
-          customerID: {
-            id: order.customerID.id
-          },
-          paymentMethod: {
-            id: order.paymentMethod.id
-          },
-          orderLine: originalLines.map(line => ({
-            variationID: {id: line.variationID.id},
-            quantity: line.quantity
-          }))
-        };
-
-        // 3. Gửi yêu cầu tạo đơn trả hàng
-        const createRes = await axios.post(`http://localhost:8080/admin/orders/accpect/return/${order.id}`, returnOrder, {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            }
-        );
-
-        if (createRes.status === 200) {
-          alert("Tạo đơn trả hàng thành công!");
-          this.fetchOrder(this.currentPage, this.pageSize); // Refresh danh sách đơn hàng
-        } else {
-          alert("Không thể tạo đơn trả hàng!");
-        }
-      } catch (error) {
-        console.error("Lỗi khi tạo đơn trả hàng:", error);
-        alert("Đã xảy ra lỗi khi tạo đơn trả hàng!");
-      }
-    }
 
 
   },

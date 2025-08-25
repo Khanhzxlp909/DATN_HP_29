@@ -104,18 +104,11 @@
                   <!-- Nút đặt hàng -->
                   <div class="col-md-4 col-12 text-md-end text-start">
                     <a v-if="cart.length > 0"
-                       href="/pay"
+                       @click="payment()"
                        class="chekout btn btn-primary"
                        style="display: inline-block;">
                       Đặt hàng ngay!
                     </a>
-                    <button
-                        v-else
-                        @click.prevent="alert('Giỏ hàng của bạn đang trống.')"
-                        class="chekout btn btn-secondary"
-                        style="display: inline-block; cursor: not-allowed;">
-                      Đặt hàng ngay!
-                    </button>
                   </div>
                 </div>
               </div>
@@ -150,6 +143,20 @@ export default {
 
       const defaultImage = images;
       return defaultImage ? `http://localhost:8080/upload/images/${defaultImage.cd_Images}` : "default-image.jpg";
+    };
+
+    const payment = () => {
+      const data = JSON.stringify(cart.value);
+
+      try {
+        sessionStorage.removeItem("cart")
+        sessionStorage.setItem("cart", data);
+        console.log("Đã lưu cookie cart:",  sessionStorage.setItem("cart"));
+      } catch (e) {
+        console.error("Lỗi khi set cookie:", e);
+      }
+
+      window.location.href = "/pay";
     };
 
 
@@ -230,6 +237,7 @@ export default {
 
     return {
       cart,
+      payment,
       getDefaultImage,
       totalPrice,
       convertCurrencyToNumber,

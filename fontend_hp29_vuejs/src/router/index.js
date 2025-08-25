@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'; // Import cho Vue 3
+import {createRouter, createWebHistory} from 'vue-router'; // Import cho Vue 3
 import HomePage from '@/views/HomePage.vue'; // Import view component
 import LoginPage from '@/components/login/LoginPage.vue'; // Import view component
 import ForgotPassword from '@/components/login/ForgotPassword.vue'; // Import view component
@@ -9,10 +9,20 @@ import AccountManagement from '@/components/profile/accountManagement.vue'; // I
 import ResultProduct from '@/components/home/ResultProduct.vue'; // Import view component
 import CartPage from '@/components/cart/cartPage.vue'; // Import view component
 import PaymentPages from '@/components/pay/paymentPages.vue';
+import OrderSuccess from '@/components/pay/OrderSuccess.vue';
+import OrderCancel from '@/components/pay/OrderCancel.vue';
 import RegisterInfoPage from "@/components/login/RegisterInfoPage.vue"; // Import view component
 import ContactPage from "@/components/conttact/ConttactPage.vue";
 
 const routes = [
+    {
+        path: "/payment-success",
+        component: OrderSuccess
+    },
+    {
+        path: "/payment-cancel/:id",
+        component: OrderCancel
+    },
     {
         path: '/',
         name: 'homepages',
@@ -66,12 +76,12 @@ const routes = [
     {
         path: '/pay',
         name: 'paypages',
-        component: PaymentPages , // Component sẽ hiển thị khi truy cập đường dẫn "/"
+        component: PaymentPages, // Component sẽ hiển thị khi truy cập đường dẫn "/"
     },
     {
         path: '/forgot-password',
         name: 'forgotpassword',
-        component: ForgotPassword , // Component sẽ hiển thị khi truy cập đường dẫn "/"
+        component: ForgotPassword, // Component sẽ hiển thị khi truy cập đường dẫn "/"
     },
     // Các route khác nếu có
 ];

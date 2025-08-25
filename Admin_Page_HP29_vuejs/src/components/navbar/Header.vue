@@ -126,13 +126,9 @@ export default {
       // Hiển thị bảng điều khiển nếu là admin, ẩn nếu là USER
       return this.roles.includes('ADMIN');
     },
-    showCustomer() {
-      // Hiển thị quản lý khách hàng nếu là admin, ẩn nếu là USER
-      return this.roles.includes('ADMIN');
-    },
     showEmployee() {
       // Hiển thị nhân viên nếu là admin, ẩn nếu là USER
-      return this.roles.includes('admin');
+      return this.roles.includes('ADMIN');
     }
   },
   mounted() {

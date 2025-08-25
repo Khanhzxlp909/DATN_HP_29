@@ -7,7 +7,6 @@ import axios from 'axios';
 export default {
   setup() {
     const showQRModal = ref(false);
-    // const qrImageUrl = ref("http://localhost:8080/upload/images/qr-code.png");
     const totalPrice = ref(0);
     const cart = ref([]);
     const productDetails = ref([]);
@@ -72,8 +71,9 @@ export default {
     // 🛒 Lấy giỏ hàng từ API
     const getCart = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/cart/findall/${user.value.userInfo.id}`);
-        cart.value = response.data;
+
+        // const response = JSON.parse(Cookies.get("cart"));
+        cart.value = JSON.parse(sessionStorage.getItem("cart"));
         console.log("Cart: " + cart.value);
         calculateTotal();
       } catch (error) {
@@ -154,6 +154,7 @@ export default {
           const amount = totalPrice.value; // Tổng tiền
           const dataForPayment = {
             "amount": amount,
+            "roles": "customer",
             "description": "Thanh toán đơn hàng: " + orderID,
             "orderId": orderID
           };
@@ -182,7 +183,7 @@ export default {
             axios.get(`${apiUrl}send-email/${email}/${orderId}`, {
               headers: {Authorization: `Bearer ${token}`}
             });
-
+            sessionStorage.removeItem("cart")
             // Xóa giỏ hàng (chạy nền)
             axios.get(`http://localhost:8080/api/v1/cart/removeall/${order.value.customerID.id}`)
                 .then(() => {
@@ -217,7 +218,7 @@ export default {
             axios.get(`${apiUrl}send-email/${email}/${orderId}`, {
               headers: {Authorization: `Bearer ${token}`}
             });
-
+            sessionStorage.removeItem("cart")
             // Xóa giỏ hàng (chạy nền)
             axios.get(`http://localhost:8080/api/v1/cart/removeall/${order.value.customerID.id}`)
                 .then(() => {
@@ -231,9 +232,21 @@ export default {
           }
         }
       } catch (error) {
-        console.error("Lỗi khi tạo đơn hàng:", error);
-        alert("Có lỗi xảy ra, vui lòng thử lại!");
+        if (error.response && error.response.data) {
+          // Lấy thông báo lỗi từ server
+          const serverMessage = error.response.data || "";
+
+          if (serverMessage.includes("hết hàng")) {
+            alert("❌ Sản phẩm này đã có người nhanh tay đặt trước hoặc đã bán hết!");
+          } else {
+            alert(serverMessage || "Có lỗi xảy ra, vui lòng thử lại!");
+          }
+        } else {
+          console.error("Lỗi khi lưu đơn hàng:", error);
+          alert("Có lỗi xảy ra, vui lòng thử lại!");
+        }
       }
+
     };
 
 
@@ -339,7 +352,7 @@ export default {
               </div>
             </div>
             <!--            form hien thi san pham -->
-            <div class="col-lg-6 col-12 hidden-sm hidden-xs" style="background-color:#f3f3f3;">
+            <div class="col-lg-6 col-12 hidden-sm hidden-xs" style="background-color:#ffffff; border: 1px solid #ddd; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
               <div class="sliderbar-header">
                 <h2>Tổng tiền hiện tại: {{ formatCurrency(totalPriceForCustomer) }} VND</h2>
               </div>
@@ -366,7 +379,7 @@ export default {
                 <div class="total">
                   <div class="row row-sliderbar-footer">
                     <div class="col-6"><h2>Thành tiền:</h2></div>
-                    <div class="col-4 text-right "><h2>{{ formatCurrency(totalPriceForCustomer) }}</h2></div>
+                    <div class="col-4 text-right "><h2>{{ formatCurrency(totalPriceForCustomer) }} VND</h2></div>
                   </div>
                 </div>
               </div>
