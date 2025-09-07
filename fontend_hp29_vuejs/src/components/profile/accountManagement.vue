@@ -112,9 +112,6 @@
                       </span>
                     </div>
 
-                    <div class="col-2">
-
-                    </div>
                   </div>
                 </div>
                 <div class="pagination">
@@ -429,6 +426,7 @@ export default {
         console.error("Lỗi khi hủy đơn hàng:", error);
       }
     };
+
 
     const completeOrder = async (orderid) => {
       const token = Cookies.get("authToken");

@@ -54,9 +54,9 @@ public class PayOsClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PayOsClient> getTransactionById(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> getTransactionById(@PathVariable Long id) {
         return payOsClientService.findById(id)
-                .map(ResponseEntity::ok)
+                .map(url -> ResponseEntity.ok(Collections.singletonMap("checkoutUrl", url)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

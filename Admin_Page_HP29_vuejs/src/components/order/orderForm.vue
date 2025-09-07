@@ -252,6 +252,24 @@ export default {
     }
   },
   mounted() {
+    // --- Check for orderId param and call cancel API ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+    if (orderId) {
+      axios.get(`http://localhost:8080/MiniatureCrafts/cancelOrder/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}` // Thêm token vào header
+        }
+      })
+        .then(() => {
+          window.location.href= "/order";
+        })
+        .catch(err => {
+          console.error("Cancel order error:", err);
+          // window.location.reload();
+        });
+      return; // Prevent further logic if cancel is triggered
+    }
     this.fetchProducts(this.currentPage, this.pageSize); // Gọi hàm để lấy tất cả sản phẩm khi component được mount
     this.getCustomer(); // Gọi hàm để lấy tất cả khách hàng khi component được mount
   },
@@ -434,11 +452,12 @@ export default {
             const amount = finalAmount; // Tổng tiền
             const dataForPayment = {
               "amount": amount,
+              "roles": "admin",
               "description": "Thanh toán đơn hàng: " + orderID,
               "orderId": orderID
             };
             console.log("Data for payment:", dataForPayment);
-            const payosResponse = await axios.post(`http://localhost:8080/api/v1/transactions/create-payment-link/admin`, dataForPayment,
+            const payosResponse = await axios.post(`http://localhost:8080/api/v1/transactions/create-payment-link`, dataForPayment,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`
@@ -449,7 +468,7 @@ export default {
               // Chuyển hướng ngay lập tức
               const paymentLink = payosResponse.data.checkoutUrl;
               console.log("Payment Link:", paymentLink);
-              window.open(paymentLink, "_blank"); // Mở link thanh toán trong tab mới
+              window.location.href = paymentLink // Mở link thanh toán trong tab mới
               // window.location.href = payosResponse.data.checkoutUrl;
             } else {
               console.error("Lỗi khi tạo link thanh toán:", payosResponse);

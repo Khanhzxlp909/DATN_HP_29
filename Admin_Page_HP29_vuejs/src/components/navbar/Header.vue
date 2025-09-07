@@ -117,7 +117,8 @@ export default {
       return this.admin ? this.admin.name : 'Người dùng'; // Lấy tên người dùng
     },
     isWarehouseDetailPage() {
-      return this.$route.path === "/warehouse/warehouseDetails";
+      // Hide sidebar for /warehouse/warehouseDetails, /order, and /posorder
+      return [ "/order"].includes(this.$route.path);
     },
     isOrderPage() {
       return this.$route.path === "/warehouse/warehouseDetails";

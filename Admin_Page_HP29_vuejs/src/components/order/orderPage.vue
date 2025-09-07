@@ -183,7 +183,7 @@
                 <tr v-for="orderDetails in orderDetails" :key="orderDetails">
                   <td>
                     <center>
-                      <img :src="getDefaultImageUrl(orderDetails.variationID.productID.imagesDTOS)" alt=""
+                      <img :src="getImagesUrl(orderDetails.variationID.images)" alt=""
                            width="70px;"/>
                     </center>
                   </td>
@@ -287,12 +287,11 @@ export default {
       }
     },
 
-    getDefaultImageUrl(imagesDTOS) {
-      if (imagesDTOS && imagesDTOS.length > 0) {
-        const defaultImage = imagesDTOS.find((image) => image.set_Default);
-        return defaultImage ? `http://localhost:8080/upload/images/${defaultImage.cd_Images}` : "/img/default.jpg";
-      }
-      return "/img/default.jpg";
+
+    getImagesUrl(images) {
+      return images
+          ? `http://localhost:8080/upload/images/${images.cd_Images}`
+          : "/img/default.jpg";
     },
 
     parsePrice(priceString) {

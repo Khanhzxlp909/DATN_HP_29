@@ -484,8 +484,8 @@ export default {
         status: variation.status,
         category: variation.productID.categoryID?.id || "",
         categoryName: variation.productID.categoryID?.name || "",
-        brand: variation.brandID?.id || "",
-        brandName: variation.brandID?.name || ""
+        brand: variation.productID.brandID?.id || "",
+        brandName: variation.productID.brandID?.name || ""
       };
 
       this.isEditing = true;

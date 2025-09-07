@@ -8,6 +8,7 @@ import com.example.hp_29_MiniatureCrafts.repository.order.OrderRepository;
 import com.example.hp_29_MiniatureCrafts.service.order.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.payos.PayOS;
@@ -15,7 +16,9 @@ import vn.payos.type.CheckoutResponseData;
 import vn.payos.type.PaymentData;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -86,8 +89,8 @@ public class PayOsClientService {
                    .orderCode(orderCode)
                    .amount(request.getAmount())
                    .description(request.getDescription())
-                   .cancelUrl("http://localhost:8081/payment-cancel/"+  request.getOrderId())
-                   .returnUrl("http://localhost:8081/payment-success")
+                   .cancelUrl("http://localhost:5173/order?orderId="+request.getOrderId())
+                   .returnUrl("http://localhost:5173/order")
                    // ✨ Bổ sung các thông tin này ✨
                    .buyerName("Nguyễn Văn A") // Lấy từ thông tin đơn hàng
                    .buyerEmail("nguyenvana@email.com") // Lấy từ thông tin đơn hàng
@@ -130,8 +133,9 @@ public class PayOsClientService {
     }
 
     @Transactional(readOnly = true) // Chỉ đọc, không thay đổi dữ liệu
-    public Optional<PayOsClient> findById(Long id) {
-        return payOsClientRepository.findById(id);
+    public Optional<String> findById(Long id) {
+        return payOsClientRepository.findByOrderID(id)
+                .map(PayOsClient::getCheckoutUrl);
     }
 
     @Transactional(readOnly = true)
